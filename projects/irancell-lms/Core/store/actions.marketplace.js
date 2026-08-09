@@ -1,0 +1,3 @@
+export function IrancellMarketplaceCreateRequest(data,studentId){return{type:'IRANCELL_MARKETPLACE_CREATE_REQUEST',data,studentId};}
+export function IrancellMarketplaceSubmitOffer(requestId,price,proposedTime,assignedTeacherName){return{type:'IRANCELL_MARKETPLACE_SUBMIT_OFFER',requestId,price,proposedTime,assignedTeacherName};}
+export function IrancellMarketplaceSelectOffer(offerId){return{type:'IRANCELL_MARKETPLACE_SELECT_OFFER',offerId};}

@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_IDENTITY_ONBOARDING_CONFIG=Object.freeze({role:'identity',feature:'onboarding',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

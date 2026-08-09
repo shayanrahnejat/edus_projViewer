@@ -1,0 +1,44 @@
+export const IRANCELL_PUBLIC_ROUTES=Object.freeze(['splash','onboarding','auth/login','auth/otp','role-select','help']);
+export const IRANCELL_ROLE_NAVIGATION=Object.freeze({
+ student:Object.freeze([
+  Object.freeze({label:'خانه',route:'student/home',icon:'home',matches:['student/home','student/dashboard']}),
+  Object.freeze({label:'چیستی',route:'student/chisti',icon:'ask',matches:['student/chisti','student/ask','student/chats']}),
+  Object.freeze({label:'بینایی',route:'student/binayi',icon:'eye',matches:['student/binayi','student/learning','student/content']}),
+  Object.freeze({label:'کلاس‌ها',route:'student/classes',icon:'classes',matches:['student/classes','student/requests','student/offers','student/teachers','class/','rating/','complaint/']}),
+  Object.freeze({label:'پروفایل',route:'student/profile',icon:'user',matches:['student/profile','student/notifications','student/support','notifications','help']})
+ ]),
+ parent:Object.freeze([
+  Object.freeze({label:'خانه',route:'parent/home',icon:'home',matches:['parent/home','parent/reports','parent/complaints']}),
+  Object.freeze({label:'فرزندان',route:'parent/children',icon:'children',matches:['parent/children','parent/classes','parent/consents','consent/','class/','rating/','complaint/']}),
+  Object.freeze({label:'پرداخت‌ها',route:'parent/payments',icon:'payments',matches:['parent/payments','payment/']}),
+  Object.freeze({label:'پروفایل',route:'parent/profile',icon:'user',matches:['parent/profile','parent/support','notifications','help']})
+ ]),
+ teacher:Object.freeze([
+  Object.freeze({label:'خانه',route:'teacher/home',icon:'home',matches:['teacher/home','teacher/earnings','teacher/quality']}),
+  Object.freeze({label:'درخواست‌ها',route:'teacher/requests',icon:'requests',matches:['teacher/requests','teacher/offers']}),
+  Object.freeze({label:'تقویم',route:'teacher/calendar',icon:'calendar',matches:['teacher/calendar']}),
+  Object.freeze({label:'کلاس‌ها',route:'teacher/classes',icon:'classes',matches:['teacher/classes','class/','rating/']}),
+  Object.freeze({label:'پروفایل',route:'teacher/profile',icon:'user',matches:['teacher/profile','notifications','help']})
+ ]),
+ academy:Object.freeze([
+  Object.freeze({label:'خانه',route:'academy/home',icon:'home',matches:['academy/home','academy/reports']}),
+  Object.freeze({label:'درخواست‌ها',route:'academy/requests',icon:'requests',matches:['academy/requests','academy/offers']}),
+  Object.freeze({label:'مدرس‌ها',route:'academy/teachers',icon:'teachers',matches:['academy/teachers']}),
+  Object.freeze({label:'کلاس‌ها',route:'academy/classes',icon:'classes',matches:['academy/classes','class/','rating/']}),
+  Object.freeze({label:'پروفایل',route:'academy/profile',icon:'user',matches:['academy/profile','academy/finance','notifications','help']})
+ ]),
+ 'content-provider':Object.freeze([
+  Object.freeze({label:'خانه',route:'content/home',icon:'home',matches:['content/home']}),
+  Object.freeze({label:'کتابخانه',route:'content/library',icon:'library',matches:['content/library','content/analytics']}),
+  Object.freeze({label:'بارگذاری',route:'content/upload',icon:'upload',matches:['content/upload'],primary:true}),
+  Object.freeze({label:'تسویه',route:'content/payouts',icon:'earnings',matches:['content/payouts']}),
+  Object.freeze({label:'پروفایل',route:'content/profile',icon:'user',matches:['content/profile','notifications','help']})
+ ]),
+ admin:Object.freeze([
+  Object.freeze({label:'خانه',route:'admin/home',icon:'home',matches:['admin/home','admin/classes']}),
+  Object.freeze({label:'کاربران',route:'admin/users',icon:'users',matches:['admin/users','admin/providers']}),
+  Object.freeze({label:'گزارش‌ها',route:'admin/reports',icon:'analytics',matches:['admin/reports','admin/payments']}),
+  Object.freeze({label:'شکایت‌ها',route:'admin/complaints',icon:'complaints',matches:['admin/complaints']}),
+  Object.freeze({label:'تنظیمات',route:'admin/settings',icon:'system',matches:['admin/settings','admin/system','notifications','help']})
+ ])
+});

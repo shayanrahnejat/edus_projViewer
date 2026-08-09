@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_TEACHER_EARNINGS_CONFIG=Object.freeze({role:'teacher',feature:'earnings',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

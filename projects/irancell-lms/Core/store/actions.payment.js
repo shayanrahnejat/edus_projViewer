@@ -1,0 +1,1 @@
+export function IrancellPaymentHold(orderId,method){return{type:'IRANCELL_PAYMENT_HOLD',orderId,method};}

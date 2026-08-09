@@ -1,0 +1,14 @@
+{
+  "name": "irancell-lms/Core",
+  "private": true,
+  "type": "module",
+  "main": "imports.js",
+  "exports": {
+    ".": "./imports.js",
+    "./imports.js": "./imports.js",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "parham/lib/packs/data-store": "last"
+  }
+}

@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_STUDENT_LEARNING_CONFIG=Object.freeze({role:'student',feature:'learning',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

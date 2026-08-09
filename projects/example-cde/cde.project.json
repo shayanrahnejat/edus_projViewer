@@ -1,0 +1,6 @@
+{
+  "entryCandidates": ["App"],
+  "runtime": {
+    "tailwind": false
+  }
+}

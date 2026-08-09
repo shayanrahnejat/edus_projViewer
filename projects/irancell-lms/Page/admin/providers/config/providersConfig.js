@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_ADMIN_PROVIDERS_CONFIG=Object.freeze({role:'admin',feature:'providers',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

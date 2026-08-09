@@ -1,0 +1,1 @@
+export function IrancellAcademyHomePage({onNavigate}){return <IrancellRoleDashboardSections role="academy" onNavigate={onNavigate}/>}

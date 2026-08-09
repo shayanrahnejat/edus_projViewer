@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_ADMIN_COMPLAINTS_CONFIG=Object.freeze({role:'admin',feature:'complaints',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

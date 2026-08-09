@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_ACADEMY_FINANCE_CONFIG=Object.freeze({role:'academy',feature:'finance',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

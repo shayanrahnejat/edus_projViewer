@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_ACADEMY_PROFILE_CONFIG=Object.freeze({role:'academy',feature:'profile',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

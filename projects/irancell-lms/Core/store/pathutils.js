@@ -1,0 +1,2 @@
+export function IrancellParseHashRoute(hashValue){const raw=String(hashValue||'#/splash').replace(/^#\/?/,'');const [path,q]=raw.split('?');const params={};new URLSearchParams(q||'').forEach((v,k)=>params[k]=v);return{route:decodeURIComponent(path||'splash').replace(/^\/+|\/+$/g,''),params};}
+export function IrancellBuildHashRoute(route,params){const q=new URLSearchParams(params||{}).toString();return`#/${String(route||'').replace(/^\/+?/,'')}${q?`?${q}`:''}`;}

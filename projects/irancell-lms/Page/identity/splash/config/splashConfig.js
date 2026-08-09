@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_IDENTITY_SPLASH_CONFIG=Object.freeze({role:'identity',feature:'splash',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

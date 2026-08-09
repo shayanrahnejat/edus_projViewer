@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_SHARED_NOTIFICATIONS_CONFIG=Object.freeze({role:'shared',feature:'notifications',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

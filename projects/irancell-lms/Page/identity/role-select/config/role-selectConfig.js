@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_IDENTITY_ROLE_SELECT_CONFIG=Object.freeze({role:'identity',feature:'role-select',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

@@ -1,0 +1,1 @@
+export function IrancellAdminSetProviderStatus(providerId,status){return{type:'IRANCELL_ADMIN_PROVIDER_STATUS',providerId,status};}

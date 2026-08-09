@@ -1,0 +1,3 @@
+export function IrancellForm({children,onSubmit,className=''}){return <form className={`ir-form ${className}`} onSubmit={onSubmit} noValidate>{children}</form>}
+export function IrancellFormActions({children}){return <div className="ir-form__actions">{children}</div>}
+export function IrancellCheckbox({label,...props}){return <label className="ir-check"><input type="checkbox" {...props}/><span>{label}</span></label>}

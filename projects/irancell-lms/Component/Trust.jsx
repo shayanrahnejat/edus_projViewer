@@ -1,0 +1,2 @@
+export function IrancellTrustStrip(){return <div className="ir-trust-strip"><span><ShieldCheck/>مدرس‌های تأییدشده</span><span><WalletCards/>پرداخت امن</span><span><LockKeyhole/>حریم خصوصی</span><span><CheckCircle2/>پیگیری کیفیت</span></div>}
+export function IrancellGateChecklist({items=[]}){return <div className="ir-gate-list">{items.map(item=><div key={item.key} className={item.passed?'is-passed':'is-blocked'}><span>{item.passed?'✓':'!'}</span><div><strong>{item.label}</strong><small>{item.message}</small></div></div>)}</div>}

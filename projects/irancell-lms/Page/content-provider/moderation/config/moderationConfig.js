@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_CONTENT_PROVIDER_MODERATION_CONFIG=Object.freeze({role:'content-provider',feature:'moderation',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

@@ -1,0 +1,1 @@
+export function IrancellJalaliDatePicker({label,value,onChange,min}){return <label className="ir-field"><span>{label}</span><input type="date" value={value||''} min={min} onChange={e=>onChange?.(e.target.value)}/><small>تاریخ در رابط نهایی با تقویم شمسی نمایش داده می‌شود.</small></label>}

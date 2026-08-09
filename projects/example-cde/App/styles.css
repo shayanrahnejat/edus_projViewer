@@ -1,0 +1,15 @@
+:root { color-scheme: dark; }
+body { background: #0b0d12; color: #eef2f8; }
+.example-shell { min-height:100vh; padding: clamp(34px,7vw,90px); background: radial-gradient(circle at 80% 5%, #243351 0, transparent 36%), #0b0d12; }
+.example-badge { display:inline-flex; padding:8px 11px; border:1px solid #35415a; border-radius:999px; color:#a9b9d8; font:600 12px/1 system-ui; }
+h1 { max-width:760px; font:750 clamp(38px,7vw,82px)/.96 system-ui; letter-spacing:-.055em; margin:28px 0 18px; }
+.example-lead { max-width:700px; color:#a3adbd; font:400 17px/1.7 system-ui; }
+.example-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:38px; }
+.project-card { color:inherit; text-align:left; padding:22px; border:1px solid #293140; border-radius:18px; background:#11151c; cursor:pointer; min-height:190px; display:flex; flex-direction:column; align-items:flex-start; }
+.project-card:hover { transform:translateY(-2px); border-color:#46536b; }
+.project-card-kicker { color:#7f8ba1; font:700 10px/1 system-ui; letter-spacing:.1em; }
+.project-card strong { font:700 20px/1.2 system-ui; margin-top:18px; }
+.project-card p { color:#919cad; font:400 13px/1.6 system-ui; }
+.project-card-action { margin-top:auto; color:#dce5f6; font:600 12px/1 system-ui; }
+footer { margin-top:28px; color:#6f7b90; font:12px system-ui; }
+@media(max-width:680px){.example-grid{grid-template-columns:1fr}.example-shell{padding:28px 18px}}

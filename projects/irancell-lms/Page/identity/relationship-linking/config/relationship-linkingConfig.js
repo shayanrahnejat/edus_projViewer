@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_IDENTITY_RELATIONSHIP_LINKING_CONFIG=Object.freeze({role:'identity',feature:'relationship-linking',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

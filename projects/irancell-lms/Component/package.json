@@ -1,0 +1,14 @@
+{
+  "name": "irancell-lms/Component",
+  "private": true,
+  "type": "module",
+  "main": "imports.js",
+  "exports": {
+    ".": "./imports.js",
+    "./imports.js": "./imports.js",
+    "./*": "./*"
+  },
+  "dependencies": {
+    "irancell-lms/Core": "last"
+  }
+}

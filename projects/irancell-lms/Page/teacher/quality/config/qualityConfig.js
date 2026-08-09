@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_TEACHER_QUALITY_CONFIG=Object.freeze({role:'teacher',feature:'quality',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

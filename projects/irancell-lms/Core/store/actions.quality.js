@@ -1,0 +1,2 @@
+export function IrancellQualityRate(sessionId,providerId,score,comment,dimensions={},anonymous=false){return{type:'IRANCELL_QUALITY_RATE',sessionId,providerId,score,comment,dimensions,anonymous};}
+export function IrancellQualitySubmitComplaint(sessionId,category,description){return{type:'IRANCELL_QUALITY_COMPLAINT',sessionId,category,description};}

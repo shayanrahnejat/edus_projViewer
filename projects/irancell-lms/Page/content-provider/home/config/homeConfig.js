@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_CONTENT_PROVIDER_HOME_CONFIG=Object.freeze({role:'content-provider',feature:'home',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

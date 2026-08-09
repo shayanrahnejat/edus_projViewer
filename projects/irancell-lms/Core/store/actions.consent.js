@@ -1,0 +1,1 @@
+export function IrancellConsentSign(consentId,signatureName){return{type:'IRANCELL_CONSENT_SIGN',consentId,signatureName};}

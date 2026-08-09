@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_CONTENT_PROVIDER_UPLOAD_CONFIG=Object.freeze({role:'content-provider',feature:'upload',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

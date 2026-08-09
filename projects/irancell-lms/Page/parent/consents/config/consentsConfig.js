@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_PARENT_CONSENTS_CONFIG=Object.freeze({role:'parent',feature:'consents',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

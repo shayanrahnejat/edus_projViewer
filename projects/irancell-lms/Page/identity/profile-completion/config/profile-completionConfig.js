@@ -1,0 +1,1 @@
+export const IRANCELL_PAGE_IDENTITY_PROFILE_COMPLETION_CONFIG=Object.freeze({role:'identity',feature:'profile-completion',states:['initial','loading','partial','error','unauthorized','disabled','success','expired','retry']});

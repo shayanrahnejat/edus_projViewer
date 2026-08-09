@@ -1,0 +1,1 @@
+export function IrancellContentProviderHomePage({onNavigate}){return <IrancellRoleDashboardSections role="content-provider" onNavigate={onNavigate}/>}
