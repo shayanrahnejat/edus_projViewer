@@ -1,5 +1,37 @@
 [
   {
+    "id": "ddd59777-f6f6-44c6-bf55-2046669043ff",
+    "at": "2026-08-09T15:22:57.102Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "The previous cross-browser fix postponed every non-declaration top-level statement until after all variable initializers. That unintentionally postponed CDE global-publication statements such as `globalThis.__IRANCELL_LMS_INITIAL_STATE__ = IRANCELL_INITIAL_STATE`, while dependent store variables such as the published fixture and boot seed were initialized earlier. Chrome/Edge can appear to work when old persisted data already exists, but a fresh iOS Safari/home-screen storage namespace starts without that cache and therefore boots from the reduced fallback seed instead of the project's complete mock data. Split flattened execution into declarations, ordered initialization/publication, and boot side effects. This preserves deterministic CDE source ordering, avoids TDZ problems, and makes published project seeds/configuration available before stores consume them without adding any IranCell-specific compiler behavior.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "Generate separate initialization and boot fragments for every flattened CDE source. Variable initializers and global seed/config publication must retain deterministic source order, while calls such as store `InitLogic()`, application mounting, listeners, timers, and other startup side effects must execute only after initialization of every source file has completed.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "Assemble every CDE build in four explicit cross-browser phases: first make all function declarations available, then execute variable initialization and global seed/config publication in deterministic CDE file order, then recover public repository exports, and finally execute application/store boot side effects. This fixes fresh iOS mock-data initialization while retaining the earlier Safari/Firefox protection against premature store boot execution.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "tests/compiler.test.mjs",
+        "reason": "Add a generic regression test for the exact fresh-mobile failure mode. A CDE project may construct a large mock/fixture seed in one source, publish it through globalThis/window, and consume that published value while initializing its store in a later source. The publication must occur before the store initializer, while the store's explicit boot call must remain after both. This test prevents future compiler changes from silently dropping complete mock datasets on fresh Safari/PWA storage namespaces.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "860a72cd-ae6e-4509-bc8d-0927ce4fe3ee",
     "at": "2026-08-09T15:15:35.595Z",
     "type": "ai-patch",

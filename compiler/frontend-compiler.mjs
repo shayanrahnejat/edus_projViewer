@@ -270,14 +270,55 @@ function rewriteCdeBrowserStorage(ast) {
   });
 }
 
+function cdeGlobalMemberRoot(node) {
+  let current = node;
+
+  while (
+    t.isMemberExpression(current)
+    || t.isOptionalMemberExpression(current)
+  ) {
+    current = current.object;
+  }
+
+  return t.isIdentifier(current)
+    && ['window', 'globalThis', 'self'].includes(current.name)
+    ? current.name
+    : null;
+}
+
+function isCdeGlobalPublicationStatement(node) {
+  if (t.isExpressionStatement(node)) {
+    const expression = node.expression;
+
+    return t.isAssignmentExpression(expression)
+      && Boolean(cdeGlobalMemberRoot(expression.left));
+  }
+
+  if (t.isBlockStatement(node)) {
+    return node.body.length > 0
+      && node.body.every(isCdeGlobalPublicationStatement);
+  }
+
+  if (t.isIfStatement(node)) {
+    return isCdeGlobalPublicationStatement(node.consequent)
+      && (
+        !node.alternate
+        || isCdeGlobalPublicationStatement(node.alternate)
+      );
+  }
+
+  return false;
+}
+
 function normalizeFlattenedTopLevel(file) {
   const declarationBody = [];
-  const deferredBody = [];
+  const initializationBody = [];
+  const bootBody = [];
 
   for (const node of file.ast.program.body) {
     if (t.isVariableDeclaration(node)) {
       node.kind = 'var';
-      declarationBody.push(node);
+      initializationBody.push(node);
       continue;
     }
 
@@ -303,7 +344,7 @@ function normalizeFlattenedTopLevel(file) {
         classExpression.implements = node.implements.map((item) => t.cloneNode(item, true));
       }
 
-      declarationBody.push(
+      initializationBody.push(
         t.variableDeclaration('var', [
           t.variableDeclarator(
             t.cloneNode(node.id),
@@ -314,16 +355,30 @@ function normalizeFlattenedTopLevel(file) {
       continue;
     }
 
-    if (t.isDeclaration(node) || t.isEmptyStatement(node)) {
+    if (t.isFunctionDeclaration(node) || t.isEmptyStatement(node)) {
       declarationBody.push(node);
       continue;
     }
 
-    deferredBody.push(node);
+    if (isCdeGlobalPublicationStatement(node)) {
+      initializationBody.push(node);
+      continue;
+    }
+
+    if (t.isDeclaration(node)) {
+      declarationBody.push(node);
+      continue;
+    }
+
+    bootBody.push(node);
   }
 
   file.ast.program.body = declarationBody;
-  return deferredBody;
+
+  return {
+    initializationBody,
+    bootBody,
+  };
 }
 
 function flattenFile(file, context) {
@@ -443,7 +498,11 @@ function flattenFile(file, context) {
   });
 
   rewriteCdeBrowserStorage(file.ast);
-  const deferredBody = normalizeFlattenedTopLevel(file);
+
+  const {
+    initializationBody,
+    bootBody,
+  } = normalizeFlattenedTopLevel(file);
 
   const generated = generate(file.ast, {
     comments: true,
@@ -452,8 +511,17 @@ function flattenFile(file, context) {
     sourceMaps: false,
   }, file.code).code;
 
-  const deferredCode = deferredBody.length
-    ? generate(t.program(deferredBody), {
+  const initializationCode = initializationBody.length
+    ? generate(t.program(initializationBody), {
+        comments: true,
+        compact: false,
+        retainLines: false,
+        sourceMaps: false,
+      }, file.code).code
+    : '';
+
+  const bootCode = bootBody.length
+    ? generate(t.program(bootBody), {
         comments: true,
         compact: false,
         retainLines: false,
@@ -463,7 +531,8 @@ function flattenFile(file, context) {
 
   return {
     code: generated,
-    deferredCode,
+    initializationCode,
+    bootCode,
     exportMap,
   };
 }
@@ -539,8 +608,17 @@ export function compileCdeFrontend({ files = [], projectName = 'CDE Project' }) 
   for (let index = 0; index < flattened.length; index += 1) {
     const file = parsedFiles[index];
     appendMergedSegment(
-      `/* @cde-source ${file.name} */`,
+      `/* @cde-declarations ${file.name} */`,
       flattened[index].code,
+      file.name,
+    );
+  }
+
+  for (let index = 0; index < flattened.length; index += 1) {
+    const file = parsedFiles[index];
+    appendMergedSegment(
+      `/* @cde-initialization ${file.name} */`,
+      flattened[index].initializationCode,
       file.name,
     );
   }
@@ -563,8 +641,8 @@ export function compileCdeFrontend({ files = [], projectName = 'CDE Project' }) 
   for (let index = 0; index < flattened.length; index += 1) {
     const file = parsedFiles[index];
     appendMergedSegment(
-      `/* @cde-deferred-source ${file.name} */`,
-      flattened[index].deferredCode,
+      `/* @cde-boot ${file.name} */`,
+      flattened[index].bootCode,
       file.name,
     );
   }

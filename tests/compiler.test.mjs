@@ -91,3 +91,58 @@ test('normalizes top-level lexical aliases for the shared CDE global scope', () 
   assert.match(compiled.code, /var sharedHook/);
   assert.match(compiled.code, /window\["App"\]/);
 });
+
+test('publishes CDE fixture seeds before dependent stores initialize and delays store boot', () => {
+  const compiled = compileCdeFrontend({
+    projectName: 'published-mobile-seed',
+    files: [
+      {
+        name: 'Core/store/initialState.js',
+        code: `
+          export const CDE_MOCK_SEED = Object.freeze({
+            users: {
+              mock1: { id: 'mock1' },
+              mock2: { id: 'mock2' }
+            }
+          });
+          if (typeof globalThis !== 'undefined') {
+            globalThis.__CDE_MOCK_SEED__ = CDE_MOCK_SEED;
+          }
+        `,
+      },
+      {
+        name: 'Core/store/store.js',
+        code: `
+          export const CDE_STORE_SEED =
+            globalThis.__CDE_MOCK_SEED__ || { users: {} };
+          export const CDE_STORE_STATE = {
+            users: { ...CDE_STORE_SEED.users }
+          };
+          export function CDEInitStore() {
+            globalThis.__CDE_STORE_BOOT_COUNT__ =
+              Object.keys(CDE_STORE_STATE.users).length;
+          }
+          CDEInitStore();
+        `,
+      },
+      {
+        name: 'App/index.js',
+        code: `
+          export function App() {
+            return Object.keys(CDE_STORE_STATE.users).length;
+          }
+        `,
+      },
+    ],
+  });
+
+  const seedInitializationIndex = compiled.code.indexOf('CDE_MOCK_SEED =');
+  const seedPublicationIndex = compiled.code.indexOf('globalThis.__CDE_MOCK_SEED__ = CDE_MOCK_SEED');
+  const storeInitializationIndex = compiled.code.indexOf('CDE_STORE_SEED = globalThis.__CDE_MOCK_SEED__');
+  const storeBootIndex = compiled.code.lastIndexOf('CDEInitStore();');
+
+  assert.ok(seedInitializationIndex >= 0);
+  assert.ok(seedPublicationIndex > seedInitializationIndex);
+  assert.ok(storeInitializationIndex > seedPublicationIndex);
+  assert.ok(storeBootIndex > storeInitializationIndex);
+});
