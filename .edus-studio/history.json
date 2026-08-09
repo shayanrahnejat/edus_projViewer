@@ -1,5 +1,19 @@
 [
   {
+    "id": "10cc299d-7d59-41e0-848b-312ebe3c0e17",
+    "at": "2026-08-09T15:33:47.066Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "The current fullscreen mode maximizes the whole PreviewPane, including its toolbar and runtime console, so the project itself does not occupy the complete screen. Convert fullscreen/maximized mode into a true project viewport: the iframe covers the entire visual viewport edge-to-edge, viewer chrome and runtime diagnostics are removed, and only a small floating exit-fullscreen button remains above the project so fullscreen can still be closed on desktop, Android, iOS Safari, and installed home-screen mode.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "2fd1d193-e550-4219-8d8a-fec2226ffb95",
     "at": "2026-08-09T15:30:33.085Z",
     "type": "ai-patch",
