@@ -299,8 +299,8 @@ function IrancellCoreStoreV2FilterPatch(value){
  return Object.keys(value).reduce(function IrancellCoreStoreV2FilterPatchKey(result,key){if(IRANCELL_CORE_STORE_V2_MODEL_NAMES.includes(key))result[key]=value[key];return result;},{});
 }
 function IrancellCoreStoreV2ReadPublishedSeed(){
- if(IRANCELL_CORE_STORE_V2_LOCAL_STORE_MODE)return IRANCELL_CORE_STORE_V2_LOCAL_SEED;
- return IRANCELL_CORE_STORE_V2_SAFE_SEED;
+ const seed=IRANCELL_CORE_STORE_V2_BOOT_SEED;
+ return IrancellCoreStoreV2IsPlainObject(seed)?seed:IRANCELL_CORE_STORE_V2_SAFE_SEED;
 }
 function IrancellCoreStoreV2BuildLocalSnapshot(state){
  if(!IRANCELL_CORE_STORE_V2_LOCAL_STORE_MODE)return null;
@@ -353,9 +353,9 @@ function IrancellCoreStoreV2WritePersistedState(){
  }catch(error){if(window.console)window.console.warn('IranCell LMS safe persistence failed.',error);return false;}
 }
 function IrancellCoreStoreV2BuildModels(){
- const seed=IrancellCoreStoreV2ReadPublishedSeed();
+ const seed=IRANCELL_CORE_STORE_V2_BOOT_SEED;
  return IRANCELL_CORE_STORE_V2_MODEL_NAMES.map(function IrancellCoreStoreV2BuildModel(name){
-  const value=seed[name]===undefined?IRANCELL_CORE_STORE_V2_SAFE_SEED[name]:seed[name];
+  const value=seed&&seed[name]!==undefined?seed[name]:IRANCELL_CORE_STORE_V2_SAFE_SEED[name];
   return{name,type:'object',store:'memory',_data:IrancellCoreStoreV2Clone(value),defaultData:IrancellCoreStoreV2Clone(value)};
  });
 }

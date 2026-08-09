@@ -1,0 +1,22 @@
+[
+  {
+    "id": "67864085-8c54-4ae1-ba95-1727a6559787",
+    "at": "2026-08-09T14:45:21.162Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "projects/irancell-lms/Core/store/store.js",
+        "reason": "The runtime stack fails while IrancellCoreStoreV2BuildModels calls IrancellCoreStoreV2ReadPublishedSeed during global script initialization. The published/local seed has already been completely resolved into IRANCELL_CORE_STORE_V2_BOOT_SEED before store state and models are created, so re-evaluating LOCAL_STORE_MODE and LOCAL_SEED during global initialization is unnecessary and can hit lexical initialization ordering in the flattened CDE runtime. Read from the already-normalized boot seed instead while retaining the safe seed as a defensive fallback.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "projects/irancell-lms/Core/store/store.js",
+        "reason": "Model definitions are created at top-level while the flattened CDE script is booting. They must use the already-resolved boot seed directly instead of invoking a runtime seed resolver during global evaluation. This removes the IrancellCoreStoreV2ReadPublishedSeed -> IrancellCoreStoreV2BuildModels -> global code failure path while preserving the same fixture/remote seed selected earlier by IRANCELL_CORE_STORE_V2_BOOT_SEED.",
+        "matchMethod": "exact"
+      }
+    ]
+  }
+]
