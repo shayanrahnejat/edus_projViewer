@@ -68,6 +68,22 @@ function edusStaticProjectCatalog() {
 
       await copyPreviewRuntime();
 
+      await writeJson(
+        path.join(distDir, 'manifest.webmanifest'),
+        {
+          id: '/',
+          name: 'EDUS CDE Project Viewer',
+          short_name: 'EDUS CDE',
+          start_url: '/',
+          scope: '/',
+          display: 'fullscreen',
+          display_override: ['fullscreen', 'standalone'],
+          orientation: 'any',
+          background_color: '#0b0d12',
+          theme_color: '#0b0d12',
+        },
+      );
+
       for (const summary of projects) {
         const project = await registry.refreshProject(summary.id);
         if (!project) continue;

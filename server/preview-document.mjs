@@ -29,11 +29,14 @@ export function buildPreviewDocument({ project, compiled, manifest = {}, assetBa
 <html>
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <base href="${assetBase}" />
 ${externalStyles}
 <style>
-html,body,#root{min-height:100%;margin:0}body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.cde-runtime-error{white-space:pre-wrap;padding:16px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;margin:16px}
+html,body,#root{width:100%;height:100%;min-height:100%;margin:0}html{background:#fff}body{min-height:100vh;min-height:100dvh;overflow-x:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.cde-runtime-error{white-space:pre-wrap;padding:16px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;margin:16px}
 ${compiled.css}
 </style>
 </head>
@@ -44,6 +47,7 @@ ${compiled.css}
 ${tailwindScript}
 ${externalScripts}
 <script>
+window.__EDUS_CDE_PROJECT_KEY__ = ${safeJson(project.id || project.name || 'cde-project')};
 window.CDEModules = window.CDEModules || {};
 for (const [moduleName, globalName] of Object.entries(${safeJson(moduleGlobals)})) {
   if (typeof globalName === 'string' && window[globalName]) window.CDEModules[moduleName] = window[globalName];

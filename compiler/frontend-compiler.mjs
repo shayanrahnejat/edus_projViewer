@@ -212,6 +212,64 @@ function relativeImportExpression(targetName, specifier, moduleExports) {
   return /^[A-Za-z_$][\w$]*$/.test(local) ? t.identifier(local) : t.identifier(imported);
 }
 
+function cdeStorageExpression(storageName) {
+  return t.memberExpression(
+    t.identifier('window'),
+    t.identifier(
+      storageName === 'sessionStorage'
+        ? '__EDUS_CDE_SESSION_STORAGE__'
+        : '__EDUS_CDE_LOCAL_STORAGE__',
+    ),
+  );
+}
+
+function cdeStorageMemberName(node) {
+  if (!node) return null;
+
+  const object = node.object;
+  if (
+    !t.isIdentifier(object)
+    || !['window', 'self', 'globalThis'].includes(object.name)
+  ) {
+    return null;
+  }
+
+  if (!node.computed && t.isIdentifier(node.property)) {
+    return ['localStorage', 'sessionStorage'].includes(node.property.name)
+      ? node.property.name
+      : null;
+  }
+
+  if (node.computed && t.isStringLiteral(node.property)) {
+    return ['localStorage', 'sessionStorage'].includes(node.property.value)
+      ? node.property.value
+      : null;
+  }
+
+  return null;
+}
+
+function rewriteCdeBrowserStorage(ast) {
+  const replaceMember = (path) => {
+    const storageName = cdeStorageMemberName(path.node);
+    if (!storageName) return;
+    path.replaceWith(cdeStorageExpression(storageName));
+  };
+
+  traverse(ast, {
+    MemberExpression: replaceMember,
+    OptionalMemberExpression: replaceMember,
+
+    ReferencedIdentifier(path) {
+      const storageName = path.node.name;
+      if (!['localStorage', 'sessionStorage'].includes(storageName)) return;
+      if (path.scope.getBinding(storageName)) return;
+
+      path.replaceWith(cdeStorageExpression(storageName));
+    },
+  });
+}
+
 function normalizeFlattenedTopLevel(file) {
   const declarationBody = [];
   const deferredBody = [];
@@ -384,6 +442,7 @@ function flattenFile(file, context) {
     },
   });
 
+  rewriteCdeBrowserStorage(file.ast);
   const deferredBody = normalizeFlattenedTopLevel(file);
 
   const generated = generate(file.ast, {

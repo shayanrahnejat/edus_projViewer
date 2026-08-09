@@ -1,5 +1,67 @@
 [
   {
+    "id": "860a72cd-ae6e-4509-bc8d-0927ce4fe3ee",
+    "at": "2026-08-09T15:15:35.595Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "CDE projects may access localStorage or sessionStorage directly instead of only through the EDUS createStore runtime. Safari/iOS and Firefox can restrict storage access inside srcdoc/sandboxed iframe contexts even when the same project works in Chromium. Rewrite browser-storage references at compile time to the EDUS safe storage facade so this compatibility applies generically to every CDE project rather than requiring project-specific store patches.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "Run the storage compatibility rewrite after module syntax has been flattened but before final global normalization and generation. This protects direct storage calls in Core, Page, Component, App, imports.js, and any other CDE source file.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/local-store-runtime.mjs",
+        "reason": "The preview runtime needs a synchronous Storage-compatible facade that works even when iframe storage is blocked. Prefer the same-origin parent page storage on phones because it is the top-level installed application's persistent storage, fall back to iframe storage, and finally fall back to memory hosted on the parent browsing context. Namespace every key by CDE project so different projects cannot corrupt each other's persisted stores. Install the facade before checking for an existing createStore so external EDUS data-store implementations also receive safe window.localStorage/window.sessionStorage access when the browser permits overriding those Window properties.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/local-store-runtime.mjs",
+        "reason": "createStore must consume the already-installed project-safe storage facade rather than reading Window.localStorage again. This guarantees the EDUS store works with the same persistence behavior on Chromium, Firefox, normal iOS Safari, private/restricted iframe contexts, and installed iOS home-screen mode.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "server/preview-document.mjs",
+        "reason": "Give every preview runtime a stable project identity before the storage compatibility runtime starts so storage is isolated per CDE project. Also make the preview document itself use the full mobile viewport and safe areas instead of depending on desktop iframe assumptions.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "server/preview-document.mjs",
+        "reason": "The safe storage runtime must know which CDE project owns the preview before any project code or data-store code runs.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "index.html",
+        "reason": "viewport-fit alone does not make an iOS home-screen launch behave as an installed fullscreen application. Add the Apple standalone metadata, modern mobile web-app metadata, theme colors, and the generated web app manifest used by Vercel production builds.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "vite.config.js",
+        "reason": "Vercel needs a real web-app manifest in the generated static deployment for Android/Chromium home-screen installation and modern display-mode negotiation. Generate it as part of the existing Vite static publishing step without introducing another source file. fullscreen is preferred, with standalone as the compatibility fallback used by mobile browsers that do not support fullscreen display mode.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "Installed mobile web apps need the document root pinned to the standalone viewport rather than allowing browser viewport resizing to create blank strips around the application. Keep safe-area support and include the WebKit fill-available fallback for older iOS home-screen runtimes.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "028ad87f-eaff-498b-85b6-efef4275f422",
     "at": "2026-08-09T15:05:52.701Z",
     "type": "ai-patch",
