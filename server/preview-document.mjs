@@ -8,7 +8,7 @@ function safeJson(value) {
   return JSON.stringify(value).replaceAll('<', '\\u003c');
 }
 
-export function buildPreviewDocument({ project, compiled, manifest = {} }) {
+export function buildPreviewDocument({ project, compiled, manifest = {}, assetBase: assetBaseOverride = null }) {
   const runtime = manifest.runtime && typeof manifest.runtime === 'object' ? manifest.runtime : {};
   const scripts = Array.isArray(runtime.scripts) ? runtime.scripts.filter((value) => /^https?:\/\//i.test(value)) : [];
   const styles = Array.isArray(runtime.styles) ? runtime.styles.filter((value) => /^https?:\/\//i.test(value)) : [];
@@ -20,7 +20,7 @@ export function buildPreviewDocument({ project, compiled, manifest = {} }) {
     'App',
   ])).filter(Boolean);
 
-  const assetBase = project.sourceType === 'folder' ? `/api/project-assets/${project.id}/` : '/';
+  const assetBase = assetBaseOverride || (project.sourceType === 'folder' ? `/api/project-assets/${project.id}/` : '/');
   const externalScripts = scripts.map((src) => `<script src="${escapeHtml(src)}"></script>`).join('\n');
   const externalStyles = styles.map((href) => `<link rel="stylesheet" href="${escapeHtml(href)}">`).join('\n');
   const tailwindScript = tailwind ? '<script src="https://cdn.tailwindcss.com"></script>' : '';
