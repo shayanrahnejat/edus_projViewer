@@ -1,5 +1,31 @@
 [
   {
+    "id": "c875b306-aff0-4a77-8dd4-eb054c24fa32",
+    "at": "2026-08-09T14:49:53.151Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "projects/irancell-lms/Core/store/store.js",
+        "reason": "The remaining stack ends at IrancellCoreStoreV2BuildModels -> global code, which means model construction is still executing eagerly while the flattened CDE script is evaluating. Even though the boot seed is declared earlier in the original source, flattened CDE execution can expose initialization-order hazards. Keep one stable models array for exported references, populate it lazily after IrancellCoreStoreV2State is initialized, and use that initialized state as the model seed.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "projects/irancell-lms/Core/store/store.js",
+        "reason": "The underlying data-store must trigger lazy model creation when it is actually ready rather than consuming the previously eager global model result.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "projects/irancell-lms/Core/store/store.js",
+        "reason": "getModel must also work before or without successful underlying createStore initialization. Ensure the stable exported model array has been populated before searching it.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "67864085-8c54-4ae1-ba95-1727a6559787",
     "at": "2026-08-09T14:45:21.162Z",
     "type": "ai-patch",

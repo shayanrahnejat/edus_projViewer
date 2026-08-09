@@ -353,13 +353,19 @@ function IrancellCoreStoreV2WritePersistedState(){
  }catch(error){if(window.console)window.console.warn('IranCell LMS safe persistence failed.',error);return false;}
 }
 function IrancellCoreStoreV2BuildModels(){
- const seed=IRANCELL_CORE_STORE_V2_BOOT_SEED;
+ const seed=IrancellCoreStoreV2IsPlainObject(IrancellCoreStoreV2State)?IrancellCoreStoreV2State:IRANCELL_CORE_STORE_V2_SAFE_SEED;
  return IRANCELL_CORE_STORE_V2_MODEL_NAMES.map(function IrancellCoreStoreV2BuildModel(name){
   const value=seed&&seed[name]!==undefined?seed[name]:IRANCELL_CORE_STORE_V2_SAFE_SEED[name];
   return{name,type:'object',store:'memory',_data:IrancellCoreStoreV2Clone(value),defaultData:IrancellCoreStoreV2Clone(value)};
  });
 }
-const IRANCELL_CORE_STORE_V2_MODELS=IrancellCoreStoreV2BuildModels();
+const IRANCELL_CORE_STORE_V2_MODELS=[];
+function IrancellCoreStoreV2EnsureModels(){
+ if(IRANCELL_CORE_STORE_V2_MODELS.length)return IRANCELL_CORE_STORE_V2_MODELS;
+ const models=IrancellCoreStoreV2BuildModels();
+ IRANCELL_CORE_STORE_V2_MODELS.push(...models);
+ return IRANCELL_CORE_STORE_V2_MODELS;
+}
 function IrancellCoreStoreV2Notify(){IRANCELL_CORE_STORE_V2_SUBSCRIBERS.forEach(function IrancellCoreStoreV2NotifySubscriber(listener){try{listener(IrancellCoreStoreV2State);}catch(error){if(typeof window!=='undefined'&&window.console)window.console.error('IranCell LMS store subscriber failed.',error);}});}
 function IrancellCoreStoreV2SyncBase(patch){
  const base=IrancellCoreStoreV2CreateStoreWhenReady();
@@ -441,7 +447,7 @@ export function IrancellCoreStoreV2CreateStoreWhenReady(){
  if(IrancellCoreStoreV2Base)return IrancellCoreStoreV2Base;
  if(typeof createStore!=='function')return null;
  try{
-  IrancellCoreStoreV2Base=createStore({models:IRANCELL_CORE_STORE_V2_MODELS});
+  IrancellCoreStoreV2Base=createStore({models:IrancellCoreStoreV2EnsureModels()});
   return IrancellCoreStoreV2Base;
  }catch(error){if(typeof window!=='undefined'&&window.console)window.console.warn('IranCell LMS data-store initialization failed; safe transient mode remains active.',error);return null;}
 }
@@ -521,7 +527,7 @@ export function IrancellCoreStoreV2ResetAll(){
 }
 export function IrancellCoreStoreV2GetModel(modelName){
  if(IrancellCoreStoreV2Base&&typeof IrancellCoreStoreV2Base.getModel==='function'){try{return IrancellCoreStoreV2Base.getModel(modelName);}catch(error){}}
- return IRANCELL_CORE_STORE_V2_MODELS.find(function IrancellCoreStoreV2FindModel(model){return model.name===modelName;})||null;
+ return IrancellCoreStoreV2EnsureModels().find(function IrancellCoreStoreV2FindModel(model){return model.name===modelName;})||null;
 }
 export function IrancellCoreStoreV2SetParams(modelName,params,action){
  if(IrancellCoreStoreV2Base&&typeof IrancellCoreStoreV2Base.setParams==='function'){try{return IrancellCoreStoreV2Base.setParams(modelName,params,action||'fetch');}catch(error){return false;}}
