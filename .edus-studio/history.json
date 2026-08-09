@@ -1,5 +1,31 @@
 [
   {
+    "id": "cc0b3cb6-0304-4118-97b8-66f8a7cee246",
+    "at": "2026-08-09T15:42:29.201Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "src/components/PreviewPane.jsx",
+        "reason": "The fullscreen state currently keeps the normal viewer toolbar mounted. On iOS the later mobile CSS overrides the desktop fullscreen hiding rules, which is why “Local compiled preview” and the large X button appear over the actual CDE project in the screenshot. Do not render viewer chrome at all while maximized. Keep a separate compact exit control so iOS Safari, which may use the CSS fullscreen fallback instead of the native Fullscreen API, can still leave project-only mode.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "Fullscreen must be a project viewport rather than a maximized viewer card. Keep the iframe absolutely edge-to-edge and replace the large toolbar-based close button with a very small translucent edge handle that does not reserve layout space or shrink/offset the project.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "The iOS/mobile rule explicitly changes fullscreen toolbar metadata back to display:block after the generic fullscreen rules, which is the direct reason “Local compiled preview” remains visible in the supplied screenshot. Keep all viewer metadata hidden during project-only fullscreen and reduce the iOS exit handle footprint further.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "10cc299d-7d59-41e0-848b-312ebe3c0e17",
     "at": "2026-08-09T15:33:47.066Z",
     "type": "ai-patch",

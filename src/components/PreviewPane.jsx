@@ -54,7 +54,7 @@ export default function PreviewPane({ html, projectName, compiling, runtimeEvent
   }
 
   return <section ref={panelRef} className={`preview-panel${fullscreen ? ' preview-fullscreen' : ''}`}>
-    <div className="panel-toolbar preview-toolbar">
+    {!fullscreen && <div className="panel-toolbar preview-toolbar">
       <div className="toolbar-title"><span className="live-dot" /> <strong>{projectName || 'Preview'}</strong></div>
       <div className="preview-toolbar-actions">
         <div className="toolbar-meta">{compiling ? 'Compiling…' : html ? 'Local compiled preview' : 'Choose a project'}</div>
@@ -63,18 +63,27 @@ export default function PreviewPane({ html, projectName, compiling, runtimeEvent
           className="preview-fullscreen-button"
           onClick={toggleFullscreen}
           disabled={!html}
-          aria-label={fullscreen ? 'Exit fullscreen preview' : 'Open fullscreen preview'}
-          title={fullscreen ? 'Exit fullscreen' : 'Fullscreen preview'}
+          aria-label="Open fullscreen preview"
+          title="Fullscreen preview"
         >
-          <span aria-hidden="true">{fullscreen ? '×' : '⛶'}</span>
-          <span className="preview-fullscreen-label">{fullscreen ? 'Exit' : 'Fullscreen'}</span>
+          <span aria-hidden="true">⛶</span>
+          <span className="preview-fullscreen-label">Fullscreen</span>
         </button>
       </div>
-    </div>
+    </div>}
     <div className="preview-stage">
-      {html ? <iframe ref={frameRef} title={`${projectName} preview`} sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" /> : <div className="preview-empty"><div className="preview-empty-mark">CDE</div><h2>Compile a local CDE project</h2><p>Select a project from the left. The viewer runs it through the EDUS-compatible compiler and renders it in this isolated preview.</p></div>}
+      {html ? <iframe ref={frameRef} title={`${projectName} preview`} sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups" allowFullScreen /> : <div className="preview-empty"><div className="preview-empty-mark">CDE</div><h2>Compile a local CDE project</h2><p>Select a project from the left. The viewer runs it through the EDUS-compatible compiler and renders it in this isolated preview.</p></div>}
     </div>
-    {runtimeEvents.length > 0 && <div className="runtime-strip">
+    {fullscreen && <button
+      type="button"
+      className="preview-fullscreen-exit"
+      onClick={toggleFullscreen}
+      aria-label="Exit fullscreen preview"
+      title="Exit fullscreen"
+    >
+      <span aria-hidden="true">×</span>
+    </button>}
+    {!fullscreen && runtimeEvents.length > 0 && <div className="runtime-strip">
       <div><strong>Runtime</strong><button onClick={onClearEvents}>clear</button></div>
       {runtimeEvents.slice(-6).map((event, index) => <pre key={index} className={event.type === 'error' ? 'runtime-error' : ''}>{event.type === 'console' ? `[${event.level}] ${(event.args || []).join(' ')}` : event.message}</pre>)}
     </div>}
