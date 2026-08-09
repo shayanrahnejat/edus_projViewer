@@ -1,5 +1,61 @@
 [
   {
+    "id": "2fd1d193-e550-4219-8d8a-fec2226ffb95",
+    "at": "2026-08-09T15:30:33.085Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "iOS Safari does not always treat vh/dvh/svh consistently inside srcdoc iframes, especially with the browser chrome, orientation changes, virtual keyboard, and installed home-screen mode. CDE projects commonly use viewport units for page shells, fixed panels, modals, onboarding screens, and dashboards. Normalize those units against runtime visual-viewport CSS variables so every CDE project's existing CSS follows the actual visible iOS viewport without project-specific changes.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "Apply the cross-browser viewport normalization to the complete CDE stylesheet aggregate so fullscreen shells, fixed docks, dashboards, modals, login pages, onboarding pages, and other viewport-sized layouts use the actual iOS visual viewport.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "server/preview-document.mjs",
+        "reason": "The CDE iframe currently depends on CSS viewport units alone. On iOS Safari those values can differ from the actually visible iframe viewport while browser bars collapse, the keyboard appears, orientation changes, or the viewer runs from the home screen. Establish runtime viewport variables and a stable scrolling/root contract that CDE CSS can consume while preserving each project's own styling.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "server/preview-document.mjs",
+        "reason": "Synchronize the generated CDE document with Safari's visualViewport before any project store, boot logic, React render, or layout measurement executes. Keep it synchronized through address-bar movement, rotation, resize, keyboard appearance, page restoration, and home-screen resume. This fixes CDE pages that calculate their initial mobile layout only once during application boot.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/App.jsx",
+        "reason": "The outer viewer has the same Safari visual-viewport problem as the project iframe. Synchronize its CSS viewport variables with visualViewport so the mobile project selector, workspace, preview region, fullscreen fallback, modals, browser chrome changes, orientation, and installed-home-screen mode all use the actual visible iOS dimensions.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "The main viewer still sizes itself directly with 100vh/100dvh. On iOS Safari that can disagree with the visible viewport and causes clipped bottoms, blank strips, or content hidden behind browser chrome. Use the runtime-synchronized viewport height while retaining standards-based fallbacks.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "The installed-mode rules currently pin both body and app-shell with position:fixed. Mobile Safari can mis-size fixed root containers after rotation, keyboard use, app resume, and status-bar changes. Keep the application viewport-contained without relying on a fixed root coordinate system, and strengthen the iOS fullscreen/modal/iframe fallbacks.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "src/styles.css",
+        "reason": "The mobile layout mixes parent 100dvh sizing with child rows expressed in dvh, which is particularly fragile in Safari because the child row continues to track Safari's viewport independently of the actual available grid height after safe-area padding. Use percentages of the synchronized parent viewport instead and ensure every nested grid/flex region can shrink without overflowing.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "ddd59777-f6f6-44c6-bf55-2046669043ff",
     "at": "2026-08-09T15:22:57.102Z",
     "type": "ai-patch",

@@ -537,6 +537,18 @@ function flattenFile(file, context) {
   };
 }
 
+function normalizeCdeCssViewportUnits(css) {
+  return String(css || '')
+    .replace(
+      /(-?(?:\d+|\d*\.\d+))(?:dvh|svh|lvh|vh)\b/gi,
+      (_, value) => `calc(var(--edus-cde-vh, 1vh) * ${value})`,
+    )
+    .replace(
+      /(-?(?:\d+|\d*\.\d+))(?:dvw|svw|lvw|vw)\b/gi,
+      (_, value) => `calc(var(--edus-cde-vw, 1vw) * ${value})`,
+    );
+}
+
 function mapMergedLocation(line, ranges) {
   if (!line) return null;
   const range = ranges.find((item) => line >= item.start && line <= item.end);
@@ -688,7 +700,11 @@ export function compileCdeFrontend({ files = [], projectName = 'CDE Project' }) 
 
   return {
     code: result?.code || '',
-    css: cssFiles.map((file) => `/* @cde-source ${file.name} */\n${file.code}`).join('\n\n'),
+    css: normalizeCdeCssViewportUnits(
+      cssFiles
+        .map((file) => `/* @cde-source ${file.name} */\n${file.code}`)
+        .join('\n\n'),
+    ),
     diagnostics,
     manifest: {
       projectName,

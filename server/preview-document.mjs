@@ -29,14 +29,63 @@ export function buildPreviewDocument({ project, compiled, manifest = {}, assetBa
 <html>
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <base href="${assetBase}" />
 ${externalStyles}
 <style>
-html,body,#root{width:100%;height:100%;min-height:100%;margin:0}html{background:#fff}body{min-height:100vh;min-height:100dvh;overflow-x:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.cde-runtime-error{white-space:pre-wrap;padding:16px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;margin:16px}
+:root{
+  --edus-cde-vh:1vh;
+  --edus-cde-vw:1vw;
+  --edus-cde-viewport-height:100vh;
+  --edus-cde-viewport-width:100vw;
+  --edus-cde-safe-top:env(safe-area-inset-top,0px);
+  --edus-cde-safe-right:env(safe-area-inset-right,0px);
+  --edus-cde-safe-bottom:env(safe-area-inset-bottom,0px);
+  --edus-cde-safe-left:env(safe-area-inset-left,0px);
+}
+html{
+  width:100%;
+  height:100%;
+  min-width:0;
+  max-width:100%;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:#fff;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+body{
+  width:100%;
+  height:var(--edus-cde-viewport-height,100vh);
+  min-width:0;
+  max-width:100%;
+  min-height:var(--edus-cde-viewport-height,100vh);
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:none;
+  -webkit-overflow-scrolling:touch;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+#root{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  min-height:100%;
+  margin:0;
+}
+img,video,canvas{
+  max-width:100%;
+}
+button,input,textarea,select{
+  font-family:inherit;
+}
+.cde-runtime-error{white-space:pre-wrap;padding:16px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;margin:16px}
 ${compiled.css}
 </style>
 </head>
@@ -47,6 +96,68 @@ ${compiled.css}
 ${tailwindScript}
 ${externalScripts}
 <script>
+(function installEdusCdeViewportRuntime(){
+  const root=document.documentElement;
+  let scheduled=0;
+
+  function applyViewport(){
+    scheduled=0;
+
+    const viewport=window.visualViewport;
+    const width=Math.max(
+      1,
+      Number(viewport&&viewport.width)
+      || Number(window.innerWidth)
+      || Number(root.clientWidth)
+      || 1
+    );
+    const height=Math.max(
+      1,
+      Number(viewport&&viewport.height)
+      || Number(window.innerHeight)
+      || Number(root.clientHeight)
+      || 1
+    );
+
+    root.style.setProperty('--edus-cde-vh',(height*0.01)+'px');
+    root.style.setProperty('--edus-cde-vw',(width*0.01)+'px');
+    root.style.setProperty('--edus-cde-viewport-height',height+'px');
+    root.style.setProperty('--edus-cde-viewport-width',width+'px');
+
+    try{
+      document.body.style.height=height+'px';
+      document.body.style.minHeight=height+'px';
+    }catch(_){}
+  }
+
+  function scheduleViewport(){
+    if(scheduled)return;
+    scheduled=requestAnimationFrame(applyViewport);
+  }
+
+  applyViewport();
+
+  window.addEventListener('resize',scheduleViewport,{passive:true});
+  window.addEventListener('orientationchange',function(){
+    scheduleViewport();
+    setTimeout(scheduleViewport,60);
+    setTimeout(scheduleViewport,250);
+  },{passive:true});
+  window.addEventListener('pageshow',scheduleViewport,{passive:true});
+
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',scheduleViewport,{passive:true});
+    window.visualViewport.addEventListener('scroll',scheduleViewport,{passive:true});
+  }
+
+  if(typeof ResizeObserver==='function'){
+    try{
+      const observer=new ResizeObserver(scheduleViewport);
+      observer.observe(root);
+    }catch(_){}
+  }
+})();
+
 window.__EDUS_CDE_PROJECT_KEY__ = ${safeJson(project.id || project.name || 'cde-project')};
 window.CDEModules = window.CDEModules || {};
 for (const [moduleName, globalName] of Object.entries(${safeJson(moduleGlobals)})) {

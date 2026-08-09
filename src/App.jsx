@@ -57,6 +57,61 @@ export default function App() {
     return () => window.removeEventListener('message', onMessage);
   }, []);
 
+  useEffect(() => {
+    const root = document.documentElement;
+    let frame = 0;
+
+    const syncViewport = () => {
+      frame = 0;
+      const viewport = window.visualViewport;
+      const width = Math.max(
+        1,
+        Number(viewport?.width)
+          || Number(window.innerWidth)
+          || Number(root.clientWidth)
+          || 1,
+      );
+      const height = Math.max(
+        1,
+        Number(viewport?.height)
+          || Number(window.innerHeight)
+          || Number(root.clientHeight)
+          || 1,
+      );
+
+      root.style.setProperty('--edus-viewer-width', `${width}px`);
+      root.style.setProperty('--edus-viewer-height', `${height}px`);
+      root.style.setProperty('--edus-viewer-vh', `${height * 0.01}px`);
+    };
+
+    const scheduleViewportSync = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(syncViewport);
+    };
+
+    const onOrientationChange = () => {
+      scheduleViewportSync();
+      setTimeout(scheduleViewportSync, 60);
+      setTimeout(scheduleViewportSync, 250);
+    };
+
+    syncViewport();
+    window.addEventListener('resize', scheduleViewportSync, { passive: true });
+    window.addEventListener('orientationchange', onOrientationChange, { passive: true });
+    window.addEventListener('pageshow', scheduleViewportSync, { passive: true });
+    window.visualViewport?.addEventListener('resize', scheduleViewportSync, { passive: true });
+    window.visualViewport?.addEventListener('scroll', scheduleViewportSync, { passive: true });
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('resize', scheduleViewportSync);
+      window.removeEventListener('orientationchange', onOrientationChange);
+      window.removeEventListener('pageshow', scheduleViewportSync);
+      window.visualViewport?.removeEventListener('resize', scheduleViewportSync);
+      window.visualViewport?.removeEventListener('scroll', scheduleViewportSync);
+    };
+  }, []);
+
   async function openFile(file) {
     if (!project || file.binary) return;
     try { setFileView({ name: file.name, code: await api.file(project.id, file.name) }); }
