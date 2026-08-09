@@ -23,17 +23,31 @@ export function localStoreRuntimeSource() {
       defaults[model.name] = clone(value ?? (model.type === 'list' ? [] : null));
     }
 
+    const resolveStorage = (name) => {
+      try {
+        const storage = global[name];
+        if (!storage || typeof storage.getItem !== 'function') return null;
+        return storage;
+      } catch (_) {
+        return null;
+      }
+    };
+
     const readStorage = (storage, key) => {
+      if (!storage) return {};
       try {
         const raw = storage.getItem(key);
         return raw ? JSON.parse(raw) : {};
       } catch (_) { return {}; }
     };
 
+    const localStorageRef = resolveStorage('localStorage');
+    const sessionStorageRef = resolveStorage('sessionStorage');
+
     let state = {
       ...defaults,
-      ...readStorage(global.localStorage, localStoreKey),
-      ...readStorage(global.sessionStorage, sessionStoreKey),
+      ...readStorage(localStorageRef, localStoreKey),
+      ...readStorage(sessionStorageRef, sessionStoreKey),
     };
 
     const notify = () => {
@@ -47,8 +61,10 @@ export function localStoreRuntimeSource() {
       for (const model of models) {
         if (model?.store === bucket && model.name in state) target[model.name] = state[model.name];
       }
+
       try {
-        const storage = bucket === 'session' ? global.sessionStorage : global.localStorage;
+        const storage = bucket === 'session' ? sessionStorageRef : localStorageRef;
+        if (!storage || typeof storage.setItem !== 'function') return;
         const key = bucket === 'session' ? sessionStoreKey : localStoreKey;
         storage.setItem(key, JSON.stringify(target));
       } catch (_) {}

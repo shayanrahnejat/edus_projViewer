@@ -212,6 +212,62 @@ function relativeImportExpression(targetName, specifier, moduleExports) {
   return /^[A-Za-z_$][\w$]*$/.test(local) ? t.identifier(local) : t.identifier(imported);
 }
 
+function normalizeFlattenedTopLevel(file) {
+  const declarationBody = [];
+  const deferredBody = [];
+
+  for (const node of file.ast.program.body) {
+    if (t.isVariableDeclaration(node)) {
+      node.kind = 'var';
+      declarationBody.push(node);
+      continue;
+    }
+
+    if (t.isClassDeclaration(node) && node.id) {
+      const classExpression = t.classExpression(
+        t.cloneNode(node.id),
+        node.superClass ? t.cloneNode(node.superClass, true) : null,
+        t.cloneNode(node.body, true),
+        node.decorators
+          ? node.decorators.map((decorator) => t.cloneNode(decorator, true))
+          : null,
+      );
+
+      if (node.typeParameters) {
+        classExpression.typeParameters = t.cloneNode(node.typeParameters, true);
+      }
+
+      if (node.superTypeParameters) {
+        classExpression.superTypeParameters = t.cloneNode(node.superTypeParameters, true);
+      }
+
+      if (node.implements) {
+        classExpression.implements = node.implements.map((item) => t.cloneNode(item, true));
+      }
+
+      declarationBody.push(
+        t.variableDeclaration('var', [
+          t.variableDeclarator(
+            t.cloneNode(node.id),
+            classExpression,
+          ),
+        ]),
+      );
+      continue;
+    }
+
+    if (t.isDeclaration(node) || t.isEmptyStatement(node)) {
+      declarationBody.push(node);
+      continue;
+    }
+
+    deferredBody.push(node);
+  }
+
+  file.ast.program.body = declarationBody;
+  return deferredBody;
+}
+
 function flattenFile(file, context) {
   const { moduleExports, defaultNameByFile, diagnostics } = context;
   const exportMap = moduleExports.get(file.name) || new Map();
@@ -328,6 +384,8 @@ function flattenFile(file, context) {
     },
   });
 
+  const deferredBody = normalizeFlattenedTopLevel(file);
+
   const generated = generate(file.ast, {
     comments: true,
     compact: false,
@@ -335,7 +393,20 @@ function flattenFile(file, context) {
     sourceMaps: false,
   }, file.code).code;
 
-  return { code: generated, exportMap };
+  const deferredCode = deferredBody.length
+    ? generate(t.program(deferredBody), {
+        comments: true,
+        compact: false,
+        retainLines: false,
+        sourceMaps: false,
+      }, file.code).code
+    : '';
+
+  return {
+    code: generated,
+    deferredCode,
+    exportMap,
+  };
 }
 
 function mapMergedLocation(line, ranges) {
@@ -385,15 +456,34 @@ export function compileCdeFrontend({ files = [], projectName = 'CDE Project' }) 
 
   const ranges = [];
   const mergedParts = [];
-  let line = 1;
+  let nextLine = 1;
+
+  function appendMergedSegment(marker, code, fileName = null) {
+    if (!code || !String(code).trim()) return;
+
+    const markerLine = nextLine;
+    const codeLines = String(code).split('\n').length;
+
+    mergedParts.push(marker, code);
+
+    if (fileName) {
+      ranges.push({
+        file: fileName,
+        start: markerLine + 1,
+        end: markerLine + codeLines,
+      });
+    }
+
+    nextLine = markerLine + codeLines + 1;
+  }
+
   for (let index = 0; index < flattened.length; index += 1) {
     const file = parsedFiles[index];
-    const code = flattened[index].code;
-    const marker = `/* @cde-source ${file.name} */`;
-    mergedParts.push(marker, code);
-    const codeLines = code.split('\n').length;
-    ranges.push({ file: file.name, start: line + 1, end: line + codeLines });
-    line += 1 + codeLines;
+    appendMergedSegment(
+      `/* @cde-source ${file.name} */`,
+      flattened[index].code,
+      file.name,
+    );
   }
 
   const aggregateExports = new Map();
@@ -405,7 +495,21 @@ export function compileCdeFrontend({ files = [], projectName = 'CDE Project' }) 
 
   const candidates = topLevelCandidateNames(parsedFiles, defaultNameByFile);
   const recovery = makeExportRecovery(aggregateExports, ['App', ...candidates]);
-  mergedParts.push('/* @cde-export-recovery */', recovery);
+
+  appendMergedSegment(
+    '/* @cde-export-recovery */',
+    recovery,
+  );
+
+  for (let index = 0; index < flattened.length; index += 1) {
+    const file = parsedFiles[index];
+    appendMergedSegment(
+      `/* @cde-deferred-source ${file.name} */`,
+      flattened[index].deferredCode,
+      file.name,
+    );
+  }
+
   const merged = mergedParts.join('\n');
 
   let result;
@@ -420,7 +524,16 @@ export function compileCdeFrontend({ files = [], projectName = 'CDE Project' }) 
       presets: [
         [presetTypescript, { allExtensions: true, isTSX: true, allowDeclareFields: true }],
         [presetReact, { runtime: 'classic', development: false }],
-        [presetEnv, { targets: { chrome: '100' }, modules: false, bugfixes: true }],
+        [presetEnv, {
+          targets: {
+            chrome: '80',
+            firefox: '78',
+            safari: '12',
+            ios: '12',
+          },
+          modules: false,
+          bugfixes: true,
+        }],
       ],
     });
   } catch (error) {

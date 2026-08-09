@@ -1,5 +1,55 @@
 [
   {
+    "id": "028ad87f-eaff-498b-85b6-efef4275f422",
+    "at": "2026-08-09T15:05:52.701Z",
+    "type": "ai-patch",
+    "projectRoot": "",
+    "patches": [
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "The viewer combines independently-authored CDE files into one classic global script. Preserving top-level const/let/class declarations gives that generated script temporal-dead-zone and duplicate-lexical-binding behavior that does not belong to the CDE flattened-global contract. It is also the underlying reason project boot functions such as IrancellCoreStoreV2InitLogic can fail depending on browser/runtime ordering. Normalize only the flattened top level to classic var-style globals and separate executable top-level statements so project boot code can be delayed until definitions from every CDE source are ready.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "After imports and exports have been normalized, capture top-level execution statements separately from declarations. This makes calls, IIFEs, event registration, boot logic, and other global execution run only after all CDE implementation files have established their shared declarations. The generated declaration code remains in the normal flattened scope, so existing CDE global symbol semantics are preserved.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "The old merger executed every file completely as soon as it was concatenated and only recovered exports at the very end. That means a Core file can call its initializer before another Core declaration or shared repository symbol has initialized. Build the output in three deterministic phases instead: declarations/initializers, export recovery, then deferred top-level execution. Also track both normal and deferred source ranges correctly for diagnostics.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/frontend-compiler.mjs",
+        "reason": "The compiler currently explicitly targets Chrome 100, so its generated output is allowed to contain syntax and transformations selected only for Chromium. That contradicts the viewer requirement to execute the same compiled CDE on Firefox, desktop Safari, and iOS Safari. Compile against a conservative shared browser baseline instead.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/local-store-runtime.mjs",
+        "reason": "Safari/iOS Safari and Firefox can restrict localStorage or sessionStorage for sandboxed/srcdoc documents, private browsing, or other privacy contexts. The current compatibility store evaluates global.localStorage before entering readStorage's try block, so the browser can throw before the fallback has a chance to run. Resolve browser storage defensively and make persistence optional rather than allowing a CDE project to fail during store initialization.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "compiler/local-store-runtime.mjs",
+        "reason": "Persistence currently re-reads global.localStorage/global.sessionStorage each time and can throw on browsers that expose the property but deny access. Reuse the safely resolved storage handles and silently operate as an in-memory store when persistent browser storage is unavailable.",
+        "matchMethod": "exact"
+      },
+      {
+        "op": "replace",
+        "path": "tests/compiler.test.mjs",
+        "reason": "Add compiler-level regression coverage for the actual architecture bug: a CDE file may contain an eager top-level boot call that uses a declaration supplied by another flattened file, and multiple independently parsed files may use the same top-level lexical alias. These tests ensure future fixes remain generic and do not regress into project-specific patches.",
+        "matchMethod": "exact"
+      }
+    ]
+  },
+  {
     "id": "c875b306-aff0-4a77-8dd4-eb054c24fa32",
     "at": "2026-08-09T14:49:53.151Z",
     "type": "ai-patch",
