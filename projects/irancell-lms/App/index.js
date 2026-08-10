@@ -121,7 +121,7 @@ export function IrancellAppShouldShowPersistentDock(state,screen,route,role){
  const normalizedRoute=String(route||'').replace(/^\/+|\/+$/g,'');
  if(!normalizedRoute)return false;
  if(['splash','onboarding','auth/login','auth/otp','role-select','profile-completion','relationship-linking'].includes(normalizedRoute))return false;
- if(normalizedRoute.startsWith('prototype/')||normalizedRoute.startsWith('parent-gate/')||normalizedRoute.startsWith('class/')||normalizedRoute.startsWith('student/binayi/lesson/')||normalizedRoute==='student/chisti'||normalizedRoute==='student/chisti/history')return false;
+ if(normalizedRoute.startsWith('prototype/')||normalizedRoute.startsWith('parent-gate/')||normalizedRoute.startsWith('class/')||normalizedRoute.startsWith('student/binayi/lesson/')||normalizedRoute==='student/chisti/history')return false;
  if(normalizedRoute.includes('/processing')||normalizedRoute.includes('/redirect'))return false;
  return screen?.role!=='public';
 }
@@ -133,8 +133,9 @@ export function IrancellAppPersistentDock({role,currentRoute,onNavigate}){
  const items=['parent','teacher'].includes(role)?[...baseItems].reverse():baseItems;
  const unreadCount=Math.max(0,Number(state.notifications.unreadCount)||0);
  const dockAvatarUser=state.identity.usersById[state.session.currentUserId]||null;
- const dockAvatarHasOverride=Boolean(dockAvatarUser&&Object.prototype.hasOwnProperty.call(dockAvatarUser,'avatarDataUrl'));
- const dockAvatar=role==='student'?(dockAvatarUser?(dockAvatarHasOverride?dockAvatarUser.avatarDataUrl:IRANCELL_PAGE_STUDENT_HOME_AVATAR):IRANCELL_PAGE_STUDENT_HOME_AVATAR):dockAvatarHasOverride?dockAvatarUser?.avatarDataUrl:null;
+ const dockAvatarOverride=typeof dockAvatarUser?.avatarDataUrl==='string'?dockAvatarUser.avatarDataUrl.trim():'';
+ const dockAvatarHasOverride=Boolean(dockAvatarOverride);
+ const dockAvatar=role==='student'?(dockAvatarHasOverride?dockAvatarOverride:IRANCELL_PAGE_STUDENT_HOME_AVATAR):(dockAvatarHasOverride?dockAvatarOverride:null);
  const dockAvatarInitial=String(dockAvatarUser?.name||'خ').trim().charAt(0)||'خ';
  const roleTitles={student:'دانش‌آموز',parent:'خانواده',teacher:'مدرس',academy:'آموزشگاه','content-provider':'تولیدکننده محتوا',admin:'مدیریت سامانه'};
  const profileItem=baseItems.find(item=>item.icon==='user'||String(item.route||'').includes('profile'))||null;
@@ -168,7 +169,7 @@ export function IrancellAppPersistentDock({role,currentRoute,onNavigate}){
    const active=(item.matches||[item.route]).some(match=>match.endsWith('/')?normalizedRoute.startsWith(match):normalizedRoute===match||normalizedRoute.startsWith(`${match}/`));
    const avatarProfile=(role==='student'&&item.route==='student/profile')||(role==='parent'&&item.route==='parent/profile')||item.route===profileRoute;
    return <button type="button" key={item.route} className={`${item.primary?'is-primary ':''}${active?'is-active':''}${avatarProfile?' is-profile':''}`.trim()} aria-label={item.label} aria-current={active?'page':undefined} onClick={()=>onNavigate?.(item.route)}>
-    <IrancellAppPersistentDockIcon name={avatarProfile?'user':item.icon}/>
+    {avatarProfile?<b className="ir-app-persistent-dock__avatar">{dockAvatar?<img src={dockAvatar} alt=""/>:<span aria-hidden="true">{dockAvatarInitial}</span>}{role==='student'&&unreadCount>0&&<i>{unreadCount>9?'9+':unreadCount}</i>}</b>:<IrancellAppPersistentDockIcon name={item.icon}/>}
     <span>{item.label}</span>
    </button>
   })}

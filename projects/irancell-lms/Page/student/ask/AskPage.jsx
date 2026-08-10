@@ -2,7 +2,7 @@ export function IrancellStudentAskPage({params,onNavigate,onBack}){
  const{state,dispatch}=useIrancellStore();
  const[text,setText]=useState('');
  const[subject,setSubject]=useState('ریاضی');
- const[activeSuggestion,setActiveSuggestion]=useState('حل معادله درجه دوم');
+ const[activeSuggestion,setActiveSuggestion]=useState('مسئله ریاضی');
  const[attachmentName,setAttachmentName]=useState('');
  const[attachmentMeta,setAttachmentMeta]=useState(null);
  const[attachmentOverlayOpen,setAttachmentOverlayOpen]=useState(false);
@@ -75,11 +75,10 @@ export function IrancellStudentAskPage({params,onNavigate,onBack}){
  ];
  const recentItems=problems.length?problems.slice(0,3).map(problem=>({id:problem.id,label:`${problem.subject||'درس'} - ${problem.text}`,query:problem.text,subject:problem.subject||'ریاضی'})):starterSearches;
  const suggestions=state.settings?.demo?.showGuidedExamples===false?[]:[
-  {label:'حل معادله درجه دوم',subject:'ریاضی',prompt:'معادله درجه دوم x²−5x+6=0 را مرحله‌به‌مرحله حل کن و در پایان جواب‌ها را بررسی کن.'},
-  {label:'قانون دوم نیوتن',subject:'فیزیک',prompt:'قانون دوم نیوتن را خیلی ساده توضیح بده و یک مثال عددی از نیرو، جرم و شتاب حل کن.'},
-  {label:'Present Perfect',subject:'زبان انگلیسی',prompt:'Present Perfect را با ساختار جمله، کاربرد و سه مثال ساده انگلیسی توضیح بده.'},
-  {label:'مرور قبل امتحان',subject:'شیمی',prompt:'برای مرور سریع فصل واکنش‌های شیمیایی قبل از امتحان یک مسیر ۲۰ دقیقه‌ای پیشنهاد بده.'},
-  {label:'ویدیوی مناسب',subject:'ریاضی',prompt:'برای یادگیری تابع درجه دوم یک ویدیوی آموزشی کوتاه پیشنهاد بده و بگو بعدش چه تمرینی انجام بدهم.'}
+  {label:'مسئله ریاضی',subject:'ریاضی',prompt:'یک مسئله ریاضی متناسب با پایه من را مرحله‌به‌مرحله حل کن و روش حل را توضیح بده.'},
+  {label:'یافتن معلم',subject:'ریاضی',prompt:'برای موضوعی که در آن مشکل دارم یک مسیر مناسب برای پیدا کردن معلم پیشنهاد بده.'},
+  {label:'کمک تکلیف',subject:'عمومی',prompt:'برای انجام تکلیفم کمکم کن؛ ابتدا مسئله را بفهم و بعد مرحله‌به‌مرحله راهنمایی کن.'},
+  {label:'نمایش ویدیو',subject:'ریاضی',prompt:'برای موضوع درسی من یک ویدیوی آموزشی مناسب پیشنهاد بده و بگو بعد از دیدنش چه تمرینی انجام بدهم.'}
  ];
 
  function submit(event){
@@ -530,74 +529,62 @@ export function IrancellStudentAskPage({params,onNavigate,onBack}){
  }
 
  return <section className="ir-chisti-search-page" aria-label="هوش مصنوعی آموزشی">
-  <header className="ir-chisti-search-page__brand">
-   <span aria-hidden="true">
-    <svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3Z"/><path d="m19 3 .7 2.3L22 6l-2.3.7L19 9l-.7-2.3L16 6l2.3-.7Z"/></svg>
-   </span>
-   <strong>هوش مصنوعی آموزشی</strong>
-  </header>
-
-  <section className="ir-chisti-search-page__hero">
-   <div className="ir-chisti-search-page__hero-kicker">
-    <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 14 9l6 3-6 3-2 6-2-6-6-3 6-3Z"/></svg></span>
-    <strong>چیستی، هم‌مسیر یادگیری تو</strong>
-   </div>
-   <h1>بپرس، <mark>یاد بگیر.</mark></h1>
-   <p>سؤالت را هرطور راحتی بپرس؛ چیستی موضوع را می‌فهمد، جواب می‌دهد و قدم بعدی یادگیری را می‌سازد.</p>
-   <div className="ir-chisti-search-page__hero-meta">
-    <span>پاسخ شخصی‌سازی‌شده</span>
-    <span>منابع آموزشی</span>
-    <span>مسیر یادگیری</span>
-   </div>
-  </section>
-
-  <form className={`ir-chisti-search-page__composer ${fieldMessage?'has-error':''}`} onSubmit={submit} noValidate>
-   <button type="submit" className="ir-chisti-search-page__submit" aria-label="جستجو" disabled={state.chisti.status==='loading'||state.ui.offline}>
-    {state.chisti.status==='loading'?<span className="ir-chisti-search-page__spinner"/>:<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>}
-   </button>
-
-   <input value={text} onChange={event=>{setText(event.target.value);setFieldMessage('');setSubmitted(false)}} placeholder="چیزی می‌خوای یاد بگیری؟" aria-label="سؤال آموزشی"/>
-
-   <button type="button" className="ir-chisti-search-page__attachment" aria-label="افزودن فایل" aria-haspopup="dialog" onClick={()=>setAttachmentOverlayOpen(true)}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>
-   </button>
-
-   <button type="button" className="ir-chisti-search-page__voice" aria-label="پرسش صوتی" onClick={startVoice}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-   </button>
-  </form>
-
-  {renderAttachmentState()}
-
-  {fieldMessage&&<p className="ir-chisti-search-page__message" role="alert">{fieldMessage}</p>}
-
-  <section className="ir-chisti-search-page__recent" aria-labelledby="irancell-chisti-recent-title">
-   <h2 id="irancell-chisti-recent-title">آخرین جستجوها</h2>
-   <div>
-    {recentItems.map(item=><button type="button" key={item.id} onClick={()=>chooseRecent(item)}>
-     <span className="ir-chisti-search-page__recent-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+  <div className="ir-chisti-search-page__content">
+   <header className="ir-chisti-search-page__brand">
+    <div className="ir-chisti-search-page__brand-title">
+     <span aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3Z"/><path d="m19 3 .7 2.3L22 6l-2.3.7L19 9l-.7-2.3L16 6l2.3-.7Z"/></svg>
      </span>
-     <span className="ir-chisti-search-page__recent-copy">
+     <strong>هوش مصنوعی آموزشی</strong>
+    </div>
+   </header>
+
+   <section className="ir-chisti-search-page__hero">
+    <h1>بپرس. یاد بگیر.</h1>
+    <p>دستیار هوش مصنوعی شما آماده پاسخگویی است</p>
+   </section>
+
+   <form className={`ir-chisti-search-page__composer ${fieldMessage?'has-error':''}`} onSubmit={submit} noValidate>
+    <button type="submit" className="ir-chisti-search-page__submit" aria-label="جستجو" disabled={state.chisti.status==='loading'||state.ui.offline}>
+     {state.chisti.status==='loading'?<span className="ir-chisti-search-page__spinner"/>:<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>}
+    </button>
+
+    <input value={text} onChange={event=>{setText(event.target.value);setFieldMessage('');setSubmitted(false)}} placeholder="چیزی می‌خوای یاد بگیری؟" aria-label="سؤال آموزشی"/>
+
+    <button type="button" className="ir-chisti-search-page__attachment" aria-label="افزودن فایل" aria-haspopup="dialog" onClick={()=>setAttachmentOverlayOpen(true)}>
+     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>
+    </button>
+
+    <button type="button" className="ir-chisti-search-page__voice" aria-label="پرسش صوتی" onClick={startVoice}>
+     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+    </button>
+   </form>
+
+   {renderAttachmentState()}
+
+   {fieldMessage&&<p className="ir-chisti-search-page__message" role="alert">{fieldMessage}</p>}
+
+   <section className="ir-chisti-search-page__recent" aria-labelledby="irancell-chisti-recent-title">
+    <h2 id="irancell-chisti-recent-title">آخرین جستجوها</h2>
+    <div>
+     {recentItems.map(item=><button type="button" key={item.id} onClick={()=>chooseRecent(item)}>
       <strong>{item.label}</strong>
-      <small>{item.subject||'پرسش آموزشی'}</small>
-     </span>
-     <span className="ir-chisti-search-page__recent-go" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
-     </span>
-    </button>)}
-   </div>
-  </section>
+      <span className="ir-chisti-search-page__recent-go" aria-hidden="true">
+       <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </span>
+     </button>)}
+    </div>
+   </section>
 
-  {suggestions.length>0&&<section className="ir-chisti-search-page__suggestions" aria-labelledby="irancell-chisti-suggestions-title">
-   <h2 id="irancell-chisti-suggestions-title">نمونه‌های آماده برای امتحان چیستی</h2>
-   <div>
-    {suggestions.map(item=><button type="button" key={item.label} className={activeSuggestion===item.label?'is-active':''} onClick={()=>chooseSuggestion(item)}>
-     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 14 9l6 3-6 3-2 6-2-6-6-3 6-3Z"/></svg>
-     <span>{item.label}</span>
-    </button>)}
-   </div>
-  </section>}
+   {suggestions.length>0&&<section className="ir-chisti-search-page__suggestions" aria-labelledby="irancell-chisti-suggestions-title">
+    <h2 id="irancell-chisti-suggestions-title">موضوعات پیشنهادی</h2>
+    <div>
+     {suggestions.map(item=><button type="button" key={item.label} className={activeSuggestion===item.label?'is-active':''} onClick={()=>chooseSuggestion(item)}>
+      <span>{item.label}</span>
+     </button>)}
+    </div>
+   </section>}
+  </div>
 
   {renderAttachmentOverlay()}
  </section>

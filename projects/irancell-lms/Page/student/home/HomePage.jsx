@@ -55,13 +55,10 @@ export function IrancellStudentHomePage({onNavigate}){
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
     {unreadCount>0&&<i/>}
    </button>
-   <div>
-    <strong>{student.name||'دانش‌آموز'}</strong>
-    <span>{student.grade||'پایه تحصیلی ثبت نشده'}</span>
+   <div className="ir-exact-student-dashboard__greeting">
+    <h1>سلام {firstName} جان، آماده‌ای یادگیری امروز رو شروع کنیم؟</h1>
+    <span>{student.grade||'پایه تحصیلی ثبت نشده'} / {student.name||'دانش‌آموز'}</span>
    </div>
-   <button type="button" className="ir-exact-student-dashboard__avatar" aria-label="مشاهده پروفایل" onClick={()=>onNavigate?.('student/profile')}>
-    {studentAvatar?<img src={studentAvatar} alt=""/>:<span className="ir-exact-student-dashboard__avatar-initial" aria-hidden="true">{String(student.name||'آ').trim().charAt(0)||'آ'}</span>}
-   </button>
   </header>
 
   <main className="ir-exact-student-dashboard__body">
@@ -69,63 +66,98 @@ export function IrancellStudentHomePage({onNavigate}){
     <span>اتصال اینترنت برقرار نیست؛ آخرین اطلاعات ذخیره‌شده نمایش داده می‌شود.</span>
    </aside>}
 
-   <article className="ir-exact-student-dashboard__welcome">
-    <h1>سلام {firstName}، آماده‌ای یادگیری امروز رو شروع کنیم؟</h1>
-    <p>امروز {IrancellFormatPersianNumber(classes.length)} کلاس، {IrancellFormatPersianNumber(inProgressEntries.length)} تمرین و {IrancellFormatPersianNumber(recommendationIds.length)} پیشنهاد آموزشی داری.</p>
-    <div className="ir-exact-student-dashboard__progress-label">
-     <strong>پیشرفت هفتگی</strong>
-     <span>{IrancellFormatPersianNumber(weeklyProgress)}٪</span>
-    </div>
-    <div className="ir-exact-student-dashboard__progress" role="progressbar" aria-label="پیشرفت هفتگی" aria-valuemin="0" aria-valuemax="100" aria-valuenow={weeklyProgress}>
-     <span style={{width:`${weeklyProgress}%`}}/>
+   <article className="ir-exact-student-dashboard__welcome ir-exact-student-dashboard__progress-card">
+    <div className="ir-exact-student-dashboard__progress-card-copy">
+     <div className="ir-exact-student-dashboard__progress-label">
+      <strong>میزان پیشرفت تحصیلی این هفته شما</strong>
+      <span>{IrancellFormatPersianNumber(weeklyProgress)}٪</span>
+     </div>
+     <div className="ir-exact-student-dashboard__progress" role="progressbar" aria-label="پیشرفت تحصیلی این هفته" aria-valuemin="0" aria-valuemax="100" aria-valuenow={weeklyProgress}>
+      <span style={{width:`${weeklyProgress}%`}}/>
+     </div>
+     <p>امروز {IrancellFormatPersianNumber(classes.length)} کلاس آنلاین، {IrancellFormatPersianNumber(inProgressEntries.length)} تمرین در حال یادگیری و {IrancellFormatPersianNumber(recommendationIds.length)} پیشنهاد آموزشی در انتظار شماست.</p>
     </div>
     <footer>
-     <button type="button" className="is-plan" onClick={()=>onNavigate?.('student/classes')}><span>مشاهده برنامه امروز</span><b aria-hidden="true">←</b></button>
      <button type="button" className="is-continue" onClick={()=>currentLearning?openLearning(currentLearning):onNavigate?.('student/binayi')}>ادامه یادگیری</button>
+     <button type="button" className="is-plan" onClick={()=>onNavigate?.('student/classes')}><span>مشاهده برنامه امروز</span><b aria-hidden="true">‹</b></button>
     </footer>
    </article>
 
-   <article className="ir-exact-student-dashboard__chisty">
-    <span className="ir-exact-student-dashboard__chisty-icon" aria-hidden="true">
-     <svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3Z"/><path d="m19 3 .7 2.3L22 6l-2.3.7L19 9l-.7-2.3L16 6l2.3-.7Z"/></svg>
-    </span>
-    <div className="ir-exact-student-dashboard__chisty-copy">
-     <h2>از چیستی بپرس</h2>
-     <p>هر سؤال درسی داری همین‌جا بپرس؛ چیستی پاسخ و مسیر بعدی را پیشنهاد می‌دهد.</p>
-    </div>
-    <form className="ir-exact-student-dashboard__chisty-search" onSubmit={submitHomeQuestion} noValidate>
-     <button type="submit" className="is-send" aria-label="ارسال سؤال" disabled={state.ui.offline||state.chisti.status==='processing'||!homeQuestion.trim()}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-     </button>
-     <button type="button" className="is-folder" aria-label="افزودن فایل" aria-haspopup="dialog" onClick={()=>setHomeAttachmentPickerSignal(signal=>signal+1)}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h7l2-2h9v14H3Z"/></svg>
-     </button>
-     <button type="button" className="is-mic" aria-label="پرسش صوتی" onClick={()=>onNavigate?.('student/chisti?voice=1')}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
-     </button>
-     <input type="text" value={homeQuestion} onChange={event=>{setHomeQuestion(event.target.value);if(homeQuestionError)setHomeQuestionError('')}} placeholder="مثلاً: معادله درجه دوم را چطور حل کنم؟" aria-label="سؤال از چیستی"/>
-    </form>
-    <IrancellSimpleFileUploader
-     label=""
-     hint=""
-     accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.txt"
-     maxSizeMb={15}
-     hideTrigger
-     openSignal={homeAttachmentPickerSignal}
-     onChange={setHomeAttachment}
-     onStatusChange={setHomeAttachmentStatus}
-    />
-    {homeQuestionError&&<p className="ir-exact-student-dashboard__chisty-error" role="alert">{homeQuestionError}</p>}
-    {homeQuestionSubmitted&&state.chisti.status==='ready'&&latestChistiRecommendation&&<section className="ir-exact-student-dashboard__chisty-answer" aria-live="polite">
-     <span>پاسخ چیستی</span>
-     <p>{latestChistiRecommendation.answer}</p>
-     <footer>
-      {latestChistiRecommendation.contentIds?.[0]&&<button type="button" onClick={()=>onNavigate?.(`student/binayi/course/${latestChistiRecommendation.contentIds[0]}`)}>ویدیوی مرتبط</button>}
-      <button type="button" onClick={()=>onNavigate?.('student/classes/request/new')}>درخواست مدرس</button>
-      <button type="button" onClick={()=>onNavigate?.('student/chisti')}>ادامه گفت‌وگو</button>
-     </footer>
-    </section>}
-   </article>
+   <section className="ir-exact-student-dashboard__insights" aria-label="خلاصه فعالیت و دستیار هوشمند">
+    <article className="ir-exact-student-dashboard__chisty">
+     <span className="ir-exact-student-dashboard__chisty-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3Z"/><path d="m19 3 .7 2.3L22 6l-2.3.7L19 9l-.7-2.3L16 6l2.3-.7Z"/></svg>
+     </span>
+     <div className="ir-exact-student-dashboard__chisty-copy">
+      <h2>از چیستی بپرس</h2>
+      <p>سؤال درسی‌ات را بپرس تا فوراً راهنمایی شوی.</p>
+     </div>
+     <form className="ir-exact-student-dashboard__chisty-search" onSubmit={submitHomeQuestion} noValidate>
+      <button type="submit" className="is-send" aria-label="ارسال سؤال" disabled={state.ui.offline||state.chisti.status==='processing'||!homeQuestion.trim()}>
+       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+      </button>
+      <button type="button" className="is-folder" aria-label="افزودن فایل" aria-haspopup="dialog" onClick={()=>setHomeAttachmentPickerSignal(signal=>signal+1)}>
+       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h7l2-2h9v14H3Z"/></svg>
+      </button>
+      <button type="button" className="is-mic" aria-label="پرسش صوتی" onClick={()=>onNavigate?.('student/chisti?voice=1')}>
+       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <input type="text" value={homeQuestion} onChange={event=>{setHomeQuestion(event.target.value);if(homeQuestionError)setHomeQuestionError('')}} placeholder="مثلاً: معادله درجه دوم را چطور حل کنم؟" aria-label="سؤال از چیستی"/>
+     </form>
+     <IrancellSimpleFileUploader
+      label=""
+      hint=""
+      accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.txt"
+      maxSizeMb={15}
+      hideTrigger
+      openSignal={homeAttachmentPickerSignal}
+      onChange={setHomeAttachment}
+      onStatusChange={setHomeAttachmentStatus}
+     />
+     {homeQuestionError&&<p className="ir-exact-student-dashboard__chisty-error" role="alert">{homeQuestionError}</p>}
+     {homeQuestionSubmitted&&state.chisti.status==='ready'&&latestChistiRecommendation&&<section className="ir-exact-student-dashboard__chisty-answer" aria-live="polite">
+      <span>پاسخ چیستی</span>
+      <p>{latestChistiRecommendation.answer}</p>
+      <footer>
+       {latestChistiRecommendation.contentIds?.[0]&&<button type="button" onClick={()=>onNavigate?.(`student/binayi/course/${latestChistiRecommendation.contentIds[0]}`)}>ویدیوی مرتبط</button>}
+       <button type="button" onClick={()=>onNavigate?.('student/classes/request/new')}>درخواست مدرس</button>
+       <button type="button" onClick={()=>onNavigate?.('student/chisti')}>ادامه گفت‌وگو</button>
+      </footer>
+     </section>}
+    </article>
+
+    <article className="ir-exact-student-dashboard__weekly-summary">
+     <header>
+      <h2>دستاوردهای این هفته شما</h2>
+      <button type="button" aria-label="مشاهده همه دستاوردها" onClick={()=>onNavigate?.('student/achievements')}>
+       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0Z"/><path d="M8 6H4v2a4 4 0 0 0 4 4M16 6h4v2a4 4 0 0 1-4 4M12 13v4M8 21h8M9 17h6"/></svg>
+      </button>
+     </header>
+     <div>
+      <button type="button" onClick={()=>onNavigate?.('student/points')}>
+       <span className="is-progress" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="m13 2-8 11h6l-1 9 9-12h-6Z"/></svg>
+       </span>
+       <strong>{IrancellFormatPersianNumber(weeklyProgress)}٪</strong>
+       <small>پیشرفت هفتگی</small>
+      </button>
+      <button type="button" onClick={()=>onNavigate?.('student/chisti')}>
+       <span className="is-question" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.4 2.4 0 1 1 3.8 1.95c-.95.65-1.6 1.08-1.6 2.05M12 17h.01"/></svg>
+       </span>
+       <strong>{IrancellFormatPersianNumber(Object.keys(state.chisti.recommendationsByProblemId||{}).length)}</strong>
+       <small>پرسش حل‌شده</small>
+      </button>
+      <button type="button" onClick={()=>onNavigate?.('student/classes')}>
+       <span className="is-class" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg>
+       </span>
+       <strong>{IrancellFormatPersianNumber(classes.length)}</strong>
+       <small>کلاس فعال</small>
+      </button>
+     </div>
+    </article>
+   </section>
 
    <section className="ir-exact-student-dashboard__today" aria-labelledby="irancell-student-today-title">
     <div className="ir-exact-student-dashboard__section-heading">
