@@ -75,15 +75,7 @@ import {
   IrancellStudentOffersPage,
   IrancellStudentProfilePage,
   IrancellStudentRequestsPage,
-  IrancellStudentTeachersPage,
-  IrancellTeacherCalendarPage,
-  IrancellTeacherClassesPage,
-  IrancellTeacherEarningsPage,
-  IrancellTeacherHomePage,
-  IrancellTeacherOffersPage,
-  IrancellTeacherProfilePage,
-  IrancellTeacherQualityPage,
-  IrancellTeacherRequestsPage
+  IrancellStudentTeachersPage
 } from 'irancell-lms/Page';
 
 export {

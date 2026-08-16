@@ -762,17 +762,18 @@ export function IrancellAppUseCompactNavigation(){
 
 export function IrancellAppPersistentDock({role,currentRoute,onNavigate,compact=false,onExpandedChange}){
  const{state,dispatch}=useIrancellStore();
- const[desktopExpanded,setDesktopExpanded]=React.useState(false);
+ const[desktopExpanded,setDesktopExpanded]=React.useState(function IrancellAppInitialDesktopSidebarExpansion(){
+  if(typeof window==='undefined')return false;
+  try{return window.localStorage.getItem('irancell-lms-sidebar-expanded')==='true';}catch(error){return false;}
+ });
 
  React.useEffect(function IrancellAppSyncNavigationExpansion(){
-  if(!compact)return;
-  setDesktopExpanded(false);
-  onExpandedChange?.(false);
- },[compact,onExpandedChange]);
+  onExpandedChange?.(!compact&&desktopExpanded);
+ },[compact,desktopExpanded,onExpandedChange]);
 
  const normalizedRoute=String(currentRoute||'').replace(/^\/+|\/+$/g,'');
  const baseItems=IRANCELL_APP_PERSISTENT_DOCKS[role]||[];
- const items=['parent','teacher'].includes(role)?[...baseItems].reverse():baseItems;
+ const items=role==='parent'?[...baseItems].reverse():baseItems;
  const unreadCount=Math.max(0,Number(state.notifications.unreadCount)||0);
  const dockAvatarUser=state.identity.usersById[state.session.currentUserId]||null;
  const sessionRoles=Array.isArray(state.session.availableRoles)?state.session.availableRoles:[];
@@ -783,7 +784,7 @@ export function IrancellAppPersistentDock({role,currentRoute,onNavigate,compact=
  const dockAvatarHasOverride=Boolean(dockAvatarOverride);
  const dockAvatar=role==='student'?(dockAvatarHasOverride?dockAvatarOverride:IRANCELL_PAGE_STUDENT_HOME_AVATAR):(dockAvatarHasOverride?dockAvatarOverride:null);
  const dockAvatarInitial=String(dockAvatarUser?.name||'خ').trim().charAt(0)||'خ';
- const roleTitles={student:'دانش‌آموز',parent:'خانواده',teacher:'مدرس',academy:'آموزشگاه','content-provider':'تولیدکننده محتوا',admin:'مدیریت سامانه'};
+ const roleTitles={student:'دانش‌آموز',parent:'خانواده',academy:'آموزشگاه','content-provider':'تولیدکننده محتوا',admin:'مدیریت سامانه'};
  const profileItem=baseItems.find(item=>item.icon==='user'||String(item.route||'').includes('profile'))||null;
  const profileRoute=profileItem?.route||(role==='admin'?'admin/settings':IRANCELL_ROLE_HOME_ROUTES[role]||'student/home');
  const profileSubtitle=role==='student'?(dockAvatarUser?.grade||'دانش‌آموز'):roleTitles[role]||'حساب کاربری';
@@ -849,16 +850,22 @@ export function IrancellAppPersistentDock({role,currentRoute,onNavigate,compact=
 
  function updateDesktopExpanded(nextExpanded){
   if(!isDesktop)return;
-  setDesktopExpanded(nextExpanded);
-  onExpandedChange?.(nextExpanded);
+  const expanded=Boolean(nextExpanded);
+  setDesktopExpanded(expanded);
+  if(typeof window!=='undefined')try{window.localStorage.setItem('irancell-lms-sidebar-expanded',expanded?'true':'false');}catch(error){}
  }
 
- return <nav data-ir-navigation-inline="v14" data-ir-navigation-mounted="true" data-ir-navigation-route={normalizedRoute} style={navigationStyle} dir="rtl" aria-label="ناوبری اصلی" onMouseEnter={()=>updateDesktopExpanded(true)} onMouseLeave={event=>{if(!event.currentTarget.contains(event.currentTarget.ownerDocument?.activeElement))updateDesktopExpanded(false)}} onFocus={()=>updateDesktopExpanded(true)} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))updateDesktopExpanded(false)}} onKeyDown={event=>{if(event.key==='Escape'){updateDesktopExpanded(false);event.currentTarget.blur()}}}>
+ return <nav data-ir-navigation-inline="v15-toggle" data-ir-navigation-mounted="true" data-ir-navigation-route={normalizedRoute} style={navigationStyle} dir="rtl" aria-label="ناوبری اصلی" aria-expanded={isExpanded} onKeyDown={event=>{if(event.key==='Escape'&&isExpanded){updateDesktopExpanded(false);event.stopPropagation()}}}>
    {isDesktop&&<div data-ir-navigation-surface="desktop" style={{boxSizing:'border-box',display:'flex',width:'100%',height:'100%',minHeight:0,flexDirection:'column',alignItems:isExpanded?'stretch':'center',gap:5,overflow:'hidden',borderRadius:22}}>
     <header aria-label="پلتفرم آموزشی ایرانسل" style={{boxSizing:'border-box',display:'flex',width:isExpanded?'100%':54,minWidth:isExpanded?0:54,maxWidth:isExpanded?'none':54,minHeight:58,flex:'0 0 58px',alignItems:'center',justifyContent:isExpanded?'flex-start':'center',gap:isExpanded?10:0,margin:'0 0 7px',padding:'5px 0 11px',overflow:'hidden',borderBottom:isExpanded?'1px solid #eee7cc':'1px solid transparent'}}>
      <span aria-hidden="true" style={{boxSizing:'border-box',display:'grid',width:44,minWidth:44,height:31,placeItems:'center',flex:'0 0 44px',color:'#111',background:'#ffd100',border:'2px solid #111',borderRadius:'50%',fontFamily,fontSize:8,fontWeight:900,lineHeight:1,transform:'rotate(-2deg)'}}><b style={{display:'block',fontFamily,fontSize:8,fontWeight:900,lineHeight:'8px'}}>ایرانسل</b><small style={{display:'block',marginTop:-2,fontFamily,fontSize:6,fontWeight:900,lineHeight:'6px'}}>MTN</small></span>
      <span style={{boxSizing:'border-box',display:'flex',width:isExpanded?'auto':0,minWidth:0,maxWidth:isExpanded?190:0,flexDirection:'column',gap:2,overflow:'hidden',opacity:isExpanded?1:0,textAlign:'right',whiteSpace:'nowrap',transition:'opacity .15s ease .06s'}}><strong style={{color:'#202024',fontFamily,fontSize:12,fontWeight:900,lineHeight:1.5}}>پلتفرم آموزشی ایرانسل</strong><small style={{color:'#85858d',fontFamily,fontSize:9,lineHeight:1.5}}>{roleTitles[role]||'حساب کاربری'}</small></span>
     </header>
+
+    <button type="button" aria-label={isExpanded?'جمع کردن منوی کناری':'باز کردن منوی کناری'} aria-expanded={isExpanded} title={isExpanded?'جمع کردن منو':'باز کردن منو'} onClick={()=>updateDesktopExpanded(!isExpanded)} style={{...buttonReset,display:'grid',width:isExpanded?'100%':54,minWidth:isExpanded?0:54,maxWidth:isExpanded?'none':54,height:44,minHeight:44,maxHeight:44,flex:'0 0 44px',gridTemplateColumns:isExpanded?'24px minmax(0,1fr)':'24px 0',alignItems:'center',justifyContent:isExpanded?'stretch':'center',gap:isExpanded?11:0,margin:'0 0 7px',padding:isExpanded?'0 13px':0,overflow:'hidden',color:'#4f460f',background:'#fff8ce',border:'1px solid #ead35c',borderRadius:13,boxShadow:'none'}}>
+     <span aria-hidden="true" style={{display:'grid',width:24,height:24,placeItems:'center',fontFamily,fontSize:22,fontWeight:900,lineHeight:1}}>{isExpanded?'›':'‹'}</span>
+     <span style={{display:'block',width:isExpanded?'auto':0,minWidth:0,maxWidth:isExpanded?'none':0,overflow:'hidden',opacity:isExpanded?1:0,fontFamily,fontSize:10,fontWeight:900,textAlign:'right',whiteSpace:'nowrap'}}>{isExpanded?'جمع کردن منو':'باز کردن منو'}</span>
+    </button>
 
     <button type="button" aria-label="مشاهده پروفایل" aria-current={dockItemIsActive(profileItem||{route:profileRoute})?'page':undefined} onClick={()=>onNavigate?.(profileRoute)} style={{...buttonReset,display:'grid',width:isExpanded?'100%':54,minWidth:isExpanded?0:54,maxWidth:isExpanded?'none':54,height:isExpanded?66:54,minHeight:isExpanded?66:54,maxHeight:isExpanded?66:54,flex:isExpanded?'0 0 66px':'0 0 54px',gridTemplateColumns:isExpanded?'42px minmax(0,1fr)':'34px 0',alignItems:'center',justifyContent:isExpanded?'stretch':'center',gap:isExpanded?10:0,margin:'0 0 7px',padding:isExpanded?'9px 11px':0,overflow:'hidden',color:'#171719',background:dockItemIsActive(profileItem||{route:profileRoute})?'#fff9d7':'#fffdf2',border:'1px solid #ffd100',borderRadius:16,boxShadow:'0 8px 20px rgba(68,55,0,.07)'}}>
      {dockAvatarElement(34)}
@@ -918,7 +925,10 @@ export function IrancellAppRuntime(){
  const[location,setLocation]=React.useState(function IrancellInitialLocation(){return IrancellAppParseHashLocation(typeof window==='undefined'?'':window.location.hash);});
  const routePageRef=React.useRef(null);
  const compactNavigation=IrancellAppUseCompactNavigation();
- const[desktopNavigationExpanded,setDesktopNavigationExpanded]=React.useState(false);
+ const[desktopNavigationExpanded,setDesktopNavigationExpanded]=React.useState(function IrancellAppInitialDesktopNavigationReserve(){
+  if(typeof window==='undefined')return false;
+  try{return window.localStorage.getItem('irancell-lms-sidebar-expanded')==='true';}catch(error){return false;}
+ });
  React.useEffect(function IrancellAppResetDesktopNavigationExpansion(){if(compactNavigation)setDesktopNavigationExpanded(false);},[compactNavigation]);
  React.useEffect(function IrancellConfigureDocument(){
   if(typeof document==='undefined')return undefined;
