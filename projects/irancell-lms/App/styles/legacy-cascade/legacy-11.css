@@ -1,0 +1,2999 @@
+/* Ordered legacy cascade segment. Keep import order in App/styles.css. */
+@layer irancell-current{
+
+@media(min-width:1200px){
+
+ /* ---------------------------------------------------------------------
+    Canvas movement
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock{
+  --ir-desktop-rail-width:72px;
+  --ir-desktop-rail-edge:20px;
+  --ir-desktop-rail-gap:24px;
+  --ir-desktop-content-offset:116px;
+
+  position:relative!important;
+
+  display:block!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+
+  background:var(--ir-surface-soft)!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page{
+  box-sizing:border-box!important;
+
+  display:block!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+  height:auto!important;
+
+  margin:0!important;
+
+  padding-top:0!important;
+  padding-right:var(--ir-desktop-content-offset)!important;
+  padding-bottom:0!important;
+  padding-left:0!important;
+
+  overflow:visible!important;
+
+  background:transparent!important;
+
+  transition:padding-right .24s cubic-bezier(.2,.8,.2,1)!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface{
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+
+  transition:
+   width .24s cubic-bezier(.2,.8,.2,1),
+   max-width .24s cubic-bezier(.2,.8,.2,1)!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface.is-standard{
+  width:min(1120px,calc(100% - 48px))!important;
+  max-width:1120px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+
+  padding-top:32px!important;
+  padding-right:0!important;
+  padding-bottom:48px!important;
+  padding-left:0!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface.is-full-bleed{
+  width:100%!important;
+  max-width:none!important;
+
+  margin:0!important;
+ }
+
+ /* Dashboard yellow canvas continues behind the translucent rail. */
+
+ html body:has(.ir-exact-student-dashboard) #root,
+ html body:has(.ir-exact-student-dashboard) #root .ir-route-layer-host,
+ html body:has(.ir-exact-student-dashboard) #root .ir-route-layer-host__page,
+ html body:has(.ir-exact-student-dashboard) #root .ir-screen-surface,
+ html body:has(.ir-exact-student-dashboard) #root .ir-exact-student-dashboard{
+  background:#fffae0!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Dashboard composition now uses the available route width.
+    There are no hard 112px margins anymore; movement is controlled by
+    route-layer padding, which animates with the navigation panel.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-exact-student-dashboard{
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+
+  margin:0!important;
+  padding:20px 28px 64px!important;
+
+  background:#fffae0!important;
+
+  transition:padding .24s cubic-bezier(.2,.8,.2,1)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__header{
+  box-sizing:border-box!important;
+
+  width:min(1120px,100%)!important;
+  min-width:0!important;
+  max-width:1120px!important;
+
+  min-height:76px!important;
+
+  margin:0 auto 24px!important;
+
+  padding:14px 18px!important;
+
+  background:rgba(255,255,255,.88)!important;
+
+  border:1px solid rgba(229,225,199,.88)!important;
+  border-radius:18px!important;
+
+  box-shadow:0 8px 28px rgba(75,62,0,.045)!important;
+
+  backdrop-filter:blur(12px)!important;
+  -webkit-backdrop-filter:blur(12px)!important;
+
+  transition:
+   width .24s cubic-bezier(.2,.8,.2,1),
+   margin .24s cubic-bezier(.2,.8,.2,1)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__body{
+  box-sizing:border-box!important;
+
+  display:grid!important;
+
+  grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr)!important;
+  grid-template-areas:
+   "welcome chisti"
+   "today continue"!important;
+
+  align-items:start!important;
+
+  gap:20px!important;
+
+  width:min(1120px,100%)!important;
+  min-width:0!important;
+  max-width:1120px!important;
+
+  margin:0 auto!important;
+
+  padding:0!important;
+
+  transition:
+   width .24s cubic-bezier(.2,.8,.2,1),
+   margin .24s cubic-bezier(.2,.8,.2,1)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome,
+ html body #root .ir-exact-student-dashboard__chisty,
+ html body #root .ir-exact-student-dashboard__today,
+ html body #root .ir-exact-student-dashboard__continue-section{
+  min-width:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome,
+ html body #root .ir-exact-student-dashboard__chisty{
+  min-height:260px!important;
+
+  border:1px solid rgba(226,214,151,.82)!important;
+  border-radius:20px!important;
+
+  box-shadow:0 10px 28px rgba(77,62,0,.045)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__today,
+ html body #root .ir-exact-student-dashboard__continue-section{
+  padding:18px!important;
+
+  background:rgba(255,255,255,.58)!important;
+
+  border:1px solid rgba(226,214,151,.68)!important;
+  border-radius:18px!important;
+
+  box-shadow:0 8px 24px rgba(77,62,0,.035)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__section-heading{
+  margin-bottom:12px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button,
+ html body #root .ir-exact-student-dashboard__continue-list>button{
+  background:rgba(255,255,255,.92)!important;
+
+  border:1px solid rgba(229,229,234,.88)!important;
+  border-radius:14px!important;
+
+  box-shadow:0 5px 18px rgba(17,17,17,.035)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button:hover,
+ html body #root .ir-exact-student-dashboard__continue-list>button:hover{
+  border-color:rgba(255,209,0,.78)!important;
+
+  box-shadow:0 8px 22px rgba(112,88,0,.07)!important;
+
+  transform:translateY(-1px)!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    All other production desktop pages move with the rail as well.
+    Previous fixed 112px margins are neutralized here.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock :is(
+  .ir-student-home-svg,
+  .ir-student-profile-main-page,
+  .ir-student-profile-edit-page,
+  .ir-student-subpage,
+  .ir-classes-main,
+  .ir-new-class-request,
+  .ir-offers-marketplace,
+  .ir-provider-profile,
+  .ir-course-detail,
+  .ir-student-notifications-page,
+  .ir-student-support-page,
+  .ir-support-create-page,
+  .ir-support-request-detail,
+  .ir-support-request-success,
+  .ir-support-satisfaction-page,
+  .ir-post-rating-page,
+  .ir-dialogi-handoff,
+  .ir-booking-flow,
+  .ir-ui-page-scaffold
+ ){
+  box-sizing:border-box!important;
+
+  width:min(1120px,calc(100% - 48px))!important;
+  min-width:0!important;
+  max-width:1120px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+ }
+
+ /* Wider screens retain the full 1120 reference content even while the
+    320px panel is expanded. */
+
+ @media(min-width:1500px){
+
+  html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page{
+   padding-left:24px!important;
+  }
+
+  html body #root .ir-exact-student-dashboard{
+   padding-right:32px!important;
+   padding-left:32px!important;
+  }
+
+ }
+
+}
+
+/* Intermediate desktop/laptop width: keep the same moving interaction,
+   but allow the dashboard's second column to become slightly narrower. */
+
+@media(min-width:1200px) and (max-width:1399px){
+
+ html body #root .ir-exact-student-dashboard__body{
+  grid-template-columns:minmax(0,1fr) minmax(300px,.82fr)!important;
+
+  gap:16px!important;
+ }
+
+}
+
+/* ========================================================================
+   HOME-SCREEN / INSTALLED APP FULL-PAGE CONTRACT
+   ======================================================================== */
+
+html.ir-installed-app,
+html[data-ir-display-mode="standalone"],
+html[data-ir-display-mode="fullscreen"]{
+ width:100%!important;
+ min-width:100%!important;
+ max-width:none!important;
+
+ min-height:100%!important;
+
+ margin:0!important;
+ padding:0!important;
+
+ background:var(--ir-surface-soft)!important;
+
+ overscroll-behavior:none!important;
+}
+
+html.ir-installed-app body,
+html[data-ir-display-mode="standalone"] body,
+html[data-ir-display-mode="fullscreen"] body{
+ box-sizing:border-box!important;
+
+ width:100%!important;
+ min-width:100%!important;
+ max-width:none!important;
+
+ min-height:100vh!important;
+ min-height:100svh!important;
+ min-height:100dvh!important;
+
+ margin:0!important;
+ padding:0!important;
+
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+
+ background:var(--ir-surface-soft)!important;
+
+ overscroll-behavior-y:none!important;
+
+ -webkit-text-size-adjust:100%!important;
+ -webkit-tap-highlight-color:transparent!important;
+}
+
+html.ir-installed-app body>#root,
+html[data-ir-display-mode="standalone"] body>#root,
+html[data-ir-display-mode="fullscreen"] body>#root{
+ box-sizing:border-box!important;
+
+ display:block!important;
+
+ width:100%!important;
+ min-width:100%!important;
+ max-width:none!important;
+
+ min-height:100vh!important;
+ min-height:100svh!important;
+ min-height:100dvh!important;
+
+ margin:0!important;
+ padding:0!important;
+
+ overflow:visible!important;
+
+ background:inherit!important;
+}
+
+html.ir-installed-app #root>.ir-route-layer-host,
+html[data-ir-display-mode="standalone"] #root>.ir-route-layer-host,
+html[data-ir-display-mode="fullscreen"] #root>.ir-route-layer-host{
+ width:100%!important;
+ min-width:100%!important;
+ max-width:none!important;
+
+ min-height:100vh!important;
+ min-height:100svh!important;
+ min-height:100dvh!important;
+
+ margin:0!important;
+
+ background:inherit!important;
+}
+
+html.ir-installed-app .ir-route-layer-host__page,
+html[data-ir-display-mode="standalone"] .ir-route-layer-host__page,
+html[data-ir-display-mode="fullscreen"] .ir-route-layer-host__page{
+ min-height:100vh!important;
+ min-height:100svh!important;
+ min-height:100dvh!important;
+}
+
+html.ir-installed-app :is(
+ .ir-screen-surface.is-full-bleed,
+ .ir-mobile-login-light,
+ .ir-mobile-onboarding,
+ .ir-exact-student-dashboard,
+ .ir-family-home,
+ .ir-family-children,
+ .ir-family-payments,
+ .ir-family-profile,
+ .ir-chisti-main-chat
+),
+html[data-ir-display-mode="standalone"] :is(
+ .ir-screen-surface.is-full-bleed,
+ .ir-mobile-login-light,
+ .ir-mobile-onboarding,
+ .ir-exact-student-dashboard,
+ .ir-family-home,
+ .ir-family-children,
+ .ir-family-payments,
+ .ir-family-profile,
+ .ir-chisti-main-chat
+),
+html[data-ir-display-mode="fullscreen"] :is(
+ .ir-screen-surface.is-full-bleed,
+ .ir-mobile-login-light,
+ .ir-mobile-onboarding,
+ .ir-exact-student-dashboard,
+ .ir-family-home,
+ .ir-family-children,
+ .ir-family-payments,
+ .ir-family-profile,
+ .ir-chisti-main-chat
+){
+ min-height:100vh!important;
+ min-height:100svh!important;
+ min-height:100dvh!important;
+}
+
+@media(display-mode:standalone),(display-mode:fullscreen){
+
+ html,
+ body,
+ #root{
+  width:100%!important;
+  max-width:none!important;
+
+  min-height:100vh!important;
+  min-height:100svh!important;
+  min-height:100dvh!important;
+
+  margin:0!important;
+  padding:0!important;
+ }
+
+ body{
+  overflow-x:hidden!important;
+
+  background:var(--ir-surface-soft)!important;
+ }
+
+ #root{
+  background:inherit!important;
+ }
+
+}
+
+@media(max-width:767px){
+
+ html.ir-installed-app body,
+ html[data-ir-display-mode="standalone"] body,
+ html[data-ir-display-mode="fullscreen"] body{
+  min-height:-webkit-fill-available!important;
+ }
+
+ html.ir-installed-app #root,
+ html[data-ir-display-mode="standalone"] #root,
+ html[data-ir-display-mode="fullscreen"] #root{
+  min-height:-webkit-fill-available!important;
+ }
+
+ html.ir-installed-app .ir-route-layer-host,
+ html[data-ir-display-mode="standalone"] .ir-route-layer-host,
+ html[data-ir-display-mode="fullscreen"] .ir-route-layer-host{
+  min-height:100dvh!important;
+
+  padding-top:env(safe-area-inset-top,0px)!important;
+
+  background:inherit!important;
+ }
+
+ html.ir-installed-app :is(.ir-mobile-login-light,.ir-mobile-onboarding),
+ html[data-ir-display-mode="standalone"] :is(.ir-mobile-login-light,.ir-mobile-onboarding),
+ html[data-ir-display-mode="fullscreen"] :is(.ir-mobile-login-light,.ir-mobile-onboarding){
+  width:100%!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+  height:100dvh!important;
+
+  margin:0!important;
+
+  border-radius:0!important;
+ }
+
+}
+
+/* ========================================================================
+   STUDENT DASHBOARD — FINAL MACOS/SVG COMPOSITION
+   Reference: student-dashboard-macos.svg (1440x1200)
+   ======================================================================== */
+
+.ir-exact-student-dashboard__header{
+ grid-template-columns:40px minmax(0,1fr)!important;
+}
+
+.ir-exact-student-dashboard__greeting{
+ min-width:0!important;
+}
+
+.ir-exact-student-dashboard__greeting h1{
+ margin:0!important;
+
+ overflow:hidden!important;
+
+ color:#171719!important;
+
+ font-size:18px!important;
+ font-weight:900!important;
+ line-height:1.55!important;
+
+ text-align:right!important;
+ text-overflow:ellipsis!important;
+ white-space:normal!important;
+}
+
+.ir-exact-student-dashboard__greeting span{
+ display:block!important;
+
+ margin-top:4px!important;
+
+ overflow:hidden!important;
+
+ color:#858792!important;
+
+ font-size:10px!important;
+ font-weight:500!important;
+ line-height:1.6!important;
+
+ text-align:right!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-exact-student-dashboard__progress-card-copy{
+ min-width:0!important;
+}
+
+.ir-exact-student-dashboard__progress-card-copy>p{
+ margin:10px 0 0!important;
+
+ color:#8b8d96!important;
+
+ font-size:10px!important;
+ font-weight:400!important;
+ line-height:1.8!important;
+}
+
+.ir-exact-student-dashboard__insights{
+ display:grid!important;
+ grid-template-columns:1fr!important;
+
+ gap:14px!important;
+
+ width:100%!important;
+ min-width:0!important;
+
+ margin:0!important;
+ padding:0!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary{
+ box-sizing:border-box!important;
+
+ width:100%!important;
+ min-width:0!important;
+
+ margin:0!important;
+ padding:18px!important;
+
+ color:#171719!important;
+ background:#fff!important;
+
+ border:1px solid #e5e5ea!important;
+ border-radius:22px!important;
+
+ box-shadow:0 8px 24px rgba(17,17,17,.035)!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>header{
+ display:flex!important;
+
+ align-items:center!important;
+ justify-content:space-between!important;
+
+ gap:12px!important;
+
+ margin:0 0 16px!important;
+ padding:0!important;
+
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>header h2{
+ margin:0!important;
+
+ color:#171719!important;
+
+ font-size:15px!important;
+ font-weight:900!important;
+ line-height:1.6!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>header>button{
+ display:grid!important;
+
+ width:34px!important;
+ height:34px!important;
+
+ place-items:center!important;
+
+ padding:0!important;
+
+ color:#ff9500!important;
+ background:transparent!important;
+
+ border:0!important;
+ border-radius:10px!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>header>button svg{
+ width:20px!important;
+ height:20px!important;
+
+ fill:none!important;
+ stroke:currentColor!important;
+
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+
+ gap:8px!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button{
+ display:grid!important;
+ grid-template-rows:54px auto auto!important;
+
+ min-width:0!important;
+ min-height:104px!important;
+
+ place-items:center!important;
+
+ padding:5px!important;
+
+ color:#171719!important;
+ background:transparent!important;
+
+ border:0!important;
+ border-radius:14px!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button:hover,
+.ir-exact-student-dashboard__weekly-summary>div>button:focus-visible{
+ background:#fffbeb!important;
+
+ outline:0!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button>span{
+ display:grid!important;
+
+ width:56px!important;
+ height:56px!important;
+
+ place-items:center!important;
+
+ color:#171719!important;
+ background:#fffae0!important;
+
+ border:1px solid #e6e2cd!important;
+ border-radius:50%!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button>span.is-progress{
+ color:#34c759!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button>span.is-question{
+ color:#7b61ff!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button>span.is-class{
+ color:#ff9500!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button svg{
+ width:23px!important;
+ height:23px!important;
+
+ fill:none!important;
+ stroke:currentColor!important;
+
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button strong{
+ display:block!important;
+
+ margin-top:6px!important;
+
+ color:#171719!important;
+
+ font-size:13px!important;
+ font-weight:900!important;
+ line-height:1.4!important;
+}
+
+.ir-exact-student-dashboard__weekly-summary>div>button small{
+ display:block!important;
+
+ margin-top:3px!important;
+
+ color:#6f7280!important;
+
+ font-size:9px!important;
+ font-weight:700!important;
+ line-height:1.5!important;
+
+ text-align:center!important;
+}
+
+@media(min-width:1200px){
+
+ /* Open greeting, not a header card. */
+ html body #root .ir-exact-student-dashboard__header{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+
+  align-items:center!important;
+
+  gap:20px!important;
+
+  width:min(1024px,100%)!important;
+  min-width:0!important;
+  max-width:1024px!important;
+
+  min-height:96px!important;
+
+  margin:0 auto 12px!important;
+  padding:22px 0 14px!important;
+
+  direction:ltr!important;
+
+  background:transparent!important;
+
+  border:0!important;
+  border-radius:0!important;
+
+  box-shadow:none!important;
+
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__greeting{
+  direction:rtl!important;
+  text-align:right!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__greeting h1{
+  color:#171719!important;
+
+  font-size:27px!important;
+  font-weight:900!important;
+  line-height:1.45!important;
+
+  letter-spacing:-.025em!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__greeting span{
+  margin-top:6px!important;
+
+  color:#80828c!important;
+
+  font-size:12px!important;
+  line-height:1.6!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__notifications{
+  display:grid!important;
+
+  width:44px!important;
+  height:44px!important;
+
+  place-items:center!important;
+
+  color:#171719!important;
+  background:#fff!important;
+
+  border:1px solid #e6e2cd!important;
+  border-radius:50%!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__notifications:hover,
+ html body #root .ir-exact-student-dashboard__notifications:focus-visible{
+  border-color:#ffd100!important;
+
+  outline:0!important;
+ }
+
+ /* Main dashboard follows the SVG vertically.
+    Progress, today, and continue-learning always span the content region. */
+ html body #root .ir-exact-student-dashboard__body{
+  box-sizing:border-box!important;
+
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-areas:
+   "progress"
+   "insights"
+   "today"
+   "continue"!important;
+
+  align-items:start!important;
+
+  gap:28px!important;
+
+  width:min(1024px,100%)!important;
+  min-width:0!important;
+  max-width:1024px!important;
+
+  margin:0 auto!important;
+  padding:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__offline{
+  grid-column:1!important;
+
+  width:100%!important;
+ }
+
+ /* Full-width weekly progress card. */
+ html body #root .ir-exact-student-dashboard__welcome,
+ html body #root .ir-exact-student-dashboard__progress-card{
+  grid-area:progress!important;
+
+  display:flex!important;
+
+  flex-direction:row!important;
+
+  align-items:center!important;
+  justify-content:space-between!important;
+
+  gap:24px!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:128px!important;
+
+  margin:0!important;
+  padding:24px!important;
+
+  direction:rtl!important;
+
+  color:#171719!important;
+  background:#fff!important;
+
+  border:0!important;
+  border-radius:28px!important;
+
+  box-shadow:0 8px 24px rgba(17,17,17,.02)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress-card-copy{
+  flex:1 1 auto!important;
+
+  width:auto!important;
+  min-width:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress-label{
+  margin:0 0 13px!important;
+
+  color:#171719!important;
+
+  font-size:13px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress-label strong{
+  font-weight:900!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress-label span{
+  min-width:54px!important;
+
+  font-size:16px!important;
+  font-weight:900!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress{
+  width:100%!important;
+  height:10px!important;
+
+  background:#e5e7eb!important;
+
+  border-radius:999px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress-card-copy>p{
+  margin-top:10px!important;
+
+  color:#8c8e98!important;
+
+  font-size:11px!important;
+  line-height:1.75!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer{
+  display:flex!important;
+
+  flex:0 0 180px!important;
+  flex-direction:column!important;
+
+  align-items:stretch!important;
+  justify-content:center!important;
+
+  gap:8px!important;
+
+  width:180px!important;
+
+  margin:0!important;
+
+  direction:rtl!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer .is-continue{
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:48px!important;
+
+  color:#171719!important;
+  background:#ffd100!important;
+
+  border-radius:16px!important;
+
+  font-size:12px!important;
+  font-weight:900!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer .is-plan{
+  min-height:28px!important;
+
+  gap:5px!important;
+
+  padding:0!important;
+
+  color:#7054f5!important;
+  background:transparent!important;
+
+  font-size:10px!important;
+ }
+
+ /* Chisti + weekly summary are the only two-column dashboard row. */
+ html body #root .ir-exact-student-dashboard__insights{
+  grid-area:insights!important;
+
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:minmax(218px,auto)!important;
+
+  align-items:stretch!important;
+  justify-items:stretch!important;
+
+  gap:20px!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  direction:rtl!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty{
+  grid-area:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 48px!important;
+  grid-template-rows:auto minmax(54px,auto) auto!important;
+
+  align-items:start!important;
+  align-self:stretch!important;
+
+  gap:12px 14px!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  height:100%!important;
+  min-height:218px!important;
+
+  margin:0!important;
+  padding:24px!important;
+
+  direction:rtl!important;
+
+  color:#fff!important;
+  background:
+   radial-gradient(circle at 12% 10%,rgba(255,209,0,.14),transparent 34%),
+   linear-gradient(135deg,#201d0c 0%,#342c0d 100%)!important;
+
+  border:0!important;
+  border-radius:24px!important;
+
+  box-shadow:0 10px 24px rgba(44,39,13,.1)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-icon{
+  grid-column:2!important;
+  grid-row:1!important;
+
+  align-self:start!important;
+  justify-self:end!important;
+
+  width:44px!important;
+  height:44px!important;
+
+  color:#ffd100!important;
+  background:rgba(255,209,0,.13)!important;
+
+  border-radius:14px!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-copy{
+  grid-column:1!important;
+  grid-row:1!important;
+
+  align-self:center!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  padding:1px 0 0!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty h2{
+  margin:0 0 4px!important;
+
+  color:#fff!important;
+
+  font-size:15px!important;
+  line-height:1.55!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty p{
+  color:#aead9f!important;
+
+  font-size:10px!important;
+  line-height:1.75!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search{
+  grid-column:1/-1!important;
+  grid-row:2!important;
+
+  display:grid!important;
+  grid-template-columns:36px 30px 30px minmax(0,1fr)!important;
+
+  align-items:center!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:56px!important;
+
+  margin:4px 0 0!important;
+  padding:6px 10px!important;
+
+  background:#1a1a1a!important;
+
+  border:1px solid rgba(255,255,255,.45)!important;
+  border-radius:28px!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search:focus-within{
+  border-color:#ffd100!important;
+  box-shadow:0 0 0 2px rgba(255,209,0,.1)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search>button{
+  color:#a8a9ae!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search>button.is-send{
+  width:32px!important;
+  height:32px!important;
+
+  color:#fff!important;
+  background:transparent!important;
+
+  border:1px solid #ffd100!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search input{
+  height:38px!important;
+
+  padding:0 9px!important;
+
+  color:#fff!important;
+
+  font-size:10px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary{
+  grid-area:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  display:flex!important;
+  flex-direction:column!important;
+
+  align-self:stretch!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  height:100%!important;
+  min-height:218px!important;
+
+  margin:0!important;
+  padding:22px 24px!important;
+
+  background:#fff!important;
+
+  border:1px solid #e5e5ea!important;
+  border-radius:24px!important;
+
+  box-shadow:0 8px 24px rgba(17,17,17,.025)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary>header{
+  margin-bottom:13px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary>header h2{
+  font-size:14px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary>div{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+
+  flex:1 1 auto!important;
+
+  align-items:center!important;
+
+  gap:14px!important;
+
+  width:100%!important;
+  min-width:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary>div>button{
+  display:grid!important;
+  grid-template-rows:58px auto auto!important;
+
+  align-content:center!important;
+  justify-items:center!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:124px!important;
+
+  padding:8px!important;
+
+  border-radius:16px!important;
+ }
+
+ /* Today's plan uses the entire dashboard width. */
+ html body #root .ir-exact-student-dashboard__today{
+  grid-area:today!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  background:transparent!important;
+
+  border:0!important;
+  border-radius:0!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__section-heading{
+  min-height:42px!important;
+
+  margin:0 0 12px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__section-heading h2{
+  font-size:19px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+
+  gap:12px!important;
+
+  width:100%!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button{
+  grid-template-columns:48px minmax(0,1fr) auto!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  min-height:78px!important;
+
+  padding:14px 16px!important;
+
+  background:#fff!important;
+
+  border:0!important;
+  border-radius:20px!important;
+
+  box-shadow:0 4px 16px rgba(17,17,17,.015)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button>span{
+  width:40px!important;
+  height:40px!important;
+
+  border-radius:12px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule strong{
+  font-size:13px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule small{
+  font-size:10px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule em{
+  min-width:70px!important;
+
+  padding:8px 10px!important;
+
+  text-align:center!important;
+
+  border-radius:10px!important;
+
+  font-size:9px!important;
+ }
+
+ /* Continue-learning also owns the entire content width.
+    Its cards become the three-column row shown in the desktop reference. */
+ html body #root .ir-exact-student-dashboard__continue-section{
+  grid-area:continue!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  background:transparent!important;
+
+  border:0!important;
+  border-radius:0!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-columns:auto!important;
+
+  gap:18px!important;
+
+  width:100%!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+
+  scroll-snap-type:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:116px minmax(0,1fr)!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:208px!important;
+
+  padding:0!important;
+
+  overflow:hidden!important;
+
+  text-align:right!important;
+
+  background:#fff!important;
+
+  border:1px solid #e5e5ea!important;
+  border-radius:24px!important;
+
+  box-shadow:none!important;
+
+  scroll-snap-align:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-cover{
+  display:grid!important;
+
+  width:calc(100% - 32px)!important;
+  height:60px!important;
+
+  place-items:center!important;
+
+  align-self:center!important;
+
+  margin:16px!important;
+
+  color:#aaa!important;
+  background:#fffbeb!important;
+
+  border-radius:12px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button:nth-child(3n+2) .ir-exact-student-dashboard__continue-cover{
+  background:#ede8ff!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button:nth-child(3n+3) .ir-exact-student-dashboard__continue-cover{
+  background:#e0f7e5!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button>div{
+  display:flex!important;
+
+  min-width:0!important;
+
+  flex-direction:column!important;
+
+  padding:12px 16px 15px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button>div strong{
+  font-size:13px!important;
+  line-height:1.6!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button>div small{
+  margin-top:4px!important;
+
+  color:#83858d!important;
+
+  font-size:9px!important;
+  line-height:1.6!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-progress{
+  width:100%!important;
+  height:6px!important;
+
+  margin-top:auto!important;
+
+  overflow:hidden!important;
+
+  direction:ltr!important;
+
+  background:#e5e7eb!important;
+
+  border-radius:999px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-progress i{
+  display:block!important;
+
+  height:100%!important;
+
+  background:#ffd100!important;
+
+  border-radius:999px!important;
+ }
+
+}
+
+/* Desktop dashboard remains useful while the expandable island sidebar
+   reduces the available content area on smaller laptop widths. */
+@media(min-width:1200px) and (max-width:1399px){
+
+ html body #root .ir-exact-student-dashboard__body,
+ html body #root .ir-exact-student-dashboard__header{
+  width:min(1024px,100%)!important;
+ }
+
+}
+
+/* Mobile keeps one continuous dashboard column after the hierarchy change. */
+@media(max-width:767px){
+
+ .ir-exact-student-dashboard__header{
+  grid-template-columns:40px minmax(0,1fr)!important;
+ }
+
+ .ir-exact-student-dashboard__greeting h1{
+  font-size:17px!important;
+ }
+
+ .ir-exact-student-dashboard__greeting span{
+  font-size:9px!important;
+ }
+
+ .ir-exact-student-dashboard__welcome,
+ .ir-exact-student-dashboard__progress-card{
+  min-height:0!important;
+
+  margin-bottom:16px!important;
+ }
+
+ .ir-exact-student-dashboard__progress-card-copy>p{
+  font-size:9px!important;
+ }
+
+ .ir-exact-student-dashboard__insights{
+  grid-template-columns:1fr!important;
+
+  margin-bottom:18px!important;
+ }
+
+ .ir-exact-student-dashboard__weekly-summary{
+  padding:16px!important;
+ }
+
+ .ir-exact-student-dashboard__weekly-summary>div{
+  gap:4px!important;
+ }
+
+ .ir-exact-student-dashboard__weekly-summary>div>button{
+  min-height:94px!important;
+
+  padding:3px!important;
+ }
+
+ .ir-exact-student-dashboard__weekly-summary>div>button>span{
+  width:46px!important;
+  height:46px!important;
+ }
+
+ .ir-exact-student-dashboard__today,
+ .ir-exact-student-dashboard__continue-section{
+  width:100%!important;
+ }
+
+}
+
+/* ========================================================================
+   CHISTI AI SEARCH — FINAL RESPONSIVE REFERENCE CONTRACT
+   Reference: chisty-ai-search.pdf, 402x844 mobile composition.
+   ======================================================================== */
+
+.ir-chisti-search-page,
+.ir-chisti-search-page *{
+ box-sizing:border-box!important;
+}
+
+.ir-chisti-search-page{
+ display:block!important;
+
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+
+ min-height:100dvh!important;
+ height:auto!important;
+ max-height:none!important;
+
+ margin:0!important;
+
+ overflow-x:hidden!important;
+ overflow-y:visible!important;
+
+ direction:rtl!important;
+
+ color:#18181b!important;
+ background:#fffae0!important;
+
+ scrollbar-width:none!important;
+}
+
+.ir-chisti-search-page::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-chisti-search-page__content{
+ box-sizing:border-box!important;
+
+ width:100%!important;
+ min-width:0!important;
+
+ margin:0 auto!important;
+
+ direction:rtl!important;
+}
+
+.ir-chisti-search-page__brand{
+ position:relative!important;
+
+ display:flex!important;
+
+ align-items:center!important;
+ justify-content:center!important;
+
+ width:100%!important;
+ max-width:none!important;
+
+ margin:0!important;
+ padding:0!important;
+
+ color:#18181b!important;
+ background:transparent!important;
+
+ border:0!important;
+ border-radius:0!important;
+
+ box-shadow:none!important;
+
+ backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+}
+
+.ir-chisti-search-page__brand-title{
+ display:flex!important;
+
+ align-items:center!important;
+ justify-content:center!important;
+
+ gap:10px!important;
+
+ min-width:0!important;
+
+ margin:0!important;
+}
+
+.ir-chisti-search-page__brand-title>span{
+ display:grid!important;
+
+ flex:0 0 auto!important;
+
+ width:40px!important;
+ min-width:40px!important;
+ max-width:40px!important;
+
+ height:40px!important;
+ min-height:40px!important;
+ max-height:40px!important;
+
+ place-items:center!important;
+
+ color:#18181b!important;
+ background:#ffd100!important;
+
+ border:0!important;
+ border-radius:50%!important;
+
+ box-shadow:none!important;
+}
+
+.ir-chisti-search-page__brand svg{
+ width:23px!important;
+ height:23px!important;
+
+ fill:none!important;
+ stroke:currentColor!important;
+
+ stroke-width:1.9!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-chisti-search-page__brand strong{
+ margin:0!important;
+
+ color:#18181b!important;
+
+ font-size:20px!important;
+ font-weight:900!important;
+ line-height:1.45!important;
+
+ white-space:nowrap!important;
+}
+
+.ir-chisti-search-page__brand-title{
+ margin-right:auto!important;
+ margin-left:auto!important;
+}
+
+.ir-chisti-search-page__hero{
+ width:100%!important;
+
+ margin:0!important;
+ padding:0!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__hero h1{
+ margin:0!important;
+ padding:0!important;
+
+ color:#18181b!important;
+
+ font-size:42px!important;
+ font-weight:900!important;
+ line-height:1.35!important;
+
+ letter-spacing:-.04em!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__hero>p{
+ width:100%!important;
+ max-width:none!important;
+
+ margin:0!important;
+
+ color:#96969c!important;
+
+ font-size:14px!important;
+ font-weight:600!important;
+ line-height:1.8!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__hero-kicker,
+.ir-chisti-search-page__hero-meta{
+ display:none!important;
+}
+
+.ir-chisti-search-page__composer{
+ display:grid!important;
+ grid-template-columns:44px minmax(0,1fr) 38px 52px!important;
+
+ align-items:center!important;
+
+ gap:2px!important;
+
+ width:100%!important;
+ min-width:0!important;
+
+ min-height:58px!important;
+
+ margin:0!important;
+ padding:3px 5px 3px 8px!important;
+
+ direction:ltr!important;
+
+ background:#fff!important;
+
+ border:2px solid #ffd100!important;
+ border-radius:999px!important;
+
+ box-shadow:none!important;
+
+ transform:none!important;
+ transition:
+  border-color .16s ease,
+  box-shadow .16s ease!important;
+}
+
+.ir-chisti-search-page__composer:hover{
+ border-color:#f3c500!important;
+}
+
+.ir-chisti-search-page__composer:focus-within{
+ border-color:#f3c500!important;
+
+ box-shadow:0 0 0 3px rgba(255,209,0,.1)!important;
+
+ transform:none!important;
+}
+
+.ir-chisti-search-page__composer.has-error{
+ border-color:#ff3b30!important;
+
+ box-shadow:0 0 0 3px rgba(255,59,48,.08)!important;
+}
+
+.ir-chisti-search-page__composer input{
+ display:block!important;
+
+ width:100%!important;
+ min-width:0!important;
+
+ height:48px!important;
+
+ margin:0!important;
+ padding:0 10px!important;
+
+ direction:rtl!important;
+ unicode-bidi:plaintext!important;
+
+ color:#202024!important;
+ background:transparent!important;
+
+ border:0!important;
+ outline:0!important;
+ box-shadow:none!important;
+
+ font-size:14px!important;
+ font-weight:600!important;
+ line-height:1.7!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__composer input::placeholder{
+ color:#9a9aa0!important;
+
+ opacity:1!important;
+
+ font-weight:600!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__submit,
+.ir-chisti-search-page__attachment,
+.ir-chisti-search-page__voice{
+ display:grid!important;
+
+ flex:0 0 auto!important;
+
+ place-items:center!important;
+
+ margin:0!important;
+ padding:0!important;
+
+ border:0!important;
+
+ cursor:pointer!important;
+}
+
+.ir-chisti-search-page__submit{
+ grid-column:1!important;
+
+ width:42px!important;
+ height:42px!important;
+
+ color:#9a9ba0!important;
+ background:transparent!important;
+
+ border-radius:50%!important;
+
+ box-shadow:none!important;
+}
+
+.ir-chisti-search-page__submit:hover:not(:disabled),
+.ir-chisti-search-page__submit:focus-visible:not(:disabled){
+ color:#5d5e64!important;
+ background:#f7f7f8!important;
+
+ outline:0!important;
+}
+
+.ir-chisti-search-page__submit:disabled{
+ opacity:.45!important;
+
+ cursor:not-allowed!important;
+}
+
+.ir-chisti-search-page__attachment{
+ grid-column:3!important;
+
+ width:38px!important;
+ height:42px!important;
+
+ color:#909197!important;
+ background:transparent!important;
+
+ border-radius:50%!important;
+}
+
+.ir-chisti-search-page__attachment:hover,
+.ir-chisti-search-page__attachment:focus-visible{
+ color:#5f6066!important;
+ background:#f7f7f8!important;
+
+ outline:0!important;
+}
+
+.ir-chisti-search-page__voice{
+ grid-column:4!important;
+
+ width:50px!important;
+ height:50px!important;
+
+ color:#18181b!important;
+ background:#ffd100!important;
+
+ border-radius:50%!important;
+
+ box-shadow:none!important;
+}
+
+.ir-chisti-search-page__voice:hover,
+.ir-chisti-search-page__voice:focus-visible{
+ background:#f4c800!important;
+
+ outline:0!important;
+}
+
+.ir-chisti-search-page__submit svg{
+ width:24px!important;
+ height:24px!important;
+}
+
+.ir-chisti-search-page__attachment svg{
+ width:23px!important;
+ height:23px!important;
+}
+
+.ir-chisti-search-page__voice svg{
+ width:22px!important;
+ height:22px!important;
+}
+
+.ir-chisti-search-page__submit svg,
+.ir-chisti-search-page__attachment svg,
+.ir-chisti-search-page__voice svg{
+ fill:none!important;
+ stroke:currentColor!important;
+
+ stroke-width:1.9!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-chisti-search-page__spinner{
+ display:block!important;
+
+ width:21px!important;
+ height:21px!important;
+
+ border:2px solid #bfc0c5!important;
+ border-top-color:#ffd100!important;
+ border-radius:50%!important;
+
+ animation:irChistiSearchSpin .7s linear infinite!important;
+}
+
+.ir-chisti-search-page__message{
+ width:100%!important;
+
+ margin:7px 4px 0!important;
+
+ color:#c74743!important;
+
+ font-size:10px!important;
+ font-weight:700!important;
+ line-height:1.7!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__recent{
+ width:100%!important;
+
+ margin:0!important;
+ padding:0!important;
+}
+
+.ir-chisti-search-page__recent h2,
+.ir-chisti-search-page__suggestions h2{
+ margin:0!important;
+ padding:0!important;
+
+ color:#1a1a1d!important;
+
+ font-size:19px!important;
+ font-weight:900!important;
+ line-height:1.6!important;
+
+ letter-spacing:-.015em!important;
+
+ text-align:right!important;
+}
+
+.ir-chisti-search-page__recent>div{
+ display:flex!important;
+
+ width:100%!important;
+
+ flex-direction:column!important;
+
+ gap:10px!important;
+
+ margin:0!important;
+ padding:0!important;
+}
+
+.ir-chisti-search-page__recent>div>button{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) 28px!important;
+
+ align-items:center!important;
+
+ gap:10px!important;
+
+ width:100%!important;
+ min-width:0!important;
+
+ min-height:56px!important;
+
+ margin:0!important;
+ padding:10px 16px 10px 12px!important;
+
+ direction:rtl!important;
+
+ color:#222226!important;
+ background:#fff!important;
+
+ border:1px solid #dddde1!important;
+ border-radius:16px!important;
+
+ box-shadow:none!important;
+
+ text-align:right!important;
+
+ transition:
+  border-color .15s ease,
+  background-color .15s ease,
+  transform .15s ease!important;
+}
+
+.ir-chisti-search-page__recent>div>button:hover,
+.ir-chisti-search-page__recent>div>button:focus-visible{
+ background:#fffef8!important;
+
+ border-color:#d7c76e!important;
+
+ outline:0!important;
+
+ transform:translateY(-1px)!important;
+}
+
+.ir-chisti-search-page__recent>div>button>strong{
+ grid-column:1!important;
+
+ display:block!important;
+
+ min-width:0!important;
+
+ overflow:hidden!important;
+
+ color:#242428!important;
+
+ font-size:14px!important;
+ font-weight:900!important;
+ line-height:1.7!important;
+
+ text-align:right!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-chisti-search-page__recent-icon,
+.ir-chisti-search-page__recent-copy{
+ display:none!important;
+}
+
+.ir-chisti-search-page__recent-go{
+ grid-column:2!important;
+
+ display:grid!important;
+
+ width:28px!important;
+ height:28px!important;
+
+ place-items:center!important;
+ justify-self:end!important;
+
+ color:#97989d!important;
+ background:transparent!important;
+
+ border-radius:0!important;
+}
+
+.ir-chisti-search-page__recent-go svg{
+ width:21px!important;
+ height:21px!important;
+
+ fill:none!important;
+ stroke:currentColor!important;
+
+ stroke-width:2.2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-chisti-search-page__suggestions{
+ width:100%!important;
+
+ margin:0!important;
+ padding:0!important;
+}
+
+.ir-chisti-search-page__suggestions>div{
+ display:flex!important;
+
+ width:100%!important;
+
+ align-items:center!important;
+
+ gap:8px!important;
+
+ margin:0!important;
+ padding:0 0 4px!important;
+
+ overflow-x:auto!important;
+
+ direction:rtl!important;
+
+ scrollbar-width:none!important;
+ scroll-snap-type:x proximity!important;
+}
+
+.ir-chisti-search-page__suggestions>div::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-chisti-search-page__suggestions button{
+ display:inline-flex!important;
+
+ flex:0 0 auto!important;
+
+ min-height:42px!important;
+
+ align-items:center!important;
+ justify-content:center!important;
+
+ gap:0!important;
+
+ margin:0!important;
+ padding:7px 17px!important;
+
+ color:#252529!important;
+ background:#fff!important;
+
+ border:1px solid #dedee2!important;
+ border-radius:999px!important;
+
+ box-shadow:none!important;
+
+ font-size:13px!important;
+ font-weight:900!important;
+ line-height:1.5!important;
+
+ white-space:nowrap!important;
+
+ scroll-snap-align:start!important;
+
+ transform:none!important;
+}
+
+.ir-chisti-search-page__suggestions button:hover,
+.ir-chisti-search-page__suggestions button:focus-visible{
+ border-color:#d6c66b!important;
+
+ outline:0!important;
+}
+
+.ir-chisti-search-page__suggestions button.is-active{
+ color:#18181b!important;
+ background:#ffd100!important;
+
+ border-color:#ffd100!important;
+
+ box-shadow:none!important;
+}
+
+.ir-chisti-search-page__suggestions button svg{
+ display:none!important;
+}
+
+.ir-chisti-attachment-state{
+ width:100%!important;
+}
+
+@media(max-width:767px){
+
+ .ir-chisti-search-page{
+  min-height:100dvh!important;
+
+  padding:
+   max(42px,env(safe-area-inset-top))
+   20px
+   calc(var(--ir-app-dock-space,68px) + 28px)!important;
+
+  background:#fffae0!important;
+ }
+
+ .ir-chisti-search-page__content{
+  width:100%!important;
+  max-width:402px!important;
+
+  margin:0 auto!important;
+ }
+
+ .ir-chisti-search-page__brand{
+  min-height:42px!important;
+
+  margin-bottom:39px!important;
+ }
+
+ .ir-chisti-search-page__brand-title>span{
+  width:38px!important;
+  min-width:38px!important;
+  max-width:38px!important;
+
+  height:38px!important;
+  min-height:38px!important;
+  max-height:38px!important;
+ }
+
+ .ir-chisti-search-page__brand svg{
+  width:22px!important;
+  height:22px!important;
+ }
+
+ .ir-chisti-search-page__brand strong{
+  font-size:19px!important;
+ }
+
+ .ir-chisti-search-page__hero{
+  margin-bottom:18px!important;
+ }
+
+ .ir-chisti-search-page__hero h1{
+  margin-bottom:12px!important;
+
+  font-size:39px!important;
+  line-height:1.35!important;
+ }
+
+ .ir-chisti-search-page__hero>p{
+  font-size:13px!important;
+  line-height:1.8!important;
+ }
+
+ .ir-chisti-search-page__composer{
+  min-height:58px!important;
+
+  margin-bottom:25px!important;
+ }
+
+ .ir-chisti-search-page__recent h2{
+  margin-bottom:12px!important;
+ }
+
+ .ir-chisti-search-page__recent>div{
+  gap:10px!important;
+ }
+
+ .ir-chisti-search-page__recent>div>button{
+  min-height:57px!important;
+
+  border-radius:16px!important;
+ }
+
+ .ir-chisti-search-page__suggestions{
+  margin-top:20px!important;
+ }
+
+ .ir-chisti-search-page__suggestions h2{
+  margin-bottom:10px!important;
+ }
+
+ .ir-chisti-search-page__suggestions>div{
+  width:calc(100% + 20px)!important;
+
+  margin-left:-20px!important;
+
+  padding-left:20px!important;
+ }
+
+}
+
+@media(max-width:380px){
+
+ .ir-chisti-search-page{
+  padding-right:16px!important;
+  padding-left:16px!important;
+ }
+
+ .ir-chisti-search-page__brand{
+  margin-bottom:30px!important;
+ }
+
+ .ir-chisti-search-page__brand strong{
+  font-size:17px!important;
+ }
+
+ .ir-chisti-search-page__hero h1{
+  font-size:34px!important;
+ }
+
+ .ir-chisti-search-page__hero>p{
+  font-size:12px!important;
+ }
+
+ .ir-chisti-search-page__composer{
+  grid-template-columns:40px minmax(0,1fr) 34px 46px!important;
+
+  min-height:54px!important;
+
+  padding-left:5px!important;
+ }
+
+ .ir-chisti-search-page__composer input{
+  height:44px!important;
+
+  padding-right:6px!important;
+  padding-left:6px!important;
+
+  font-size:12px!important;
+ }
+
+ .ir-chisti-search-page__voice{
+  width:44px!important;
+  height:44px!important;
+ }
+
+ .ir-chisti-search-page__attachment{
+  width:34px!important;
+ }
+
+ .ir-chisti-search-page__recent>div>button>strong{
+  font-size:12px!important;
+ }
+
+ .ir-chisti-search-page__suggestions>div{
+  width:calc(100% + 16px)!important;
+
+  margin-left:-16px!important;
+
+  padding-left:16px!important;
+ }
+
+}
+
+/* The same mobile reference becomes a calm centered learning surface on
+   desktop instead of stretching each row across the entire application. */
+@media(min-width:768px){
+
+ .ir-chisti-search-page{
+  display:flex!important;
+
+  min-height:100dvh!important;
+
+  align-items:flex-start!important;
+  justify-content:center!important;
+
+  padding:
+   clamp(32px,5vh,56px)
+   clamp(24px,4vw,48px)
+   64px!important;
+
+  background:
+   radial-gradient(circle at 88% 9%,rgba(255,209,0,.1),transparent 24%),
+   radial-gradient(circle at 8% 86%,rgba(255,209,0,.065),transparent 28%),
+   #fffae0!important;
+ }
+
+ .ir-chisti-search-page__content{
+  box-sizing:border-box!important;
+
+  display:block!important;
+
+  width:min(920px,100%)!important;
+  min-width:0!important;
+  max-width:920px!important;
+
+  min-height:720px!important;
+
+  margin:0 auto!important;
+  padding:
+   clamp(42px,5vw,64px)
+   clamp(48px,7vw,80px)
+   56px!important;
+
+  background:#fff!important;
+
+  border:1px solid #e5e5ea!important;
+  border-radius:32px!important;
+
+  box-shadow:
+   0 18px 54px rgba(17,17,17,.055),
+   inset 0 1px 0 rgba(255,255,255,.9)!important;
+ }
+
+ .ir-chisti-search-page__content>:is(
+  .ir-chisti-search-page__brand,
+  .ir-chisti-search-page__hero,
+  .ir-chisti-search-page__composer,
+  .ir-chisti-attachment-state,
+  .ir-chisti-search-page__message,
+  .ir-chisti-search-page__recent,
+  .ir-chisti-search-page__suggestions
+ ){
+  width:min(100%,760px)!important;
+  max-width:760px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+ }
+
+ .ir-chisti-search-page__brand{
+  min-height:48px!important;
+
+  margin-top:0!important;
+  margin-bottom:44px!important;
+ }
+
+ .ir-chisti-search-page__brand-title>span{
+  width:44px!important;
+  min-width:44px!important;
+  max-width:44px!important;
+
+  height:44px!important;
+  min-height:44px!important;
+  max-height:44px!important;
+ }
+
+ .ir-chisti-search-page__brand svg{
+  width:25px!important;
+  height:25px!important;
+ }
+
+ .ir-chisti-search-page__brand strong{
+  font-size:22px!important;
+ }
+
+ .ir-chisti-search-page__hero{
+  margin-bottom:30px!important;
+
+  text-align:center!important;
+ }
+
+ .ir-chisti-search-page__hero h1{
+  margin-bottom:12px!important;
+
+  font-size:48px!important;
+  line-height:1.3!important;
+
+  text-align:center!important;
+ }
+
+ .ir-chisti-search-page__hero>p{
+  max-width:560px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+
+  font-size:15px!important;
+
+  text-align:center!important;
+ }
+
+ .ir-chisti-search-page__composer{
+  grid-template-columns:48px minmax(0,1fr) 44px 58px!important;
+
+  min-height:66px!important;
+
+  margin-top:0!important;
+  margin-bottom:38px!important;
+
+  padding:4px 6px 4px 10px!important;
+
+  background:#fff!important;
+
+  box-shadow:0 10px 28px rgba(255,209,0,.08)!important;
+ }
+
+ .ir-chisti-search-page__composer input{
+  height:54px!important;
+
+  padding:0 14px!important;
+
+  font-size:15px!important;
+ }
+
+ .ir-chisti-search-page__submit{
+  width:46px!important;
+  height:46px!important;
+ }
+
+ .ir-chisti-search-page__attachment{
+  width:42px!important;
+  height:46px!important;
+ }
+
+ .ir-chisti-search-page__voice{
+  width:56px!important;
+  height:56px!important;
+ }
+
+ .ir-chisti-search-page__recent h2,
+ .ir-chisti-search-page__suggestions h2{
+  font-size:20px!important;
+ }
+
+ .ir-chisti-search-page__recent h2{
+  margin-bottom:13px!important;
+ }
+
+ .ir-chisti-search-page__recent>div{
+  gap:11px!important;
+ }
+
+ .ir-chisti-search-page__recent>div>button{
+  min-height:62px!important;
+
+  padding-right:20px!important;
+  padding-left:16px!important;
+
+  background:#fff!important;
+
+  border-color:#e3e3e7!important;
+  border-radius:16px!important;
+
+  box-shadow:0 5px 16px rgba(17,17,17,.025)!important;
+ }
+
+ .ir-chisti-search-page__recent>div>button>strong{
+  font-size:15px!important;
+ }
+
+ .ir-chisti-search-page__suggestions{
+  margin-top:32px!important;
+ }
+
+ .ir-chisti-search-page__suggestions h2{
+  margin-bottom:14px!important;
+ }
+
+ .ir-chisti-search-page__suggestions>div{
+  flex-wrap:wrap!important;
+
+  overflow:visible!important;
+
+  gap:9px!important;
+ }
+
+ .ir-chisti-search-page__suggestions button{
+  min-height:44px!important;
+
+  padding:8px 19px!important;
+
+  font-size:13px!important;
+ }
+
+}
+
+@media(min-width:768px) and (max-width:1199px){
+
+ .ir-chisti-search-page__content{
+  width:min(860px,100%)!important;
+  max-width:860px!important;
+
+  min-height:680px!important;
+
+  padding:
+   42px
+   clamp(32px,6vw,58px)
+   48px!important;
+
+  border-radius:28px!important;
+ }
+
+}
+
+@media(min-width:1200px){
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-chisti-search-page{
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+
+  margin:0!important;
+
+  background:
+   radial-gradient(circle at 88% 8%,rgba(255,209,0,.07),transparent 27%),
+   #fffae0!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-chisti-search-page__content{
+  width:min(920px,100%)!important;
+  min-width:0!important;
+  max-width:920px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+ }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+ .ir-chisti-search-page__composer,
+ .ir-chisti-search-page__recent>div>button{
+  transition:none!important;
+ }
+
+ .ir-chisti-search-page__spinner{
+  animation:none!important;
+ }
+
+}
+
+/* ========================================================================
+   STUDENT HOME — SIDEBAR EXPANSION STABILITY
+   Final authoritative desktop interaction contract.
+   ======================================================================== */
+
+@media(min-width:1200px){
+
+ /* The route owns the horizontal movement. Dashboard children must never
+    add their own fixed right offsets while the sidebar expands. */
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page{
+  box-sizing:border-box!important;
+
+  min-width:0!important;
+
+  transition:
+   padding-right .24s cubic-bezier(.2,.8,.2,1)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard{
+  box-sizing:border-box!important;
+
+  display:block!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+
+  margin:0!important;
+  padding:20px clamp(18px,2.25vw,32px) 64px!important;
+
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+
+  background:#fffae0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__header,
+ html body #root .ir-exact-student-dashboard__body{
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:1024px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__header{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+
+  min-height:92px!important;
+
+  margin-bottom:14px!important;
+
+  padding:18px 0!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__greeting{
+  min-width:0!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__greeting h1,
+ html body #root .ir-exact-student-dashboard__greeting span{
+  max-width:100%!important;
+
+  overflow:hidden!important;
+
+  text-overflow:ellipsis!important;
+ }
+
+ /* One vertical dashboard flow.
+    No legacy welcome/chisti named areas can generate implicit columns. */
+
+ html body #root .ir-exact-student-dashboard__body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-areas:
+   "progress"
+   "insights"
+   "today"
+   "continue"!important;
+
+  grid-auto-flow:row!important;
+  grid-auto-columns:minmax(0,1fr)!important;
+  grid-auto-rows:auto!important;
+
+  align-items:start!important;
+
+  gap:28px!important;
+
+  padding:0!important;
+
+  overflow:visible!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__body>*{
+  min-width:0!important;
+  max-width:100%!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Full-width progress
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-exact-student-dashboard__welcome,
+ html body #root .ir-exact-student-dashboard__progress-card{
+  grid-area:progress!important;
+  grid-column:1!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 180px!important;
+
+  align-items:center!important;
+
+  gap:26px!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  min-height:128px!important;
+
+  margin:0!important;
+  padding:24px!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress-card-copy{
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__progress{
+  width:100%!important;
+  max-width:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer{
+  display:flex!important;
+
+  width:180px!important;
+  min-width:0!important;
+  max-width:180px!important;
+
+  flex-direction:column!important;
+
+  gap:8px!important;
+
+  margin:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Chisti + achievements
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-exact-student-dashboard__insights{
+  grid-area:insights!important;
+  grid-column:1!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+
+  align-items:stretch!important;
+
+  gap:20px!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__insights>*{
+  min-width:0!important;
+  max-width:100%!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty,
+ html body #root .ir-exact-student-dashboard__weekly-summary{
+  grid-area:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  align-self:stretch!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  height:auto!important;
+  min-height:218px!important;
+
+  margin:0!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search input{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary>div{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+
+  width:100%!important;
+  min-width:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__weekly-summary>div>button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Today's plan is always full width
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-exact-student-dashboard__today{
+  grid-area:today!important;
+  grid-column:1!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+
+  background:transparent!important;
+
+  border:0!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+
+  gap:12px!important;
+
+  width:100%!important;
+  min-width:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button{
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button>div{
+  min-width:0!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Continue-learning full-width section
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-exact-student-dashboard__continue-section{
+  grid-area:continue!important;
+  grid-column:1!important;
+  grid-row:auto!important;
+
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+
+  background:transparent!important;
+
+  border:0!important;
+
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list{
+  box-sizing:border-box!important;
+
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-columns:auto!important;
+
+  gap:18px!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+
+  scroll-snap-type:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button{
+  box-sizing:border-box!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button>div{
+  min-width:0!important;
+  max-width:100%!important;
+ }
+
+}
+
+/* Do not animate dimensions for users requesting reduced motion. */
+@media(prefers-reduced-motion:reduce){
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page,
+ html body #root .ir-exact-student-dashboard,
+ html body #root .ir-exact-student-dashboard__header,
+ html body #root .ir-exact-student-dashboard__body{
+  transition:none!important;
+ }
+
+}
+
+/* ========================================================================
+   STUDENT CLASSES — FINAL RESPONSIVE CONTRACT
+   Overrides the old mobile-first / 720px two-column fidelity rules.
+   ======================================================================== */
+
+.ir-classes-main,
+.ir-classes-main *{
+ box-sizing:border-box!important;
+}
+
+.ir-classes-main{
+ min-width:0!important;
+
+ color:#171719!important;
+ background:#fffae0!important;
+}
+
+.ir-classes-main__header,
+.ir-classes-main__new-request,
+.ir-classes-main__section,
+.ir-classes-main__requests,
+.ir-classes-main__class-list{
+ min-width:0!important;
+ max-width:100%!important;
+}
+
+.ir-classes-main__request-card,
+.ir-classes-main__class-card,
+.ir-classes-main__empty{
+ min-width:0!important;
+ max-width:100%!important;
+}
+
+.ir-classes-main__request-content,
+.ir-classes-main__class-info,
+.ir-classes-main__class-time{
+ min-width:0!important;
+}}

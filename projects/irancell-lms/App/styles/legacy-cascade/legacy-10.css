@@ -1,0 +1,3273 @@
+/* Ordered legacy cascade segment. Keep import order in App/styles.css. */
+/*
+ * Every Parent root page now directly fills the route viewport.
+ * These rules deliberately override the older prototype and fixed-position
+ * family experiments above.
+ */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-home,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-children,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-payments,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-profile{
+ position:absolute!important;
+ inset:0!important;
+ top:0!important;
+ right:0!important;
+ bottom:0!important;
+ left:0!important;
+ z-index:1!important;
+ display:block!important;
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:100%!important;
+ max-width:100%!important;
+ height:100%!important;
+ min-height:100%!important;
+ max-height:100%!important;
+ margin:0!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ direction:rtl!important;
+ color:#202024!important;
+ background:#fffae0!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ transform:none!important;
+ scrollbar-width:none!important;
+ scrollbar-gutter:auto!important;
+ overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+}
+
+/* Home dashboard — complete view coverage with dock-safe content padding. */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-home{
+ padding:
+  max(18px,env(safe-area-inset-top))
+  clamp(18px,5vw,34px)
+  calc(114px + env(safe-area-inset-bottom))
+  clamp(18px,5vw,34px)!important;
+}
+
+/* Children and Payments use the same application viewport architecture. */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-children,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-payments{
+ padding:
+  max(18px,env(safe-area-inset-top))
+  clamp(18px,5vw,34px)
+  calc(114px + env(safe-area-inset-bottom))
+  clamp(18px,5vw,34px)!important;
+}
+
+/* Profile needs an edge-to-edge dark header, therefore no horizontal page pad. */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-profile{
+ padding-top:0!important;
+ padding-right:0!important;
+ padding-bottom:calc(108px + env(safe-area-inset-bottom))!important;
+ padding-left:0!important;
+}
+
+/* Hide internal page scrollbars without disabling scrolling. */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-home::-webkit-scrollbar,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-children::-webkit-scrollbar,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-payments::-webkit-scrollbar,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-profile::-webkit-scrollbar{
+ display:none!important;
+}
+
+/*
+ * The ir-family-home page no longer has any hidden prototype column.
+ * Every direct dashboard section consumes the available content width.
+ */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home>header,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home>div,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home>section,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home>aside{
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ margin-right:0!important;
+ margin-left:0!important;
+}
+
+/* Explicitly remove old 390/430/720px content-frame behaviour. */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__header,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__title-row,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__summary,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__children,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__child-card,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__quick,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-children__list,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-children__add,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-children__security,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__wallet,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__pending,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__invoices,
+html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__history{
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ margin-right:0!important;
+ margin-left:0!important;
+}
+
+/* The cream page continues underneath the floating dock. */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen::before{
+ content:""!important;
+ position:absolute!important;
+ inset:0!important;
+ z-index:0!important;
+ background:#fffae0!important;
+ pointer-events:none!important;
+}
+
+/*
+ * Neutralize any legacy prototype/device wrapper that may accidentally appear
+ * inside a Parent page later. Such a wrapper must behave as ordinary content,
+ * never as the viewport.
+ */
+html body #root .ir-route-layer-host.is-parent-root-fullscreen :where(
+ .ir-device,
+ .ir-device-mobile,
+ .ir-svg-prototype-page,
+ .ir-svg-prototype-page__viewport,
+ .ir-svg-prototype-shell
+){
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+ margin:0!important;
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ transform:none!important;
+}
+
+/* Dynamic viewport units prevent browser/EDUS chrome from shortening the page. */
+@supports(height:100dvh){
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen{
+  height:100dvh!important;
+  min-height:100dvh!important;
+  max-height:100dvh!important;
+ }
+}
+
+/* Small phones keep useful page padding without exposing an outer frame. */
+@media(max-width:420px){
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-home,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-children,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-payments{
+  padding-right:18px!important;
+  padding-left:18px!important;
+ }
+}
+
+@media(max-width:350px){
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-home,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-children,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-payments{
+  padding-right:14px!important;
+  padding-left:14px!important;
+ }
+}
+
+/*
+ * Large EDUS previews remain real full-width application surfaces.
+ * We increase only the inner gutter; there is no centered mobile canvas.
+ */
+@media(min-width:700px){
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-home,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-children,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen>.ir-route-layer-host__page>.ir-family-payments{
+  padding-right:clamp(28px,5vw,72px)!important;
+  padding-left:clamp(28px,5vw,72px)!important;
+ }
+
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__summary,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__children,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-home__quick,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__wallet,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__pending,
+ html body #root .ir-route-layer-host.is-parent-root-fullscreen .ir-family-payments__invoices{
+  width:100%!important;
+  max-width:none!important;
+  margin-right:0!important;
+  margin-left:0!important;
+ }
+}@layer irancell-current{
+
+/* Global responsive and interaction contract */
+html,
+body,
+#root{
+ width:100%!important;
+ min-width:280px!important;
+ max-width:100%!important;
+ min-height:100%!important;
+ margin:0!important;
+ overflow-x:hidden!important;
+}
+
+html{
+ text-size-adjust:100%!important;
+ -webkit-text-size-adjust:100%!important;
+}
+
+body{
+ overscroll-behavior-x:none!important;
+}
+
+*,
+*::before,
+*::after{
+ box-sizing:border-box!important;
+}
+
+:where(
+ .ir-route-layer-host,
+ .ir-route-layer-host__page,
+ .ir-screen-surface,
+ .ir-screen-surface>*,
+ .ir-main-content,
+ .ir-page-header,
+ .ir-card,
+ .ir-card__body,
+ .ir-dashboard-grid,
+ .ir-stats-grid,
+ .ir-generic-page,
+ .ir-generic-page__grid,
+ .ir-generic-grid,
+ .ir-form,
+ .ir-form-grid,
+ .ir-form__actions,
+ .ir-table-wrap,
+ .ir-table,
+ .ir-state,
+ .ir-action-row,
+ .ir-student-subpage,
+ .ir-svg-prototype-page,
+ .ir-svg-prototype-page__viewport,
+ .ir-svg-prototype-page__body
+){
+ min-width:0!important;
+ max-width:100%!important;
+}
+
+:where(
+ img,
+ video,
+ canvas,
+ iframe,
+ picture,
+ svg
+){
+ max-width:100%;
+}
+
+:where(
+ img,
+ video,
+ canvas
+){
+ height:auto;
+}
+
+:where(
+ h1,
+ h2,
+ h3,
+ h4,
+ p,
+ span,
+ strong,
+ small,
+ label,
+ button,
+ td,
+ th
+){
+ overflow-wrap:anywhere;
+}
+
+:where(
+ button,
+ [role="button"],
+ a,
+ input,
+ select,
+ textarea
+){
+ font:inherit;
+}
+
+:where(
+ button,
+ [role="button"],
+ a
+){
+ touch-action:manipulation;
+ -webkit-tap-highlight-color:transparent;
+}
+
+:where(
+ button,
+ [role="button"],
+ a,
+ input,
+ select,
+ textarea
+):focus-visible{
+ outline:3px solid rgba(255,209,0,.55)!important;
+ outline-offset:2px!important;
+}
+
+:where(
+ .ir-screen-surface.is-standard,
+ .ir-generic-page,
+ .ir-dashboard-grid,
+ .ir-card,
+ .ir-table-wrap,
+ .ir-form
+){
+ container-type:inline-size;
+}
+
+.ir-screen-surface.is-standard{
+ width:100%!important;
+ max-width:1440px!important;
+ margin-inline:auto!important;
+ padding-inline:clamp(16px,3.5vw,56px)!important;
+ padding-top:clamp(18px,3vw,42px)!important;
+ padding-bottom:calc(clamp(28px,4vw,64px) + env(safe-area-inset-bottom))!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ scrollbar-gutter:stable both-edges!important;
+}
+
+.ir-screen-surface.is-full-bleed{
+ width:100%!important;
+ min-height:100%!important;
+ overflow-x:hidden!important;
+}
+
+.ir-page-header>div{
+ display:flex!important;
+ align-items:flex-start!important;
+ justify-content:space-between!important;
+ gap:clamp(14px,3vw,36px)!important;
+ min-width:0!important;
+}
+
+.ir-page-header>div>div{
+ min-width:0!important;
+ flex:1 1 auto!important;
+}
+
+.ir-page-header aside{
+ display:flex!important;
+ flex:0 1 auto!important;
+ flex-wrap:wrap!important;
+ align-items:center!important;
+ justify-content:flex-end!important;
+ gap:10px!important;
+ min-width:0!important;
+}
+
+.ir-dashboard-grid,
+.ir-generic-page__grid{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))!important;
+ gap:clamp(14px,2.5vw,26px)!important;
+ align-items:start!important;
+}
+
+.ir-stats-grid{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))!important;
+ gap:clamp(10px,2vw,18px)!important;
+}
+
+.ir-form-grid{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))!important;
+ gap:clamp(12px,2vw,20px)!important;
+}
+
+.ir-form__actions{
+ display:flex!important;
+ flex-wrap:wrap!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:10px!important;
+}
+
+.ir-form__actions>*{
+ flex:0 1 auto!important;
+}
+
+.ir-card,
+.ir-generic-grid article,
+.ir-action-row,
+.ir-stat-card{
+ min-width:0!important;
+ overflow:hidden!important;
+}
+
+.ir-card__header,
+.ir-card__body{
+ min-width:0!important;
+}
+
+.ir-generic-grid article{
+ grid-template-columns:minmax(44px,48px) minmax(0,1fr) auto!important;
+}
+
+.ir-action-row{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:12px!important;
+}
+
+.ir-action-row>div{
+ min-width:0!important;
+ flex:1 1 auto!important;
+}
+
+.ir-table-wrap{
+ width:100%!important;
+ max-width:100%!important;
+ overflow:auto!important;
+ overscroll-behavior-inline:contain!important;
+ border-radius:16px!important;
+}
+
+.ir-table{
+ width:100%!important;
+ min-width:680px!important;
+ border-collapse:collapse!important;
+}
+
+.ir-table caption{
+ padding:12px!important;
+ text-align:right!important;
+ font-weight:800!important;
+}
+
+.ir-table th,
+.ir-table td{
+ vertical-align:middle!important;
+}
+
+.ir-table__empty-row td{
+ min-height:120px!important;
+ text-align:center!important;
+ color:#77787f!important;
+}
+
+:where(
+ .ir-modal,
+ .ir-modal__panel,
+ .ir-chisti-attachment-overlay,
+ .ir-chisti-attachment-sheet,
+ [role="dialog"]
+){
+ max-width:100%!important;
+}
+
+:where(
+ .ir-modal__panel,
+ .ir-chisti-attachment-sheet,
+ [role="dialog"]
+){
+ width:min(560px,calc(100vw - 24px))!important;
+ max-height:min(88dvh,760px)!important;
+ overflow:auto!important;
+ overscroll-behavior:contain!important;
+}
+
+.ir-svg-prototype-page__viewport{
+ width:min(100%,430px)!important;
+ max-width:100%!important;
+ margin-inline:auto!important;
+}
+
+.ir-svg-prototype-page__body{
+ width:100%!important;
+ overflow-x:hidden!important;
+}
+
+@media(max-width:900px){
+ .ir-screen-surface.is-standard{
+  max-width:none!important;
+ }
+
+ .ir-page-header>div{
+  flex-direction:column!important;
+ }
+
+ .ir-page-header aside{
+  width:100%!important;
+  justify-content:flex-start!important;
+ }
+
+ .ir-page-header aside>*{
+  flex:1 1 auto!important;
+ }
+
+ .ir-dashboard-grid,
+ .ir-generic-page__grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+
+ .ir-stats-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+}
+
+@media(max-width:640px){
+ .ir-screen-surface.is-standard{
+  padding-inline:clamp(14px,4.5vw,22px)!important;
+  padding-top:20px!important;
+  padding-bottom:calc(100px + env(safe-area-inset-bottom))!important;
+ }
+
+ .ir-page-header{
+  margin-bottom:18px!important;
+ }
+
+ .ir-page-header h1{
+  font-size:clamp(23px,7vw,31px)!important;
+ }
+
+ .ir-page-header p{
+  font-size:13px!important;
+ }
+
+ .ir-dashboard-grid,
+ .ir-generic-page__grid,
+ .ir-stats-grid,
+ .ir-form-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-form__actions{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  width:100%!important;
+ }
+
+ .ir-form__actions>*,
+ .ir-page-header aside>*{
+  width:100%!important;
+  max-width:none!important;
+ }
+
+ .ir-generic-grid article{
+  grid-template-columns:44px minmax(0,1fr) 38px!important;
+  gap:10px!important;
+  padding:12px!important;
+ }
+
+ .ir-generic-grid__icon{
+  width:44px!important;
+  height:44px!important;
+ }
+
+ .ir-action-row{
+  align-items:stretch!important;
+  flex-direction:column!important;
+ }
+
+ .ir-action-row>button{
+  width:100%!important;
+ }
+
+ .ir-table-wrap{
+  overflow:visible!important;
+  border:0!important;
+  background:transparent!important;
+ }
+
+ .ir-table{
+  display:block!important;
+  min-width:0!important;
+ }
+
+ .ir-table caption{
+  display:block!important;
+ }
+
+ .ir-table thead{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  white-space:nowrap!important;
+ }
+
+ .ir-table tbody,
+ .ir-table tr,
+ .ir-table td{
+  display:block!important;
+  width:100%!important;
+ }
+
+ .ir-table tbody{
+  display:grid!important;
+  gap:12px!important;
+ }
+
+ .ir-table tr{
+  padding:8px 14px!important;
+  background:#fff!important;
+  border:1px solid #e6e2d5!important;
+  border-radius:16px!important;
+  box-shadow:0 8px 24px rgba(42,36,8,.05)!important;
+ }
+
+ .ir-table td{
+  display:grid!important;
+  grid-template-columns:minmax(88px,38%) minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:10px!important;
+  min-height:44px!important;
+  padding:11px 0!important;
+  border-bottom:1px solid #efede5!important;
+  text-align:right!important;
+ }
+
+ .ir-table td:last-child{
+  border-bottom:0!important;
+ }
+
+ .ir-table td::before{
+  content:attr(data-label)!important;
+  color:#75757d!important;
+  font-size:12px!important;
+  font-weight:700!important;
+ }
+
+ .ir-table__empty-row{
+  padding:0!important;
+ }
+
+ .ir-table__empty-row td{
+  display:block!important;
+  padding:28px 16px!important;
+ }
+
+ .ir-table__empty-row td::before{
+  display:none!important;
+ }
+
+ :where(
+  .ir-modal__panel,
+  .ir-chisti-attachment-sheet,
+  [role="dialog"]
+ ){
+  width:calc(100vw - 16px)!important;
+  max-height:calc(100dvh - 16px)!important;
+  border-radius:20px!important;
+ }
+
+ .ir-exact-family-children__list{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-exact-family-children__list article footer{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+ }
+
+ .ir-exact-family-children__security{
+  align-items:flex-start!important;
+ }
+
+ .ir-svg-form,
+ .ir-svg-course,
+ .ir-svg-profile,
+ .ir-svg-payment,
+ .ir-svg-rating,
+ .ir-svg-settings,
+ .ir-svg-list{
+  width:100%!important;
+  max-width:none!important;
+ }
+}
+
+@media(max-width:380px){
+ .ir-screen-surface.is-standard{
+  padding-inline:12px!important;
+ }
+
+ .ir-page-header h1{
+  font-size:22px!important;
+ }
+
+ .ir-card__header,
+ .ir-card__body{
+  padding-right:14px!important;
+  padding-left:14px!important;
+ }
+
+ .ir-generic-grid article{
+  grid-template-columns:40px minmax(0,1fr) 36px!important;
+ }
+
+ .ir-generic-grid__icon{
+  width:40px!important;
+  height:40px!important;
+  border-radius:12px!important;
+ }
+
+ .ir-exact-family-children__list article footer{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+}
+
+@media(max-height:620px) and (orientation:landscape){
+ .ir-screen-surface.is-standard{
+  padding-top:12px!important;
+  padding-bottom:18px!important;
+ }
+
+ .ir-page-header{
+  margin-bottom:12px!important;
+ }
+
+ .ir-page-header p{
+  display:none!important;
+ }
+
+ :where(
+  .ir-modal__panel,
+  .ir-chisti-attachment-sheet,
+  [role="dialog"]
+ ){
+  max-height:calc(100dvh - 12px)!important;
+ }
+}
+
+@media(prefers-reduced-motion:reduce){
+ *,
+ *::before,
+ *::after{
+  scroll-behavior:auto!important;
+  animation-duration:.01ms!important;
+  animation-iteration-count:1!important;
+  transition-duration:.01ms!important;
+ }
+}
+
+@media(forced-colors:active){
+ :where(
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  .ir-card,
+  .ir-generic-grid article
+ ){
+  border:1px solid CanvasText!important;
+ }
+}
+
+/* Responsive Chisty main chat */
+.ir-chisti-main-chat{
+ width:100%;
+ min-width:0;
+ min-height:100dvh;
+ display:grid;
+ grid-template-columns:minmax(270px,320px) minmax(0,1fr);
+ direction:rtl;
+ background:#f6f5ef;
+ color:#1e1e20;
+ overflow:hidden;
+}
+
+.ir-chisti-main-chat__scrim{
+ display:none;
+}
+
+.ir-chisti-main-chat__sidebar{
+ min-width:0;
+ height:100dvh;
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+ padding:20px 16px calc(104px + env(safe-area-inset-bottom));
+ background:#1c1c1f;
+ color:#fff;
+ border-left:1px solid rgba(255,255,255,.08);
+ overflow:hidden;
+}
+
+.ir-chisti-main-chat__sidebar-header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+}
+
+.ir-chisti-main-chat__sidebar-header>div{
+ min-width:0;
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.ir-chisti-main-chat__sidebar-header>div>div{
+ min-width:0;
+ display:flex;
+ flex-direction:column;
+ gap:2px;
+}
+
+.ir-chisti-main-chat__sidebar-header strong{
+ font-size:17px;
+}
+
+.ir-chisti-main-chat__sidebar-header small{
+ color:#a9a9b0;
+ font-size:10px;
+}
+
+.ir-chisti-main-chat__brand-mark{
+ width:42px;
+ height:42px;
+ flex:0 0 42px;
+ display:grid;
+ place-items:center;
+ border-radius:15px;
+ background:#ffd100;
+ color:#161616;
+ font-size:22px;
+ font-weight:1000;
+ box-shadow:0 8px 24px rgba(255,209,0,.18);
+}
+
+.ir-chisti-main-chat__sidebar-close{
+ display:none;
+ width:38px;
+ height:38px;
+ border:0;
+ border-radius:12px;
+ background:#2b2b2f;
+ color:#fff;
+ font-size:26px;
+ line-height:1;
+}
+
+.ir-chisti-main-chat__new{
+ width:100%;
+ min-height:48px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:8px;
+ border:0;
+ border-radius:15px;
+ background:#ffd100;
+ color:#161616;
+ font-weight:900;
+}
+
+.ir-chisti-main-chat__new span{
+ font-size:20px;
+}
+
+.ir-chisti-main-chat__search{
+ min-height:44px;
+ display:flex;
+ align-items:center;
+ gap:8px;
+ padding:0 12px;
+ border:1px solid #37373c;
+ border-radius:14px;
+ background:#26262a;
+}
+
+.ir-chisti-main-chat__search svg{
+ width:18px;
+ height:18px;
+ fill:none;
+ stroke:#96969e;
+ stroke-width:2;
+}
+
+.ir-chisti-main-chat__search input{
+ width:100%;
+ min-width:0;
+ border:0;
+ outline:0;
+ background:transparent;
+ color:#fff;
+ font-size:12px;
+}
+
+.ir-chisti-main-chat__search input::placeholder{
+ color:#898990;
+}
+
+.ir-chisti-main-chat__conversation-list{
+ min-height:0;
+ flex:1;
+ display:flex;
+ flex-direction:column;
+ gap:6px;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ scrollbar-width:thin;
+}
+
+.ir-chisti-main-chat__conversation-list>button{
+ width:100%;
+ min-width:0;
+ display:grid;
+ grid-template-columns:34px minmax(0,1fr) auto;
+ align-items:center;
+ gap:9px;
+ padding:10px;
+ border:1px solid transparent;
+ border-radius:13px;
+ background:transparent;
+ color:#dedee2;
+ text-align:right;
+}
+
+.ir-chisti-main-chat__conversation-list>button:hover,
+.ir-chisti-main-chat__conversation-list>button.is-active{
+ background:#2b2b30;
+ border-color:#3d3d43;
+}
+
+.ir-chisti-main-chat__conversation-list>button.is-active{
+ box-shadow:inset -3px 0 #ffd100;
+}
+
+.ir-chisti-main-chat__conversation-list>button>span:nth-child(2){
+ min-width:0;
+ display:flex;
+ flex-direction:column;
+ gap:4px;
+}
+
+.ir-chisti-main-chat__conversation-list strong{
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ font-size:12px;
+}
+
+.ir-chisti-main-chat__conversation-list small{
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ color:#96969e;
+ font-size:9px;
+}
+
+.ir-chisti-main-chat__conversation-icon{
+ width:34px;
+ height:34px;
+ display:grid;
+ place-items:center;
+ border-radius:11px;
+ background:#36363b;
+ color:#ffd100;
+}
+
+.ir-chisti-main-chat__processing-dot{
+ width:8px;
+ height:8px;
+ border-radius:50%;
+ background:#ffd100;
+ box-shadow:0 0 0 5px rgba(255,209,0,.1);
+ animation:ir-chisti-main-pulse 1.2s infinite;
+}
+
+@keyframes ir-chisti-main-pulse{
+ 50%{transform:scale(.75);opacity:.55}
+}
+
+.ir-chisti-main-chat__sidebar-empty{
+ min-height:170px;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:5px;
+ padding:18px;
+ text-align:center;
+}
+
+.ir-chisti-main-chat__sidebar-empty small{
+ color:#96969e;
+ line-height:1.8;
+}
+
+.ir-chisti-main-chat__workspace{
+ min-width:0;
+ height:100dvh;
+ display:grid;
+ grid-template-rows:auto minmax(0,1fr) auto;
+ background:#fffdf5;
+ overflow:hidden;
+}
+
+.ir-chisti-main-chat__topbar{
+ min-width:0;
+ min-height:72px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:14px;
+ padding:12px clamp(16px,3vw,32px);
+ border-bottom:1px solid #e8e5d8;
+ background:rgba(255,253,245,.94);
+ backdrop-filter:blur(14px);
+ z-index:5;
+}
+
+.ir-chisti-main-chat__topbar-start{
+ min-width:0;
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.ir-chisti-main-chat__topbar-start>div{
+ min-width:0;
+ display:flex;
+ flex-direction:column;
+ gap:3px;
+}
+
+.ir-chisti-main-chat__topbar-start strong{
+ max-width:min(56vw,620px);
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ font-size:14px;
+}
+
+.ir-chisti-main-chat__topbar-start small{
+ color:#85858c;
+ font-size:10px;
+}
+
+.ir-chisti-main-chat__back,
+.ir-chisti-main-chat__list-toggle{
+ width:40px;
+ height:40px;
+ flex:0 0 40px;
+ display:grid;
+ place-items:center;
+ padding:0;
+ border:1px solid #e2dfd4;
+ border-radius:13px;
+ background:#fff;
+ color:#202024;
+}
+
+.ir-chisti-main-chat__back svg,
+.ir-chisti-main-chat__list-toggle svg{
+ width:21px;
+ height:21px;
+ fill:none;
+ stroke:currentColor;
+ stroke-width:2;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+}
+
+.ir-chisti-main-chat__list-toggle{
+ display:none;
+}
+
+.ir-chisti-main-chat__history-button{
+ min-height:40px;
+ padding:8px 14px;
+ border:1px solid #dedace;
+ border-radius:12px;
+ background:#fff;
+ color:#36363a;
+ font-size:11px;
+ font-weight:800;
+}
+
+.ir-chisti-main-chat__messages{
+ min-width:0;
+ min-height:0;
+ width:100%;
+ max-width:940px;
+ margin-inline:auto;
+ padding:clamp(18px,3vw,34px) clamp(14px,4vw,42px);
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ scrollbar-gutter:stable;
+}
+
+.ir-chisti-main-chat__welcome{
+ min-height:100%;
+ display:flex;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ gap:12px;
+ padding:30px 0;
+ text-align:center;
+}
+
+.ir-chisti-main-chat__welcome-mark{
+ width:72px;
+ height:72px;
+ display:grid;
+ place-items:center;
+ border-radius:25px;
+ background:#ffd100;
+ color:#171719;
+ font-size:34px;
+ box-shadow:0 18px 50px rgba(255,209,0,.2);
+}
+
+.ir-chisti-main-chat__welcome h1{
+ max-width:650px;
+ margin:6px 0 0;
+ font-size:clamp(24px,4vw,38px);
+ line-height:1.45;
+}
+
+.ir-chisti-main-chat__welcome p{
+ max-width:620px;
+ margin:0;
+ font-size:13px;
+}
+
+.ir-chisti-main-chat__welcome>div{
+ width:100%;
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:10px;
+ margin-top:12px;
+}
+
+.ir-chisti-main-chat__welcome>div>button{
+ min-width:0;
+ min-height:92px;
+ display:flex;
+ flex-direction:column;
+ align-items:flex-start;
+ gap:6px;
+ padding:14px;
+ border:1px solid #e2dfd4;
+ border-radius:16px;
+ background:#fff;
+ text-align:right;
+}
+
+.ir-chisti-main-chat__welcome>div>button:hover{
+ border-color:#d3ad00;
+ background:#fffbed;
+}
+
+.ir-chisti-main-chat__welcome>div strong{
+ color:#9a7e00;
+ font-size:10px;
+}
+
+.ir-chisti-main-chat__welcome>div span{
+ font-size:12px;
+ line-height:1.8;
+}
+
+.ir-chisti-main-chat__exchange{
+ display:flex;
+ flex-direction:column;
+ gap:14px;
+ margin-bottom:30px;
+}
+
+.ir-chisti-main-chat__message{
+ width:min(88%,760px);
+ display:grid;
+ grid-template-columns:40px minmax(0,1fr);
+ gap:10px;
+ align-items:start;
+}
+
+.ir-chisti-main-chat__message.is-user{
+ align-self:flex-start;
+}
+
+.ir-chisti-main-chat__message.is-assistant{
+ align-self:flex-end;
+}
+
+.ir-chisti-main-chat__avatar{
+ width:40px;
+ height:40px;
+ display:grid;
+ place-items:center;
+ border-radius:14px;
+ background:#1e1e21;
+ color:#fff;
+ font-weight:900;
+}
+
+.ir-chisti-main-chat__avatar.is-assistant{
+ background:#ffd100;
+ color:#181818;
+ font-size:20px;
+}
+
+.ir-chisti-main-chat__message>div:last-child{
+ min-width:0;
+ padding:13px 15px;
+ border:1px solid #e3e0d5;
+ border-radius:18px;
+ background:#fff;
+ box-shadow:0 10px 28px rgba(31,28,12,.04);
+}
+
+.ir-chisti-main-chat__message.is-user>div:last-child{
+ background:#1f1f22;
+ border-color:#1f1f22;
+ color:#fff;
+ border-top-right-radius:5px;
+}
+
+.ir-chisti-main-chat__message.is-assistant>div:last-child{
+ border-top-left-radius:5px;
+}
+
+.ir-chisti-main-chat__message header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ margin-bottom:8px;
+}
+
+.ir-chisti-main-chat__message header strong{
+ font-size:11px;
+}
+
+.ir-chisti-main-chat__message header time{
+ color:#96969d;
+ font-size:8px;
+}
+
+.ir-chisti-main-chat__message p{
+ margin:0;
+ color:inherit;
+ font-size:13px;
+ line-height:2;
+ white-space:pre-wrap;
+}
+
+.ir-chisti-main-chat__message-attachment{
+ display:inline-flex;
+ margin-top:10px;
+ padding:6px 9px;
+ border-radius:9px;
+ background:rgba(255,255,255,.11);
+ font-size:10px;
+}
+
+.ir-chisti-main-chat__thinking{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ gap:6px;
+}
+
+.ir-chisti-main-chat__thinking>span{
+ width:7px;
+ height:7px;
+ border-radius:50%;
+ background:#d2ad00;
+ animation:ir-chisti-main-thinking 1s infinite ease-in-out;
+}
+
+.ir-chisti-main-chat__thinking>span:nth-child(2){
+ animation-delay:.15s;
+}
+
+.ir-chisti-main-chat__thinking>span:nth-child(3){
+ animation-delay:.3s;
+}
+
+@keyframes ir-chisti-main-thinking{
+ 0%,100%{transform:translateY(0);opacity:.45}
+ 50%{transform:translateY(-4px);opacity:1}
+}
+
+.ir-chisti-main-chat__thinking p{
+ width:calc(100% - 50px);
+ color:#77777e;
+ font-size:11px;
+}
+
+.ir-chisti-main-chat__thinking>div{
+ width:100%;
+ height:5px;
+ overflow:hidden;
+ border-radius:10px;
+ background:#eeece4;
+}
+
+.ir-chisti-main-chat__thinking>div i{
+ display:block;
+ height:100%;
+ border-radius:10px;
+ background:#ffd100;
+ transition:width .25s ease;
+}
+
+.ir-chisti-main-chat__thinking button,
+.ir-chisti-main-chat__error button{
+ margin-top:5px;
+ padding:7px 10px;
+ border:0;
+ border-radius:9px;
+ background:#f0eee7;
+ color:#55555b;
+ font-size:10px;
+}
+
+.ir-chisti-main-chat__error{
+ display:flex;
+ flex-direction:column;
+ gap:5px;
+}
+
+.ir-chisti-main-chat__error strong{
+ color:#c83939;
+}
+
+.ir-chisti-main-chat__error p{
+ color:#77777e;
+ font-size:11px;
+}
+
+.ir-chisti-main-chat__answer{
+ display:flex;
+ flex-direction:column;
+ gap:13px;
+}
+
+.ir-chisti-main-chat__resources{
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+ padding-top:10px;
+ border-top:1px solid #ebe8de;
+}
+
+.ir-chisti-main-chat__resources>strong{
+ font-size:11px;
+}
+
+.ir-chisti-main-chat__resources>button{
+ min-width:0;
+ display:grid;
+ grid-template-columns:36px minmax(0,1fr);
+ align-items:center;
+ gap:10px;
+ padding:10px;
+ border:1px solid #e2dfd5;
+ border-radius:13px;
+ background:#fffdf5;
+ text-align:right;
+}
+
+.ir-chisti-main-chat__resources>button>span:first-child{
+ width:36px;
+ height:36px;
+ display:grid;
+ place-items:center;
+ border-radius:11px;
+ background:#ffd100;
+ color:#1b1b1d;
+}
+
+.ir-chisti-main-chat__resources>button>span:last-child{
+ min-width:0;
+ display:flex;
+ flex-direction:column;
+ gap:3px;
+}
+
+.ir-chisti-main-chat__resources b{
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+ font-size:11px;
+}
+
+.ir-chisti-main-chat__resources small{
+ color:#85858c;
+ font-size:9px;
+}
+
+.ir-chisti-main-chat__next-actions{
+ display:flex;
+ flex-wrap:wrap;
+ gap:7px;
+}
+
+.ir-chisti-main-chat__next-actions button{
+ min-height:34px;
+ padding:7px 10px;
+ border:1px solid #dedace;
+ border-radius:999px;
+ background:#fff;
+ color:#55555a;
+ font-size:9px;
+}
+
+.ir-chisti-main-chat__composer{
+ width:100%;
+ max-width:940px;
+ margin-inline:auto;
+ display:flex;
+ flex-direction:column;
+ gap:8px;
+ padding:10px clamp(14px,4vw,42px) calc(92px + env(safe-area-inset-bottom));
+ background:linear-gradient(180deg,rgba(255,253,245,0),#fffdf5 18%);
+}
+
+.ir-chisti-main-chat__selected-attachment{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:10px;
+ padding:8px 11px;
+ border:1px solid #e1ddcf;
+ border-radius:11px;
+ background:#fff;
+ font-size:10px;
+}
+
+.ir-chisti-main-chat__selected-attachment button{
+ width:24px;
+ height:24px;
+ display:grid;
+ place-items:center;
+ border:0;
+ border-radius:50%;
+ background:#eeeae0;
+ color:#555;
+}
+
+.ir-chisti-main-chat__subject-row{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+}
+
+.ir-chisti-main-chat__subject-row label{
+ display:flex;
+ align-items:center;
+ gap:6px;
+ color:#77777e;
+ font-size:9px;
+}
+
+.ir-chisti-main-chat__subject-row select{
+ min-height:32px;
+ padding:4px 9px;
+ border:1px solid #dfdbcf;
+ border-radius:9px;
+ background:#fff;
+ color:#333338;
+}
+
+.ir-chisti-main-chat__subject-row small{
+ color:#939399;
+ font-size:9px;
+}
+
+.ir-chisti-main-chat__composer-box{
+ min-width:0;
+ min-height:58px;
+ display:grid;
+ grid-template-columns:42px minmax(0,1fr) 42px;
+ align-items:end;
+ gap:8px;
+ padding:7px;
+ border:1px solid #dcd8cc;
+ border-radius:19px;
+ background:#fff;
+ box-shadow:0 12px 32px rgba(37,32,9,.08);
+}
+
+.ir-chisti-main-chat__composer-box textarea{
+ width:100%;
+ max-height:150px;
+ min-height:42px;
+ resize:none;
+ padding:11px 4px;
+ border:0;
+ outline:0;
+ background:transparent;
+ color:#27272b;
+ line-height:1.8;
+}
+
+.ir-chisti-main-chat__attach,
+.ir-chisti-main-chat__send{
+ width:42px;
+ height:42px;
+ display:grid;
+ place-items:center;
+ padding:0;
+ border:0;
+ border-radius:13px;
+}
+
+.ir-chisti-main-chat__attach{
+ background:#f0eee7;
+ color:#55555a;
+}
+
+.ir-chisti-main-chat__send{
+ background:#ffd100;
+ color:#181818;
+}
+
+.ir-chisti-main-chat__attach svg,
+.ir-chisti-main-chat__send svg{
+ width:21px;
+ height:21px;
+ fill:none;
+ stroke:currentColor;
+ stroke-width:2;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+}
+
+.ir-chisti-main-chat__send:disabled{
+ background:#e7e4da;
+ color:#aaa9a4;
+}
+
+@media(max-width:1100px){
+ .ir-chisti-main-chat{
+  grid-template-columns:minmax(250px,280px) minmax(0,1fr);
+ }
+
+ .ir-content-grid,
+ .ir-offers-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ }
+
+ .ir-role-select>div{
+  grid-template-columns:repeat(2,minmax(0,210px))!important;
+ }
+}
+
+@media(max-width:820px){
+ .ir-chisti-main-chat{
+  display:block;
+  min-height:100dvh;
+ }
+
+ .ir-chisti-main-chat__sidebar{
+  width:min(88vw,360px);
+  max-width:100%;
+  position:fixed;
+  inset:0 0 0 auto;
+  z-index:310;
+  transform:translateX(110%);
+  transition:transform .22s ease;
+  box-shadow:-20px 0 60px rgba(0,0,0,.28);
+ }
+
+ .ir-chisti-main-chat.is-list-open .ir-chisti-main-chat__sidebar,
+ .ir-chisti-main-chat.is-history-view .ir-chisti-main-chat__sidebar{
+  transform:translateX(0);
+ }
+
+ .ir-chisti-main-chat__scrim{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  border:0;
+  background:rgba(0,0,0,.48);
+ }
+
+ .ir-chisti-main-chat.is-list-open .ir-chisti-main-chat__scrim{
+  display:block;
+ }
+
+ .ir-chisti-main-chat__sidebar-close,
+ .ir-chisti-main-chat__list-toggle{
+  display:grid;
+ }
+
+ .ir-chisti-main-chat.is-history-view .ir-chisti-main-chat__sidebar-close{
+  display:none;
+ }
+
+ .ir-chisti-main-chat.is-history-view .ir-chisti-main-chat__workspace{
+  visibility:hidden;
+ }
+
+ .ir-chisti-main-chat__workspace{
+  width:100%;
+  height:100dvh;
+ }
+
+ .ir-chisti-main-chat__topbar{
+  min-height:64px;
+  padding-inline:12px;
+ }
+
+ .ir-chisti-main-chat__history-button{
+  display:none;
+ }
+
+ .ir-chisti-main-chat__topbar-start strong{
+  max-width:48vw;
+ }
+
+ .ir-chisti-main-chat__message{
+  width:96%;
+ }
+
+ .ir-chisti-main-chat__welcome>div{
+  grid-template-columns:minmax(0,1fr);
+ }
+
+ .ir-auth-screen{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-auth-visual{
+  display:none!important;
+ }
+
+ .ir-onboarding-grid,
+ .ir-health-grid,
+ .ir-generic-grid,
+ .ir-content-grid,
+ .ir-offers-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-role-select{
+  padding-inline:18px!important;
+ }
+
+ .ir-role-select>div{
+  width:100%!important;
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-role-select button{
+  width:100%!important;
+ }
+
+ .ir-inline-form{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-audit-list article{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-live-room__stage{
+  height:auto!important;
+  min-height:230px!important;
+ }
+
+ .ir-modal>header,
+ .ir-modal>footer{
+  flex-wrap:wrap!important;
+  gap:10px!important;
+ }
+
+ .ir-modal>footer>*{
+  flex:1 1 auto!important;
+ }
+}
+
+@media(max-width:520px){
+ .ir-chisti-main-chat__messages{
+  padding:16px 11px;
+ }
+
+ .ir-chisti-main-chat__composer{
+  padding-inline:10px;
+ }
+
+ .ir-chisti-main-chat__subject-row{
+  align-items:flex-start;
+  flex-direction:column;
+  gap:6px;
+ }
+
+ .ir-chisti-main-chat__subject-row small{
+  line-height:1.7;
+ }
+
+ .ir-chisti-main-chat__composer-box{
+  grid-template-columns:38px minmax(0,1fr) 38px;
+  border-radius:16px;
+ }
+
+ .ir-chisti-main-chat__attach,
+ .ir-chisti-main-chat__send{
+  width:38px;
+  height:38px;
+ }
+
+ .ir-chisti-main-chat__message{
+  width:100%;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:7px;
+ }
+
+ .ir-chisti-main-chat__avatar{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+ }
+
+ .ir-chisti-main-chat__message>div:last-child{
+  padding:11px 12px;
+ }
+
+ .ir-chisti-main-chat__message p{
+  font-size:12px;
+ }
+
+ .ir-trust-strip{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+
+ .ir-topbar{
+  padding-inline:12px!important;
+ }
+
+ .ir-main-content{
+  padding-inline:12px!important;
+ }
+
+ .ir-toast-stack{
+  right:8px!important;
+  left:8px!important;
+  bottom:calc(88px + env(safe-area-inset-bottom))!important;
+ }
+
+ .ir-toast{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+ }
+
+ .ir-table-actions{
+  flex-direction:column!important;
+ }
+
+ .ir-table-actions .ir-button{
+  width:100%!important;
+ }
+}
+
+/* ========================================================================
+   IRANCELL VISUAL IDENTITY — FINAL DESKTOP LAYOUT CONTRACT
+   This block intentionally lives at the end of the stylesheet so old
+   mobile/prototype fidelity rules cannot collapse desktop back to 390/720px.
+   ======================================================================== */
+
+@media(min-width:1200px){
+
+ /* ---------------------------------------------------------------------
+    1. Desktop application canvas + right RTL navigation rail
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:100dvh!important;
+  height:auto!important;
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+  background:var(--ir-surface-soft)!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock{
+  position:relative!important;
+  display:block!important;
+  min-height:100dvh!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:100dvh!important;
+  height:auto!important;
+  margin:0!important;
+  padding-top:0!important;
+  padding-right:288px!important;
+  padding-bottom:0!important;
+  padding-left:0!important;
+  overflow:visible!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:100dvh!important;
+  height:auto!important;
+  max-height:none!important;
+  margin:0!important;
+  overflow:visible!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface.is-standard{
+  width:min(1120px,calc(100% - 32px))!important;
+  max-width:1120px!important;
+  margin-right:auto!important;
+  margin-left:auto!important;
+  padding-top:32px!important;
+  padding-right:0!important;
+  padding-bottom:48px!important;
+  padding-left:0!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface.is-full-bleed{
+  width:100%!important;
+  min-height:100dvh!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    3. Canonical desktop content surface
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock :is(
+  .ir-student-home-svg,
+  .ir-student-profile-main-page,
+  .ir-student-profile-edit-page,
+  .ir-student-subpage,
+  .ir-classes-main,
+  .ir-new-class-request,
+  .ir-offers-marketplace,
+  .ir-provider-profile,
+  .ir-course-detail,
+  .ir-student-notifications-page,
+  .ir-student-support-page,
+  .ir-support-create-page,
+  .ir-support-request-detail,
+  .ir-support-request-success,
+  .ir-support-satisfaction-page,
+  .ir-post-rating-page,
+  .ir-dialogi-handoff,
+  .ir-booking-flow
+ ){
+  width:min(1120px,calc(100% - 32px))!important;
+  min-width:0!important;
+  max-width:1120px!important;
+
+  height:auto!important;
+  min-height:100dvh!important;
+  max-height:none!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+
+  padding-top:32px!important;
+  padding-right:32px!important;
+  padding-bottom:48px!important;
+  padding-left:32px!important;
+
+  overflow-x:hidden!important;
+  overflow-y:visible!important;
+
+  scrollbar-gutter:auto!important;
+  overscroll-behavior:auto!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock :is(
+  .ir-student-home-svg,
+  .ir-student-profile-main-page,
+  .ir-student-profile-edit-page,
+  .ir-student-subpage,
+  .ir-classes-main,
+  .ir-new-class-request,
+  .ir-offers-marketplace,
+  .ir-provider-profile,
+  .ir-student-notifications-page,
+  .ir-student-support-page,
+  .ir-post-rating-page
+ ){
+  background:transparent!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    4. Remove legacy 720 / 760 / 820 / 900 desktop caps
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock :is(
+  .ir-my-courses-page__summary,
+  .ir-my-courses-page__list,
+  .ir-achievements-page__hero,
+  .ir-achievements-page__stats,
+  .ir-achievements-page__section,
+  .ir-achievements-page__footer-actions,
+  .ir-badges-page__summary,
+  .ir-badges-page__grid,
+  .ir-badges-page__detail,
+  .ir-badges-page__next,
+  .ir-certificates-page__list,
+  .ir-privacy-page__group,
+  .ir-privacy-page__trust,
+  .ir-privacy-page__footer,
+  .ir-privacy-settings-page__intro,
+  .ir-privacy-settings-page__list,
+  .ir-privacy-settings-page__note,
+  .ir-privacy-settings-page__saved,
+  .ir-privacy-activity-page__timeline,
+  .ir-privacy-activity-page__footer,
+  .ir-student-subpage__chips,
+  .ir-student-subpage__primary,
+  .ir-student-notifications-page__groups,
+  .ir-student-notifications-page__list,
+  .ir-student-notifications-page__empty,
+  .ir-student-support-page__hero,
+  .ir-student-support-page__search,
+  .ir-student-support-page__quick,
+  .ir-student-support-page__topics,
+  .ir-student-support-page__faq-list,
+  .ir-student-support-page__need-help,
+  .ir-student-support-page__contact,
+  .ir-student-support-page__success,
+  .ir-student-support-page__status,
+  .ir-post-rating-page__provider,
+  .ir-post-rating-page__form,
+  .ir-post-rating-page__comment,
+  .ir-post-rating-page__anonymous,
+  .ir-post-rating-page__blocked,
+  .ir-post-rating-page__complaint,
+  .ir-dialogi-handoff__hero,
+  .ir-dialogi-handoff__countdown,
+  .ir-dialogi-handoff__gates,
+  .ir-dialogi-handoff__message,
+  .ir-dialogi-handoff__privacy,
+  .ir-classes-main__header,
+  .ir-classes-main__new-request,
+  .ir-classes-main__section,
+  .ir-provider-profile__topbar,
+  .ir-provider-profile__hero,
+  .ir-provider-profile__card,
+  .ir-provider-profile__chips,
+  .ir-provider-profile__stats,
+  .ir-provider-profile__reviews,
+  .ir-provider-profile__availability,
+  .ir-provider-profile__pricing,
+  .ir-course-detail__topbar,
+  .ir-course-detail__hero,
+  .ir-course-detail__body,
+  .ir-course-detail__purchase,
+  .ir-new-class-request__header,
+  .ir-new-class-request__form
+ ){
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  margin-right:0!important;
+  margin-left:0!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    5. Student home desktop composition
+    Mobile horizontal carousels become real desktop grids.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:24px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg__chips{
+  width:100%!important;
+
+  margin-right:0!important;
+  margin-left:0!important;
+
+  padding-right:0!important;
+  padding-left:0!important;
+
+  overflow:visible!important;
+  flex-wrap:wrap!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg__courses,
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg__videos{
+  display:grid!important;
+
+  grid-auto-flow:row!important;
+  grid-auto-columns:auto!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+
+  gap:16px!important;
+
+  width:100%!important;
+
+  margin-right:0!important;
+  margin-left:0!important;
+
+  padding:0!important;
+
+  overflow:visible!important;
+
+  scroll-snap-type:none!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg__courses>article,
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg__videos>article{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+
+  scroll-snap-align:none!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-home-svg__continue{
+  min-height:170px!important;
+  padding:20px!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    6. Classes desktop composition
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-classes-main{
+  padding-top:32px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-classes-main__requests,
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-classes-main__class-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:16px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-classes-main__new-request{
+  grid-template-columns:64px minmax(0,1fr) 50px!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    7. Marketplace / providers desktop composition
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-offers-marketplace__list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+
+  padding-bottom:24px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-provider-profile__stats{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-provider-profile__sticky-action{
+  position:static!important;
+
+  width:100%!important;
+  max-width:none!important;
+
+  margin-top:20px!important;
+
+  padding:0!important;
+
+  background:transparent!important;
+  box-shadow:none!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    8. Forms and profile desktop composition
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-new-class-request__two-columns{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:16px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-profile-main-page__metrics,
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-achievements-page__stats{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-badges-page__grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:16px!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    9. Notifications / support / privacy desktop composition
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-subpage__topbar{
+  min-height:60px!important;
+  margin-bottom:28px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-subpage__topbar h1{
+  font-size:24px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-subpage__chips,
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-ui-filter-tabs{
+  overflow:visible!important;
+  flex-wrap:wrap!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-notifications-page__groups{
+  gap:24px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-notifications-page__list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-student-notifications-page__list>button{
+  margin:0!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    10. Generic Visual Identity scaffold sizing
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-ui-page-scaffold{
+  width:min(1120px,calc(100% - 32px))!important;
+  max-width:1120px!important;
+
+  margin-right:auto!important;
+  margin-left:auto!important;
+
+  padding:32px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-ui-page-scaffold.is-full-bleed{
+  width:min(1120px,calc(100% - 32px))!important;
+  max-width:1120px!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock .ir-ui-page-scaffold__header{
+  min-height:58px!important;
+  margin-bottom:28px!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    11. Desktop cards should not inherit mobile fixed heights/scroll regions.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock :is(
+  .ir-student-home-svg,
+  .ir-student-profile-main-page,
+  .ir-student-profile-edit-page,
+  .ir-student-subpage,
+  .ir-classes-main,
+  .ir-new-class-request,
+  .ir-offers-marketplace,
+  .ir-provider-profile,
+  .ir-course-detail,
+  .ir-student-notifications-page,
+  .ir-student-support-page,
+  .ir-post-rating-page
+ ){
+  scroll-padding-bottom:0!important;
+  -webkit-overflow-scrolling:auto!important;
+  touch-action:auto!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    12. Keep immersive Chisti independent from the IranCell yellow rail.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host:not(.has-persistent-dock) .ir-chisti-main-chat{
+  width:100%!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+  height:100dvh!important;
+
+  margin:0!important;
+ }
+}
+
+/* ========================================================================
+   DESKTOP AUTH + COLLAPSIBLE NAVIGATION + DASHBOARD LAYOUT
+   Final rules intentionally follow the legacy fidelity layers.
+   ======================================================================== */
+
+@media(min-width:1200px){
+
+ /* ---------------------------------------------------------------------
+    App-level navigation rail:
+    76px icon mode -> 248px full mode on hover/focus.
+    The route itself keeps painting underneath the rail.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-route-layer-host.has-persistent-dock{
+  position:relative!important;
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  min-height:100dvh!important;
+  overflow-x:hidden!important;
+  background:var(--ir-surface-soft)!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:100dvh!important;
+  height:auto!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+  background:transparent!important;
+ }
+
+ /* Keep application content clear of the collapsed icons without cutting
+    the page/background into a separate sidebar column. */
+
+ html body #root .ir-route-layer-host.has-persistent-dock>.ir-route-layer-host__page>.ir-screen-surface.is-standard{
+  width:min(1120px,calc(100% - 144px))!important;
+  max-width:1120px!important;
+
+  margin-right:112px!important;
+  margin-left:auto!important;
+
+  padding-top:32px!important;
+  padding-right:0!important;
+  padding-bottom:48px!important;
+  padding-left:0!important;
+ }
+
+ html body #root .ir-route-layer-host.has-persistent-dock :is(
+  .ir-student-profile-main-page,
+  .ir-student-profile-edit-page,
+  .ir-student-subpage,
+  .ir-classes-main,
+  .ir-new-class-request,
+  .ir-offers-marketplace,
+  .ir-provider-profile,
+  .ir-course-detail,
+  .ir-student-notifications-page,
+  .ir-student-support-page,
+  .ir-support-create-page,
+  .ir-support-request-detail,
+  .ir-support-request-success,
+  .ir-support-satisfaction-page,
+  .ir-post-rating-page,
+  .ir-dialogi-handoff,
+  .ir-booking-flow,
+  .ir-ui-page-scaffold
+ ){
+  width:min(1120px,calc(100% - 144px))!important;
+  max-width:1120px!important;
+
+  margin-right:112px!important;
+  margin-left:auto!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Actual production student dashboard.
+    Keep #fffae0 beneath the rail and compose cards as desktop columns.
+    --------------------------------------------------------------------- */
+
+ html body:has(.ir-exact-student-dashboard) #root .ir-route-layer-host,
+ html body:has(.ir-exact-student-dashboard) #root .ir-route-layer-host__page,
+ html body:has(.ir-exact-student-dashboard) #root .ir-screen-surface{
+  background:#fffae0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard{
+  display:block!important;
+
+  width:100%!important;
+  max-width:none!important;
+
+  min-height:100dvh!important;
+  height:auto!important;
+  max-height:none!important;
+
+  margin:0!important;
+  padding:0 0 64px!important;
+
+  overflow:visible!important;
+
+  color:var(--ir-ink)!important;
+  background:#fffae0!important;
+
+  border-radius:0!important;
+  box-shadow:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__header{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr) 48px!important;
+  align-items:center!important;
+  gap:12px!important;
+
+  width:min(1120px,calc(100% - 144px))!important;
+  max-width:1120px!important;
+  min-height:76px!important;
+
+  margin:0 112px 24px auto!important;
+  padding:14px 18px!important;
+
+  direction:ltr!important;
+
+  background:rgba(255,255,255,.86)!important;
+
+  border:1px solid rgba(229,229,234,.9)!important;
+  border-top:0!important;
+  border-radius:0 0 18px 18px!important;
+
+  box-shadow:0 8px 28px rgba(17,17,17,.045)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__header>div{
+  direction:rtl!important;
+  text-align:right!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr)!important;
+  grid-template-areas:
+   "welcome chisti"
+   "today continue"!important;
+
+  align-items:start!important;
+
+  gap:20px!important;
+
+  width:min(1120px,calc(100% - 144px))!important;
+  max-width:1120px!important;
+
+  margin:0 112px 0 auto!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__offline{
+  grid-column:1/-1!important;
+  grid-row:1!important;
+
+  width:100%!important;
+  margin:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__offline+.ir-exact-student-dashboard__welcome{
+  margin-top:54px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome{
+  grid-area:welcome!important;
+
+  width:100%!important;
+  height:100%!important;
+  min-height:250px!important;
+
+  margin:0!important;
+  padding:24px!important;
+
+  border:1px solid rgba(226,214,151,.78)!important;
+  border-radius:20px!important;
+
+  box-shadow:0 10px 28px rgba(77,62,0,.045)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome h1{
+  font-size:clamp(22px,2vw,28px)!important;
+  line-height:1.55!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome>p{
+  max-width:620px!important;
+
+  font-size:13px!important;
+  line-height:1.9!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__welcome footer{
+  margin-top:24px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty{
+  grid-area:chisti!important;
+
+  display:grid!important;
+  grid-template-columns:50px minmax(0,1fr)!important;
+
+  width:100%!important;
+  min-height:250px!important;
+
+  margin:0!important;
+  padding:22px!important;
+
+  align-content:start!important;
+
+  border:1px solid rgba(226,214,151,.78)!important;
+  border-radius:20px!important;
+
+  box-shadow:0 10px 28px rgba(77,62,0,.045)!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-copy{
+  min-width:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search,
+ html body #root .ir-exact-student-dashboard__chisty>.ir-shared-file-uploader,
+ html body #root .ir-exact-student-dashboard__chisty-error,
+ html body #root .ir-exact-student-dashboard__chisty-answer{
+  grid-column:1/-1!important;
+
+  width:100%!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__chisty-search{
+  margin-top:20px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__today{
+  grid-area:today!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  margin:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-section{
+  grid-area:continue!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  margin:0!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__section-heading{
+  min-height:44px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+
+  gap:10px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__schedule>button{
+  width:100%!important;
+  min-height:78px!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list{
+  display:grid!important;
+  grid-auto-flow:row!important;
+  grid-auto-columns:auto!important;
+  grid-template-columns:1fr!important;
+
+  gap:10px!important;
+
+  width:100%!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:visible!important;
+
+  scroll-snap-type:none!important;
+ }
+
+ html body #root .ir-exact-student-dashboard__continue-list>button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:108px!important;
+
+  scroll-snap-align:none!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Alternate AppShell implementation.
+    index.jsx still references this shell, so it must obey the same
+    collapsed desktop rail behavior instead of reserving 264px forever.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-shell--visual-identity{
+  position:relative!important;
+
+  display:block!important;
+
+  width:100%!important;
+  min-height:100dvh!important;
+
+  background:var(--ir-surface-soft)!important;
+ }
+
+ html body #root .ir-shell--visual-identity .ir-shell__main{
+  display:block!important;
+
+  width:100%!important;
+  min-width:0!important;
+
+  margin:0!important;
+  padding:0!important;
+ }
+
+ html body #root .ir-shell--visual-identity .ir-brand{
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr)!important;
+
+  width:100%!important;
+  min-height:58px!important;
+
+  padding:0!important;
+
+  overflow:hidden!important;
+ }
+
+ html body #root .ir-shell--visual-identity .ir-main-content{
+  width:100%!important;
+  max-width:none!important;
+
+  min-height:calc(100dvh - 70px)!important;
+
+  margin:0!important;
+  padding:28px 112px 64px 32px!important;
+
+  overflow:visible!important;
+
+  background:transparent!important;
+ }
+
+}
+
+/* ========================================================================
+   LOGIN + ONBOARDING DESKTOP
+   Mobile keeps the native 390/402px references; desktop becomes a real
+   product layout instead of a phone canvas centered on gray.
+   ======================================================================== */
+
+@media(min-width:1024px){
+
+ /* ---------------------------------------------------------------------
+    Shared identity canvas
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-mobile-login-light,
+ html body #root .ir-mobile-onboarding{
+  display:grid!important;
+  place-items:center!important;
+
+  width:100%!important;
+  max-width:none!important;
+
+  height:100dvh!important;
+  min-height:100svh!important;
+
+  margin:0!important;
+  padding:32px!important;
+
+  overflow:hidden!important;
+
+  color:var(--ir-ink)!important;
+
+  background:
+   radial-gradient(circle at 14% 16%,rgba(255,209,0,.19),transparent 25%),
+   radial-gradient(circle at 88% 82%,rgba(255,209,0,.1),transparent 28%),
+   #fffae0!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Login / registration
+    Existing mobile DOM becomes two desktop regions:
+    brand/demo at left and authentication at right.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-mobile-login-light__screen,
+ html body #root .ir-mobile-login-light__screen.is-login,
+ html body #root .ir-mobile-login-light__screen.is-create{
+  position:relative!important;
+  isolation:isolate!important;
+
+  display:grid!important;
+
+  grid-template-columns:minmax(320px,.84fr) minmax(420px,1.16fr)!important;
+  grid-template-rows:auto auto minmax(0,1fr) auto auto!important;
+  grid-template-areas:
+   "brand tabs"
+   "app copy"
+   "demo form"
+   "demo divider"
+   "demo otp"!important;
+
+  column-gap:56px!important;
+  row-gap:14px!important;
+
+  width:min(1180px,calc(100vw - 64px))!important;
+  min-width:0!important;
+  max-width:1180px!important;
+
+  height:min(800px,calc(100dvh - 64px))!important;
+  min-height:min(680px,calc(100dvh - 64px))!important;
+  max-height:calc(100dvh - 64px)!important;
+
+  margin:0!important;
+  padding:48px!important;
+
+  overflow:hidden!important;
+
+  direction:ltr!important;
+
+  color:var(--ir-ink)!important;
+  background:var(--ir-surface)!important;
+
+  border:1px solid rgba(225,220,189,.9)!important;
+  border-radius:28px!important;
+
+  box-shadow:0 22px 70px rgba(52,44,5,.1)!important;
+ }
+
+ html body #root .ir-mobile-login-light__screen::before{
+  content:""!important;
+
+  position:absolute!important;
+  z-index:0!important;
+  top:0!important;
+  bottom:0!important;
+  left:0!important;
+
+  width:40%!important;
+
+  background:
+   radial-gradient(circle at 25% 20%,rgba(255,209,0,.28),transparent 25%),
+   radial-gradient(circle at 80% 78%,rgba(255,209,0,.15),transparent 30%),
+   #fff8d7!important;
+
+  border-radius:28px 0 0 28px!important;
+ }
+
+ html body #root .ir-mobile-login-light__screen::after{
+  content:""!important;
+
+  position:absolute!important;
+  z-index:0!important;
+  left:7%!important;
+  bottom:10%!important;
+
+  width:190px!important;
+  height:190px!important;
+
+  border:34px solid rgba(255,209,0,.14)!important;
+  border-radius:50%!important;
+
+  pointer-events:none!important;
+ }
+
+ html body #root .ir-mobile-login-light__screen>:not(.ir-mobile-login-light__terms-modal){
+  position:relative!important;
+  z-index:1!important;
+
+  min-width:0!important;
+
+  direction:rtl!important;
+ }
+
+ html body #root .ir-mobile-login-light__brand{
+  grid-area:brand!important;
+
+  align-self:end!important;
+  justify-self:center!important;
+
+  width:100%!important;
+  min-height:88px!important;
+
+  margin:0!important;
+ }
+
+ html body #root .ir-mobile-login-light__brand .ir-brand-mark{
+  width:128px!important;
+  max-width:128px!important;
+
+  filter:drop-shadow(0 14px 24px rgba(255,209,0,.26))!important;
+ }
+
+ html body #root .ir-mobile-login-light__app{
+  grid-area:app!important;
+
+  align-self:start!important;
+
+  width:100%!important;
+
+  margin:0!important;
+
+  color:var(--ir-ink-strong)!important;
+
+  font-size:26px!important;
+  font-weight:900!important;
+  line-height:1.5!important;
+
+  text-align:center!important;
+ }
+
+ html body #root .ir-mobile-login-light__tabs{
+  grid-area:tabs!important;
+
+  width:100%!important;
+  max-width:520px!important;
+  min-height:54px!important;
+
+  margin:0!important;
+
+  justify-self:end!important;
+
+  background:var(--ir-surface-muted)!important;
+
+  border:1px solid var(--ir-border)!important;
+  border-radius:14px!important;
+ }
+
+ html body #root .ir-mobile-login-light__tabs button{
+  min-height:46px!important;
+
+  font-size:14px!important;
+ }
+
+ html body #root .ir-mobile-login-light__copy{
+  grid-area:copy!important;
+
+  width:100%!important;
+  max-width:520px!important;
+
+  margin:0!important;
+
+  justify-self:end!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-login-light__copy h2{
+  margin:0 0 8px!important;
+
+  color:var(--ir-ink-strong)!important;
+
+  font-size:30px!important;
+  line-height:1.45!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-login-light__copy p{
+  width:100%!important;
+  max-width:490px!important;
+
+  margin:0!important;
+
+  color:var(--ir-text-secondary)!important;
+
+  font-size:13px!important;
+  line-height:1.9!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-login-light__form{
+  grid-area:form!important;
+
+  align-self:start!important;
+  justify-self:end!important;
+
+  display:flex!important;
+  flex-direction:column!important;
+
+  width:100%!important;
+  max-width:520px!important;
+  min-width:0!important;
+
+  margin:4px 0 0!important;
+ }
+
+ html body #root .ir-mobile-login-light__field{
+  width:100%!important;
+  min-height:54px!important;
+
+  margin-bottom:12px!important;
+
+  background:#fff!important;
+
+  border-color:var(--ir-border)!important;
+ }
+
+ html body #root .ir-mobile-login-light__submit{
+  min-height:54px!important;
+
+  margin-bottom:18px!important;
+
+  background:var(--ir-brand-yellow)!important;
+
+  border-radius:13px!important;
+
+  box-shadow:0 10px 24px rgba(181,143,0,.11)!important;
+ }
+
+ html body #root .ir-mobile-login-light__forgot{
+  margin:0 0 18px!important;
+ }
+
+ html body #root .ir-mobile-login-light__divider{
+  grid-area:divider!important;
+
+  width:100%!important;
+  max-width:520px!important;
+
+  margin:0!important;
+
+  justify-self:end!important;
+ }
+
+ html body #root .ir-mobile-login-light__otp{
+  grid-area:otp!important;
+
+  width:100%!important;
+  max-width:520px!important;
+  min-height:54px!important;
+
+  margin:0!important;
+
+  justify-self:end!important;
+
+  background:#fff!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo{
+  grid-area:demo!important;
+
+  align-self:start!important;
+
+  width:100%!important;
+  max-width:none!important;
+  min-height:0!important;
+
+  margin:16px 0 0!important;
+  padding:18px!important;
+
+  overflow:hidden!important;
+
+  background:rgba(255,255,255,.58)!important;
+
+  border:1px solid rgba(226,214,151,.78)!important;
+  border-radius:18px!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>header{
+  margin:0 0 12px!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>header strong{
+  font-size:14px!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>header small{
+  font-size:10px!important;
+  line-height:1.7!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>div{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+
+  gap:8px!important;
+
+  width:100%!important;
+  max-height:340px!important;
+
+  padding:1px!important;
+
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+
+  scroll-snap-type:none!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>div>button{
+  display:flex!important;
+  flex:initial!important;
+
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:96px!important;
+
+  padding:11px!important;
+
+  scroll-snap-align:none!important;
+
+  background:rgba(255,255,255,.86)!important;
+
+  border-color:rgba(222,211,150,.78)!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>div>button strong{
+  font-size:12px!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>div>button span{
+  font-size:10px!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>div>button small{
+  font-size:9px!important;
+ }
+
+ html body #root .ir-mobile-login-light__screen.is-create .ir-mobile-login-light__brand,
+ html body #root .ir-mobile-login-light__screen.is-create .ir-mobile-login-light__app,
+ html body #root .ir-mobile-login-light__screen.is-create .ir-mobile-login-light__tabs,
+ html body #root .ir-mobile-login-light__screen.is-create .ir-mobile-login-light__copy,
+ html body #root .ir-mobile-login-light__screen.is-create .ir-mobile-login-light__field,
+ html body #root .ir-mobile-login-light__screen.is-create .ir-mobile-login-light__submit{
+  margin-top:0!important;
+ }
+
+ /* Terms becomes a centered desktop dialog rather than a mobile sheet. */
+
+ html body #root .ir-mobile-login-light__terms-modal{
+  align-items:center!important;
+
+  padding:32px!important;
+ }
+
+ html body #root .ir-mobile-login-light__terms-modal>section{
+  width:min(680px,calc(100vw - 64px))!important;
+  max-width:680px!important;
+  max-height:min(720px,calc(100dvh - 64px))!important;
+
+  padding:16px 24px 24px!important;
+
+  border:1px solid var(--ir-border)!important;
+  border-radius:24px!important;
+
+  box-shadow:0 24px 72px rgba(17,17,17,.2)!important;
+ }
+
+ html body #root .ir-mobile-login-light__terms-modal>section::before{
+  display:none!important;
+ }
+
+ /* ---------------------------------------------------------------------
+    Onboarding:
+    illustration at left, content/actions at right.
+    --------------------------------------------------------------------- */
+
+ html body #root .ir-mobile-onboarding__shell{
+  position:relative!important;
+
+  display:grid!important;
+  grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr)!important;
+
+  align-items:stretch!important;
+  justify-content:stretch!important;
+
+  width:min(1180px,calc(100vw - 64px))!important;
+  min-width:0!important;
+  max-width:1180px!important;
+
+  height:min(760px,calc(100dvh - 64px))!important;
+  min-height:min(620px,calc(100dvh - 64px))!important;
+  max-height:calc(100dvh - 64px)!important;
+
+  margin:0!important;
+  padding:0!important;
+
+  overflow:hidden!important;
+
+  direction:ltr!important;
+
+  background:var(--ir-surface)!important;
+
+  border:1px solid rgba(225,220,189,.9)!important;
+  border-radius:28px!important;
+
+  box-shadow:0 22px 70px rgba(52,44,5,.1)!important;
+ }
+
+ html body #root .ir-mobile-onboarding__visual{
+  grid-column:1!important;
+  grid-row:1!important;
+
+  display:grid!important;
+  place-items:center!important;
+
+  width:100%!important;
+  height:100%!important;
+
+  min-height:0!important;
+  max-height:none!important;
+
+  padding:56px!important;
+
+  overflow:hidden!important;
+
+  background:
+   radial-gradient(circle at 22% 24%,rgba(255,209,0,.3),transparent 25%),
+   radial-gradient(circle at 76% 76%,rgba(255,209,0,.14),transparent 30%),
+   #fff8d7!important;
+ }
+
+ html body #root .ir-mobile-onboarding__visual::after{
+  content:""!important;
+
+  position:absolute!important;
+
+  width:min(360px,32vw)!important;
+  height:min(360px,32vw)!important;
+
+  border:42px solid rgba(255,209,0,.1)!important;
+  border-radius:50%!important;
+
+  pointer-events:none!important;
+ }
+
+ html body #root .ir-mobile-onboarding__visual .ir-onboarding-svg{
+  position:relative!important;
+  z-index:1!important;
+
+  width:min(500px,42vw)!important;
+  max-width:100%!important;
+
+  height:auto!important;
+  max-height:560px!important;
+
+  margin:0!important;
+
+  object-fit:contain!important;
+ }
+
+ html body #root .ir-mobile-onboarding__content{
+  grid-column:2!important;
+  grid-row:1!important;
+
+  position:relative!important;
+
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+
+  width:100%!important;
+  min-width:0!important;
+  height:100%!important;
+
+  padding:72px 58px!important;
+
+  direction:rtl!important;
+  text-align:right!important;
+
+  background:var(--ir-surface)!important;
+ }
+
+ html body #root .ir-mobile-onboarding__content::before{
+  content:"آموزش ایرانسل"!important;
+
+  display:flex!important;
+  align-items:center!important;
+
+  min-height:42px!important;
+
+  margin:0 0 48px!important;
+  padding-right:48px!important;
+
+  color:var(--ir-ink-strong)!important;
+
+  background:
+   radial-gradient(
+    circle at calc(100% - 18px) 50%,
+    var(--ir-brand-yellow) 0 16px,
+    transparent 17px
+   )!important;
+
+  font-size:14px!important;
+  font-weight:900!important;
+ }
+
+ html body #root .ir-mobile-onboarding__copy{
+  width:100%!important;
+
+  margin:0!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-onboarding__copy h1{
+  margin:0 0 14px!important;
+
+  color:var(--ir-ink-strong)!important;
+
+  font-size:clamp(30px,3vw,38px)!important;
+  font-weight:900!important;
+  line-height:1.45!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-onboarding__copy p{
+  width:100%!important;
+  max-width:470px!important;
+
+  margin:0!important;
+
+  color:var(--ir-text-secondary)!important;
+
+  font-size:14px!important;
+  line-height:2!important;
+
+  text-align:right!important;
+ }
+
+ html body #root .ir-mobile-onboarding__dots{
+  justify-content:flex-start!important;
+
+  margin:42px 0 24px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__actions{
+  display:grid!important;
+  grid-template-columns:minmax(180px,1fr) auto!important;
+
+  align-items:center!important;
+
+  gap:14px!important;
+
+  width:100%!important;
+
+  direction:rtl!important;
+ }
+
+ html body #root .ir-mobile-onboarding__actions button{
+  min-height:54px!important;
+
+  font-size:14px!important;
+
+  border-radius:13px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__next{
+  width:100%!important;
+  min-width:180px!important;
+  max-width:none!important;
+  flex:initial!important;
+
+  min-height:54px!important;
+
+  background:var(--ir-brand-yellow)!important;
+
+  border-radius:13px!important;
+
+  box-shadow:0 10px 24px rgba(181,143,0,.12)!important;
+ }
+
+ html body #root .ir-mobile-onboarding__skip{
+  width:auto!important;
+  min-width:88px!important;
+
+  padding-right:14px!important;
+  padding-left:14px!important;
+
+  color:var(--ir-text-secondary)!important;
+
+  background:transparent!important;
+
+  border:0!important;
+ }
+
+}
+
+/* Slightly tighter desktop identity layout for common laptop heights. */
+@media(min-width:1024px) and (max-height:760px){
+
+ html body #root .ir-mobile-login-light,
+ html body #root .ir-mobile-onboarding{
+  padding:20px!important;
+ }
+
+ html body #root .ir-mobile-login-light__screen,
+ html body #root .ir-mobile-onboarding__shell{
+  width:min(1160px,calc(100vw - 40px))!important;
+  height:calc(100dvh - 40px)!important;
+  min-height:0!important;
+  max-height:calc(100dvh - 40px)!important;
+ }
+
+ html body #root .ir-mobile-login-light__screen{
+  padding:30px 38px!important;
+  column-gap:42px!important;
+ }
+
+ html body #root .ir-mobile-login-light__demo>div{
+  max-height:250px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__content{
+  padding:42px 46px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__content::before{
+  margin-bottom:28px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__dots{
+  margin-top:28px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__visual{
+  padding:38px!important;
+ }
+
+ html body #root .ir-mobile-onboarding__visual .ir-onboarding-svg{
+  max-height:470px!important;
+ }
+
+}}

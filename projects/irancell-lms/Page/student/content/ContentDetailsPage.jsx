@@ -1,7 +1,7 @@
 export function IrancellStudentContentDetailsPage({params,onNavigate}){
  const{state,dispatch}=useIrancellStore();
  const content=state.content.catalogueById[params.id];
- const progress=Math.max(0,Math.min(100,Number(state.content.watchProgress[params.id])||0));
+ const progress=Math.max(0,Math.min(100,Number(state.content.progressByStudentId?.[state.session.currentUserId]?.[params.id])||0));
  const[playing,setPlaying]=useState(false);
  const[activeTab,setActiveTab]=useState('description');
  const[showAllChapters,setShowAllChapters]=useState(false);
@@ -360,6 +360,7 @@ export function IrancellStudentContentDetailsPage({params,onNavigate}){
 
   <footer className="ir-course-detail__purchase">
    <button type="button" onClick={handlePrimaryAction}>{purchased?(progress>15?'ادامه دوره':'شروع دوره'):currentPrice>0?'افزودن به دوره‌های من':'شروع رایگان'}</button>
+   {purchased&&<button type="button" onClick={()=>onNavigate?.('student/assignments')} style={{color:'#202024',background:'#FFFFFF',border:'1px solid #D9D9DE'}}>تمرین‌ها و تکالیف دوره</button>}
   </footer>
  </section>
 }

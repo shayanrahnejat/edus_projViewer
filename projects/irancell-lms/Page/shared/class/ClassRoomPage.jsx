@@ -104,7 +104,10 @@ export function IrancellSharedClassRoomPage({params,onNavigate}){
   {openResult==='blocked'&&<aside className="ir-dialogi-handoff__message is-warning"><strong>باز شدن صفحه مسدود شد</strong><p>حضور شما در فروشگاه ثبت شده است. اجازه باز شدن صفحه خارجی را در مرورگر فعال کنید و دوباره تلاش کنید.</p></aside>}
   {openResult==='opened'&&<aside className="ir-dialogi-handoff__message is-success"><strong>دیالوگی باز شد</strong><p>حضور شما در فروشگاه ثبت شد. پس از پایان جلسه برای ثبت نتیجه به این صفحه برگردید.</p></aside>}
 
-  <button type="button" className="ir-student-subpage__primary" disabled={!gate.allowed} onClick={openDialogi}>{safeDialogiUrl?'ثبت حضور و ورود امن به دیالوگی':'ثبت حضور و ورود به کلاس'}</button>
+  <div style={{display:'flex',width:'100%',flexWrap:'wrap',gap:'9px'}}>
+   <button type="button" className="ir-student-subpage__primary" disabled={!gate.allowed} onClick={openDialogi} style={{flex:'1 1 220px'}}>{session.status==='live'?'ورود دوباره به کلاس':safeDialogiUrl?'ثبت حضور و ورود امن به دیالوگی':'ثبت حضور و ورود به کلاس'}</button>
+   {session.status==='live'&&<button type="button" onClick={()=>dispatch(IrancellClassEnd(session.id))} style={{boxSizing:'border-box',minHeight:'48px',flex:'1 1 190px',padding:'10px 16px',cursor:'pointer',color:'#FFFFFF',background:'#202024',border:'1px solid #202024',borderRadius:'13px',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif',fontSize:'12px',fontWeight:900}}>پایان کلاس و ثبت نتیجه</button>}
+  </div>
 
   <footer className="ir-dialogi-handoff__privacy">
    <svg viewBox="0 0 24 24"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6Z"/></svg>

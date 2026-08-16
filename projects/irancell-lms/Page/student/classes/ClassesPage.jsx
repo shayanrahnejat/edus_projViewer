@@ -134,8 +134,8 @@ export function IrancellStudentClassesPage({onNavigate}){
        </span>
       </div>
 
-      <button type="button" className="ir-classes-main__enter" onClick={()=>onNavigate?.(item.status==='live'?`class/${item.id}`:`student/classes/reservation/${item.id}`)}>
-       {item.status==='live'?'ورود به کلاس':'جزئیات رزرو'}
+      <button type="button" className="ir-classes-main__enter" onClick={()=>onNavigate?.(`class/${item.id}`)}>
+       {['live','ready','active'].includes(item.status)?'ورود به کلاس':'مشاهده و ورود'}
       </button>
      </article>
     }):<article className="ir-classes-main__empty">

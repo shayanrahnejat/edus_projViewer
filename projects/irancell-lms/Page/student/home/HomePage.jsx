@@ -14,7 +14,8 @@ export function IrancellStudentHomePage({onNavigate}){
  const unreadCount=Math.max(0,Number(state.notifications.unreadCount)||0);
  const classes=Object.values(state.classroom.sessionsById||{}).filter(item=>item.studentId===studentId&&!['completed','cancelled'].includes(item.status)).sort((first,second)=>new Date(first.startAt)-new Date(second.startAt));
  const nextClass=classes[0]||null;
- const progressEntries=Object.entries(state.content.watchProgress||{}).map(([contentId,value])=>({contentId,progress:Math.max(0,Math.min(100,Number(value)||0)),content:state.content.catalogueById[contentId]})).filter(item=>item.content);
+ const studentProgress=state.content.progressByStudentId?.[studentId]||{};
+ const progressEntries=Object.entries(studentProgress).map(([contentId,value])=>({contentId,progress:Math.max(0,Math.min(100,Number(value)||0)),content:state.content.catalogueById[contentId]})).filter(item=>item.content);
  const inProgressEntries=progressEntries.filter(item=>item.progress>0&&item.progress<100);
  const currentLearning=inProgressEntries[0]||null;
  const recommendationIds=Array.isArray(state.content.recommendations)?state.content.recommendations:[];
@@ -49,37 +50,37 @@ export function IrancellStudentHomePage({onNavigate}){
   }));
   IrancellChistiRunProcessing(dispatch,problemId)
  }
- return <section className="ir-exact-student-dashboard" aria-label="داشبورد دانش‌آموز">
-  <header className="ir-exact-student-dashboard__header">
-   <button type="button" className="ir-exact-student-dashboard__notifications" aria-label={unreadCount?`${IrancellFormatPersianNumber(unreadCount)} اعلان خوانده‌نشده`:'اعلان‌ها'} onClick={()=>onNavigate?.('student/notifications')}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
-    {unreadCount>0&&<i/>}
+ return <section data-ir-page-style="student-home-v6" aria-label="داشبورد دانش‌آموز" dir="rtl" style={{boxSizing:'border-box',display:'block',width:'100%',minWidth:0,maxWidth:'none',minHeight:'100%',margin:0,padding:'24px clamp(16px,3vw,32px) 48px',overflow:'visible',direction:'rtl',color:'#202024',background:'#FFF9DF',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
+  <header data-ir-student-header-inline="true" style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,maxWidth:'none',minHeight:'72px',gridTemplateColumns:'44px minmax(0,1fr)',alignItems:'center',gap:'14px',margin:'0 0 16px',padding:'6px 0 12px',direction:'ltr',borderBottom:'1px solid rgba(222,214,179,.72)',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
+   <button type="button" aria-label={unreadCount?`${IrancellFormatPersianNumber(unreadCount)} اعلان خوانده‌نشده`:'اعلان‌ها'} onClick={()=>onNavigate?.('student/notifications')} style={{boxSizing:'border-box',position:'relative',display:'grid',width:'44px',minWidth:'44px',height:'44px',placeItems:'center',margin:0,padding:0,cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'50%',boxShadow:'0 6px 18px rgba(62,52,12,.06)',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
+    <svg viewBox="0 0 24 24" aria-hidden="true" style={{display:'block',width:'21px',height:'21px',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+    {unreadCount>0&&<i aria-hidden="true" style={{position:'absolute',top:'7px',left:'8px',display:'block',width:'7px',height:'7px',background:'#E03A3A',border:'2px solid #FFFFFF',borderRadius:'50%'}}/>}
    </button>
-   <div className="ir-exact-student-dashboard__greeting">
-    <h1>سلام {firstName} جان، آماده‌ای یادگیری امروز رو شروع کنیم؟</h1>
-    <span>{student.grade||'پایه تحصیلی ثبت نشده'} / {student.name||'دانش‌آموز'}</span>
+   <div style={{display:'flex',minWidth:0,flexDirection:'column',alignItems:'flex-start',gap:'3px',direction:'rtl',textAlign:'right',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
+    <h1 style={{width:'100%',margin:0,color:'#202024',fontFamily:'inherit',fontSize:'clamp(20px,2.5vw,30px)',fontWeight:900,lineHeight:1.55}}>سلام {firstName} جان، آماده‌ای یادگیری امروز رو شروع کنیم؟</h1>
+    <span style={{color:'#777982',fontFamily:'inherit',fontSize:'12px',fontWeight:600,lineHeight:1.8}}>{student.grade||'پایه تحصیلی ثبت نشده'} / {student.name||'دانش‌آموز'}</span>
    </div>
   </header>
 
-  <main className="ir-exact-student-dashboard__body">
+  <main data-ir-student-body-inline="true" style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,maxWidth:'none',gridTemplateColumns:'minmax(0,1fr)',gridTemplateAreas:'"progress" "insights" "today" "continue"',gap:'22px',margin:0,padding:0,overflow:'visible',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
    {state.ui.offline&&<aside className="ir-exact-student-dashboard__offline" role="status">
     <span>اتصال اینترنت برقرار نیست؛ آخرین اطلاعات ذخیره‌شده نمایش داده می‌شود.</span>
    </aside>}
 
-   <article className="ir-exact-student-dashboard__welcome ir-exact-student-dashboard__progress-card">
-    <div className="ir-exact-student-dashboard__progress-card-copy">
-     <div className="ir-exact-student-dashboard__progress-label">
-      <strong>میزان پیشرفت تحصیلی این هفته شما</strong>
-      <span>{IrancellFormatPersianNumber(weeklyProgress)}٪</span>
+   <article style={{boxSizing:'border-box',gridArea:'progress',display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',gap:'18px 24px',margin:0,padding:'20px clamp(18px,3vw,28px)',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'22px',boxShadow:'0 10px 28px rgba(62,52,12,.07)',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
+    <div style={{display:'flex',minWidth:'min(100%,360px)',flex:'1 1 520px',flexDirection:'column',gap:'10px'}}>
+     <div style={{display:'flex',width:'100%',alignItems:'center',justifyContent:'space-between',gap:'14px'}}>
+      <strong style={{color:'#202024',fontFamily:'inherit',fontSize:'clamp(13px,1.7vw,16px)',fontWeight:900,lineHeight:1.7}}>میزان پیشرفت تحصیلی این هفته شما</strong>
+      <span style={{flex:'0 0 auto',color:'#202024',fontFamily:'inherit',fontSize:'14px',fontWeight:900}}>{IrancellFormatPersianNumber(weeklyProgress)}٪</span>
      </div>
-     <div className="ir-exact-student-dashboard__progress" role="progressbar" aria-label="پیشرفت تحصیلی این هفته" aria-valuemin="0" aria-valuemax="100" aria-valuenow={weeklyProgress}>
-      <span style={{width:`${weeklyProgress}%`}}/>
+     <div role="progressbar" aria-label="پیشرفت تحصیلی این هفته" aria-valuemin="0" aria-valuemax="100" aria-valuenow={weeklyProgress} style={{boxSizing:'border-box',position:'relative',display:'block',width:'100%',height:'8px',overflow:'hidden',direction:'ltr',background:'#E7E8EC',borderRadius:'999px'}}>
+      <span style={{display:'block',width:`${weeklyProgress}%`,height:'100%',background:'#FFD100',borderRadius:'inherit',transition:'width .24s ease'}}/>
      </div>
-     <p>امروز {IrancellFormatPersianNumber(classes.length)} کلاس آنلاین، {IrancellFormatPersianNumber(inProgressEntries.length)} تمرین در حال یادگیری و {IrancellFormatPersianNumber(recommendationIds.length)} پیشنهاد آموزشی در انتظار شماست.</p>
+     <p style={{margin:0,color:'#777982',fontFamily:'inherit',fontSize:'11px',fontWeight:600,lineHeight:1.9}}>امروز {IrancellFormatPersianNumber(classes.length)} کلاس آنلاین، {IrancellFormatPersianNumber(inProgressEntries.length)} تمرین در حال یادگیری و {IrancellFormatPersianNumber(recommendationIds.length)} پیشنهاد آموزشی در انتظار شماست.</p>
     </div>
-    <footer>
-     <button type="button" className="is-continue" onClick={()=>currentLearning?openLearning(currentLearning):onNavigate?.('student/binayi')}>ادامه یادگیری</button>
-     <button type="button" className="is-plan" onClick={()=>onNavigate?.('student/classes')}><span>مشاهده برنامه امروز</span><b aria-hidden="true">‹</b></button>
+    <footer style={{display:'flex',flex:'0 1 190px',minWidth:'min(100%,170px)',flexDirection:'column',alignItems:'stretch',gap:'8px'}}>
+     <button type="button" onClick={()=>currentLearning?openLearning(currentLearning):onNavigate?.('student/binayi')} style={{boxSizing:'border-box',display:'inline-flex',width:'100%',minHeight:'46px',alignItems:'center',justifyContent:'center',margin:0,padding:'10px 18px',cursor:'pointer',color:'#171719',background:'#FFD100',border:'1px solid #E7BD00',borderRadius:'13px',boxShadow:'0 8px 20px rgba(255,209,0,.18)',fontFamily:'inherit',fontSize:'12px',fontWeight:900}}>ادامه یادگیری</button>
+     <button type="button" onClick={()=>onNavigate?.('student/classes')} style={{boxSizing:'border-box',display:'inline-flex',width:'100%',minHeight:'34px',alignItems:'center',justifyContent:'center',gap:'7px',margin:0,padding:'5px 8px',cursor:'pointer',color:'#6657D9',background:'transparent',border:0,borderRadius:'10px',fontFamily:'inherit',fontSize:'10px',fontWeight:800}}><span>مشاهده برنامه امروز</span><b aria-hidden="true" style={{fontFamily:'inherit',fontSize:'17px',fontWeight:900,lineHeight:1}}>‹</b></button>
     </footer>
    </article>
 

@@ -228,7 +228,9 @@ export function IrancellCoreReducer(state,action){
     enrolledAt,
     updatedAt:new Date().toISOString()
    };
-   return IrancellReducerAnalytics({...s,content:{...s.content,selectedContentId:content.id,selectedView:action.view==='video'?'video':'course',enrollmentsByUserId:{...(s.content.enrollmentsByUserId||{}),[userId]:{...userEnrollments,[content.id]:enrollment}},watchProgress:{...s.content.watchProgress,[content.id]:Math.max(0,Number(s.content.watchProgress?.[content.id])||0)}}},existing?'ContentEnrollmentResumed':'ContentEnrolled',{entityType:'content',entityId:content.id,sourceModule:'binaei',properties:{deliveryType:enrollment.deliveryType}});
+   const userProgress=s.content.progressByStudentId?.[userId]||{};
+   const initialProgress=Math.max(0,Number(userProgress[content.id])||0);
+   return IrancellReducerAnalytics({...s,content:{...s.content,selectedContentId:content.id,selectedView:action.view==='video'?'video':'course',enrollmentsByUserId:{...(s.content.enrollmentsByUserId||{}),[userId]:{...userEnrollments,[content.id]:enrollment}},progressByStudentId:{...(s.content.progressByStudentId||{}),[userId]:{...userProgress,[content.id]:initialProgress}},watchProgress:{...s.content.watchProgress,[content.id]:initialProgress}}},existing?'ContentEnrollmentResumed':'ContentEnrolled',{entityType:'content',entityId:content.id,sourceModule:'binaei',properties:{deliveryType:enrollment.deliveryType}});
   }
   case'IRANCELL_CONTENT_PROGRESS':{
    const content=s.content.catalogueById[action.contentId];
@@ -236,6 +238,8 @@ export function IrancellCoreReducer(state,action){
    const progress=Math.min(100,Math.max(0,Number(action.progress)||0));
    const userId=s.session.activeRole==='student'?s.session.currentUserId:null;
    const enrollmentsByUserId={...(s.content.enrollmentsByUserId||{})};
+   const currentUserProgress=userId?s.content.progressByStudentId?.[userId]||{}:{};
+   const nextUserProgress=userId?{...currentUserProgress,[content.id]:progress}:currentUserProgress;
    if(userId){
     const userEnrollments=enrollmentsByUserId[userId]||{};
     const existing=userEnrollments[content.id]||null;
@@ -253,7 +257,65 @@ export function IrancellCoreReducer(state,action){
      ...(progress>=100?{completedAt:existing?.completedAt||now}:{})
     }};
    }
-   return IrancellReducerAnalytics({...s,content:{...s.content,selectedContentId:content.id,enrollmentsByUserId,watchProgress:{...s.content.watchProgress,[content.id]:progress}}},progress>=100?'ContentCompleted':'ContentStarted',{entityType:'content',entityId:content.id,sourceModule:'binaei'});
+   const progressValues=Object.values(nextUserProgress).map(value=>Math.max(0,Math.min(100,Number(value)||0)));
+   const averageProgress=progressValues.length?Math.round(progressValues.reduce((sum,value)=>sum+value,0)/progressValues.length):0;
+   const nextFamily=userId?{...s.family,childProgressById:{...(s.family?.childProgressById||{}),[userId]:averageProgress}}:s.family;
+   return IrancellReducerAnalytics({...s,family:nextFamily,content:{...s.content,selectedContentId:content.id,enrollmentsByUserId,progressByStudentId:userId?{...(s.content.progressByStudentId||{}),[userId]:nextUserProgress}:s.content.progressByStudentId||{},watchProgress:{...s.content.watchProgress,[content.id]:progress}}},progress>=100?'ContentCompleted':'ContentStarted',{entityType:'content',entityId:content.id,sourceModule:'binaei'});
+  }
+  case'IRANCELL_CONTENT_ASSIGNMENT_SUBMIT':{
+   if(s.session.status!=='authenticated'||s.session.activeRole!=='student')return IrancellReducerReject(s,'AssignmentSubmissionFailed','student_required','ارسال تکلیف فقط برای حساب دانش‌آموز فعال است.');
+   const userId=s.session.currentUserId;
+   const content=s.content.catalogueById[action.contentId];
+   const enrollment=s.content.enrollmentsByUserId?.[userId]?.[action.contentId];
+   if(!content||content.status!=='published')return IrancellReducerReject(s,'AssignmentSubmissionFailed','content_missing','دوره مرتبط با این تکلیف در دسترس نیست.');
+   if(!enrollment)return IrancellReducerReject(s,'AssignmentSubmissionFailed','enrollment_required','ابتدا در دوره ثبت‌نام کنید.');
+   const assignmentIndex=Math.max(1,Math.min(3,Number(action.assignmentIndex)||1));
+   const selectedAnswer=Number(action.selectedAnswer);
+   const correctAnswer=Math.max(0,Math.min(3,Number(action.correctAnswer)||0));
+   if(!Number.isInteger(selectedAnswer)||selectedAnswer<0||selectedAnswer>3)return IrancellReducerReject(s,'AssignmentSubmissionFailed','answer_required','یکی از پاسخ‌ها را انتخاب کنید.');
+   const assignmentId=`${content.id}:${assignmentIndex}`;
+   const submissionsByStudentId=s.content.assignmentSubmissionsByStudentId||{};
+   const studentSubmissions=submissionsByStudentId[userId]||{};
+   const previousSubmission=studentSubmissions[assignmentId]||null;
+   const correct=selectedAnswer===correctAnswer;
+   const submittedAt=new Date().toISOString();
+   const submission={
+    id:`${userId}:${assignmentId}`,
+    assignmentId,
+    assignmentIndex,
+    studentId:userId,
+    contentId:content.id,
+    title:String(action.title||`تمرین ${assignmentIndex}`),
+    question:String(action.question||''),
+    selectedAnswer,
+    answerLabel:String(action.answerLabel||''),
+    correctAnswer,
+    score:correct?100:0,
+    maxScore:100,
+    status:'graded',
+    feedback:correct?'پاسخ درست است. این بخش را با موفقیت یاد گرفته‌ای.':'پاسخ نیاز به مرور دارد. توضیح دوره را دوباره ببین و سپس تلاش کن.',
+    attempts:(Number(previousSubmission?.attempts)||0)+1,
+    submittedAt,
+    gradedAt:submittedAt
+   };
+   const nextStudentSubmissions={...studentSubmissions,[assignmentId]:submission};
+   const completedAssignmentCount=Object.values(nextStudentSubmissions).filter(item=>item.contentId===content.id&&item.status==='graded').length;
+   const previousCompletedCount=Object.values(studentSubmissions).filter(item=>item.contentId===content.id&&item.status==='graded').length;
+   const currentProgressMap=s.content.progressByStudentId?.[userId]||{};
+   const currentProgress=Math.max(0,Number(currentProgressMap[content.id])||0);
+   const assignmentProgress=Math.min(100,Math.round(25+(Math.min(3,completedAssignmentCount)/3)*75));
+   const nextProgress=completedAssignmentCount>=3?100:Math.max(currentProgress,assignmentProgress);
+   const nextProgressMap={...currentProgressMap,[content.id]:nextProgress};
+   const userEnrollments=s.content.enrollmentsByUserId?.[userId]||{};
+   const nextEnrollment={...enrollment,status:nextProgress>=100?'completed':'active',updatedAt:submittedAt,...(nextProgress>=100?{completedAt:enrollment.completedAt||submittedAt}:{})};
+   const progressValues=Object.values(nextProgressMap).map(value=>Math.max(0,Math.min(100,Number(value)||0)));
+   const averageProgress=progressValues.length?Math.round(progressValues.reduce((sum,value)=>sum+value,0)/progressValues.length):0;
+   const relationship=Object.values(s.identity.relationshipsById||{}).find(item=>item.childId===userId&&item.status==='active');
+   const completedNow=completedAssignmentCount>=3&&previousCompletedCount<3;
+   const familyNotificationId=`family-assignment-${userId}-${content.id}`;
+   const familyNotifications=completedNow&&relationship?{...(s.family?.notificationItemsById||{}),[familyNotificationId]:{id:familyNotificationId,parentId:relationship.parentId,childId:userId,category:'children',importance:'normal',title:'تکالیف دوره تکمیل شد',body:`${s.identity.usersById[userId]?.name||'دانش‌آموز'} همه تمرین‌های دوره ${content.title} را انجام داد.`,actionLabel:'مشاهده گزارش',route:`parent/reports?child=${userId}`,read:false,createdAt:submittedAt}}:s.family?.notificationItemsById||{};
+   const next={...s,content:{...s.content,assignmentSubmissionsByStudentId:{...submissionsByStudentId,[userId]:nextStudentSubmissions},progressByStudentId:{...(s.content.progressByStudentId||{}),[userId]:nextProgressMap},watchProgress:{...s.content.watchProgress,[content.id]:nextProgress},enrollmentsByUserId:{...(s.content.enrollmentsByUserId||{}),[userId]:{...userEnrollments,[content.id]:nextEnrollment}}},family:{...s.family,childProgressById:{...(s.family?.childProgressById||{}),[userId]:averageProgress},notificationItemsById:familyNotifications}};
+   return IrancellReducerAnalytics(next,'AssignmentSubmitted',{entityType:'assignment',entityId:assignmentId,sourceModule:'binaei',properties:{contentId:content.id,score:submission.score,attempts:submission.attempts}});
   }
   case'IRANCELL_MARKETPLACE_CREATE_REQUEST':{
    if(!['student','parent'].includes(s.session.activeRole))return IrancellReducerReject(s,'TeacherRequestFailed','role_forbidden','ثبت درخواست مدرس فقط برای دانش‌آموز یا والد مجاز است.');
@@ -421,7 +483,7 @@ export function IrancellCoreReducer(state,action){
   }
   case'IRANCELL_CLASS_START':{
    const gate=IrancellEvaluateClassGate(s,action.sessionId,s.session.activeRole);if(!gate.allowed)return IrancellReducerReject(s,'ClassEntryAttempted',gate.code,gate.message,{sessionId:action.sessionId});
-   const session=s.classroom.sessionsById[action.sessionId];if(!session||!['scheduled','waiting','ready'].includes(session.status))return s;
+   const session=s.classroom.sessionsById[action.sessionId];if(!session||!['scheduled','waiting','ready','active'].includes(session.status))return s;
    const roomId=session.roomId||IrancellCreateId('room');
    const next={...s,classroom:{...s.classroom,sessionsById:{...s.classroom.sessionsById,[action.sessionId]:{...session,status:'live',roomId,startedAt:new Date().toISOString()}},roomsById:{...s.classroom.roomsById,[roomId]:{id:roomId,sessionId:action.sessionId,status:'active',provisionedAt:new Date().toISOString()}},attendanceBySessionId:{...s.classroom.attendanceBySessionId,[action.sessionId]:{...(s.classroom.attendanceBySessionId[action.sessionId]||{}),[s.session.currentUserId]:{joinedAt:new Date().toISOString(),status:'present'}}}}};
    return IrancellReducerAudit(IrancellReducerAnalytics(next,'SessionStarted',{entityType:'class_session',entityId:action.sessionId,sourceModule:'dialogi'}),'ClassEntryGranted',{sessionId:action.sessionId,roomId});
@@ -517,10 +579,21 @@ export function IrancellCoreReducer(state,action){
    if(s.session.activeRole!=='student')return IrancellReducerReject(s,'PrivacyDeleteFailed','student_role_required','حذف اطلاعات فقط برای پروفایل دانش‌آموز فعال قابل درخواست است.');
    const gate=s.ui?.parentGate;
    if(!gate?.verifiedAt||new Date(gate.expiresAt).getTime()<Date.now())return IrancellReducerReject(s,'PrivacyDeleteFailed','parent_gate_required','برای این عملیات تأیید خانواده لازم است.');
-   const id=IrancellCreateId('privacy-delete'),kind=action.kind==='account'?'account':'partial',request={id,userId:action.userId||s.session.currentUserId,kind,categories:Array.isArray(action.categories)?action.categories:[],reason:String(action.reason||''),status:'submitted',createdAt:new Date().toISOString()};
+   const userId=action.userId||s.session.currentUserId,categories=Array.isArray(action.categories)?action.categories:[],id=IrancellCreateId('privacy-delete'),kind=action.kind==='account'?'account':'partial',request={id,userId,kind,categories,reason:String(action.reason||''),status:'submitted',createdAt:new Date().toISOString()};
    const privacy=s.privacy||{requestsById:{}};
-   const next={...s,privacy:{...privacy,requestsById:{...(privacy.requestsById||{}),[id]:request}},ui:{...s.ui,parentGate:null}};
-   return IrancellReducerAudit(IrancellReducerAnalytics(next,'PrivacyDeletionRequested',{entityType:'privacy_request',entityId:id,sourceModule:'privacy',privacyClass:'restricted',properties:{kind}}),'PrivacyDeletionRequested',{requestId:id,userId:request.userId,kind});
+   let nextChisti=s.chisti;
+   if(kind==='partial'&&(categories.includes('chisti')||categories.includes('personalizedRecommendations'))){
+    const ownedProblemIds=new Set(Object.values(s.chisti?.problemsById||{}).filter(problem=>problem.ownerId===userId).map(problem=>problem.id));
+    const removeHistory=categories.includes('chisti');
+    const conversationsById=removeHistory?Object.fromEntries(Object.entries(s.chisti?.conversationsById||{}).filter(([,conversation])=>conversation.ownerId!==userId)):(s.chisti?.conversationsById||{});
+    const problemsById=removeHistory?Object.fromEntries(Object.entries(s.chisti?.problemsById||{}).filter(([problemId,problem])=>problem.ownerId!==userId&&!ownedProblemIds.has(problemId))):(s.chisti?.problemsById||{});
+    const recommendationsByProblemId=Object.fromEntries(Object.entries(s.chisti?.recommendationsByProblemId||{}).filter(([problemId])=>!ownedProblemIds.has(problemId)));
+    const activeConversationOwned=Boolean(s.chisti?.activeConversationId&&s.chisti?.conversationsById?.[s.chisti.activeConversationId]?.ownerId===userId);
+    const activeJobOwned=Boolean(s.chisti?.activeJob?.problemId&&ownedProblemIds.has(s.chisti.activeJob.problemId));
+    nextChisti={...s.chisti,conversationsById,problemsById,recommendationsByProblemId,activeConversationId:removeHistory&&activeConversationOwned?null:s.chisti?.activeConversationId||null,activeJob:removeHistory&&activeJobOwned?null:s.chisti?.activeJob||null,lastCompletedProblemId:removeHistory&&ownedProblemIds.has(s.chisti?.lastCompletedProblemId)?null:s.chisti?.lastCompletedProblemId||null};
+   }
+   const next={...s,chisti:nextChisti,privacy:{...privacy,requestsById:{...(privacy.requestsById||{}),[id]:request}},ui:{...s.ui,parentGate:null}};
+   return IrancellReducerAudit(IrancellReducerAnalytics(next,'PrivacyDeletionRequested',{entityType:'privacy_request',entityId:id,sourceModule:'privacy',privacyClass:'restricted',properties:{kind,categories}}),'PrivacyDeletionRequested',{requestId:id,userId:request.userId,kind,categories});
   }
   case'IRANCELL_STUDENT_SUPPORT_CREATE':{
    if(!['student','parent','teacher','academy','content-provider','admin'].includes(s.session.activeRole))return IrancellReducerReject(s,'SupportRequestFailed','authenticated_role_required','برای ثبت درخواست پشتیبانی باید وارد حساب شوید.');

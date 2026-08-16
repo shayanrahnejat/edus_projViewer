@@ -1,0 +1,3316 @@
+/* Ordered legacy cascade segment. Keep import order in App/styles.css. */
+.ir-svg-prototype-page[data-prototype-id="student-courses"] .ir-svg-prototype-page__body{
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ padding:0!important;
+ background:#fffbe4!important;
+ scrollbar-width:none!important;
+ overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch;
+}
+
+.ir-svg-prototype-page[data-prototype-id="student-courses"] .ir-svg-prototype-page__body::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-courses-svg{
+ width:min(402px,100%)!important;
+ min-height:100%!important;
+ margin:0 auto!important;
+ padding:18px 24px 130px!important;
+ direction:rtl!important;
+ color:#202024!important;
+ background:#fffbe4!important;
+}
+
+.ir-student-courses-svg__header{
+ display:grid!important;
+ grid-template-columns:42px minmax(0,1fr) 42px!important;
+ align-items:center!important;
+ min-height:58px!important;
+ margin-bottom:24px!important;
+ direction:ltr!important;
+}
+
+.ir-student-courses-svg__header h2{
+ margin:0!important;
+ color:#202024!important;
+ font-size:21px!important;
+ font-weight:1000!important;
+ text-align:center!important;
+ direction:rtl!important;
+}
+
+.ir-student-courses-svg__header button{
+ display:grid!important;
+ place-items:center!important;
+ width:40px!important;
+ height:40px!important;
+ padding:0!important;
+ color:#202024!important;
+ background:transparent!important;
+ border:0!important;
+}
+
+.ir-student-courses-svg__header button:first-child .ir-svg-page-glyph{
+ width:24px!important;
+ height:24px!important;
+}
+
+.ir-student-courses-svg__header button:last-child svg{
+ width:25px!important;
+ height:25px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-courses-svg__stats{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ min-height:98px!important;
+ margin-bottom:22px!important;
+ padding:15px 8px!important;
+ background:#fff!important;
+ border-radius:22px!important;
+}
+
+.ir-student-courses-svg__stats article{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:8px!important;
+ min-width:0!important;
+}
+
+.ir-student-courses-svg__stats article:not(:last-child){
+ border-left:1px solid #f0f0f2!important;
+}
+
+.ir-student-courses-svg__stats strong{
+ color:#202024!important;
+ font-size:21px!important;
+}
+
+.ir-student-courses-svg__stats span{
+ color:#99999f!important;
+ font-size:9px!important;
+ white-space:nowrap!important;
+}
+
+.ir-student-courses-svg__filters{
+ display:flex!important;
+ align-items:center!important;
+ gap:8px!important;
+ margin-bottom:22px!important;
+ overflow-x:auto!important;
+ overflow-y:hidden!important;
+ white-space:nowrap!important;
+ scrollbar-width:none!important;
+}
+
+.ir-student-courses-svg__filters::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-courses-svg__filters button{
+ flex:0 0 auto!important;
+ min-height:40px!important;
+ padding:8px 16px!important;
+ color:#202024!important;
+ font-size:10px!important;
+ font-weight:900!important;
+ background:#fff!important;
+ border:1px solid #ededee!important;
+ border-radius:999px!important;
+}
+
+.ir-student-courses-svg__filters button.is-active{
+ background:#ffd100!important;
+ border-color:#ffd100!important;
+}
+
+.ir-student-courses-svg__list{
+ display:flex!important;
+ flex-direction:column!important;
+ gap:16px!important;
+}
+
+.ir-student-course-card{
+ width:100%!important;
+ min-width:0!important;
+ padding:18px 20px!important;
+ background:#fff!important;
+ border:1px solid #ededee!important;
+ border-radius:20px!important;
+}
+
+.ir-student-course-card>header{
+ display:flex!important;
+ align-items:flex-start!important;
+ justify-content:space-between!important;
+ gap:12px!important;
+ margin-bottom:17px!important;
+}
+
+.ir-student-course-card>header>div{
+ min-width:0!important;
+}
+
+.ir-student-course-card h3{
+ margin:0 0 10px!important;
+ color:#202024!important;
+ font-size:16px!important;
+ line-height:1.55!important;
+}
+
+.ir-student-course-card header p{
+ display:flex!important;
+ align-items:center!important;
+ gap:7px!important;
+ margin:0!important;
+ color:#99999f!important;
+ font-size:10px!important;
+}
+
+.ir-student-course-card header p .ir-svg-page-glyph{
+ width:17px!important;
+ height:17px!important;
+}
+
+.ir-student-course-card__badge{
+ flex:0 0 auto!important;
+ padding:6px 9px!important;
+ font-size:8px!important;
+ font-weight:1000!important;
+ border-radius:6px!important;
+}
+
+.ir-student-course-card__badge.is-live{
+ color:#dd9a00!important;
+ background:#fff4c8!important;
+}
+
+.ir-student-course-card__badge.is-video{
+ color:#7652e9!important;
+ background:#eee8ff!important;
+}
+
+.ir-student-course-card__badge.is-private{
+ color:#21ad5b!important;
+ background:#e5f8eb!important;
+}
+
+.ir-student-course-card__progress-label{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ margin-bottom:8px!important;
+ color:#202024!important;
+ font-size:9px!important;
+}
+
+.ir-student-course-card__progress-label span{
+ color:#99999f!important;
+}
+
+.ir-student-course-card__progress{
+ width:100%!important;
+ height:7px!important;
+ overflow:hidden!important;
+ direction:ltr!important;
+ background:#e5e5e9!important;
+ border-radius:999px!important;
+}
+
+.ir-student-course-card__progress span{
+ display:block!important;
+ height:100%!important;
+ background:#ffd100!important;
+ border-radius:inherit!important;
+}
+
+.ir-student-course-card>footer{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:10px!important;
+ margin-top:16px!important;
+}
+
+.ir-student-course-card>footer>span{
+ color:#99999f!important;
+ font-size:9px!important;
+}
+
+.ir-student-course-card>footer>button{
+ flex:0 0 auto!important;
+ min-height:42px!important;
+ padding:9px 14px!important;
+ color:#202024!important;
+ font-size:10px!important;
+ font-weight:1000!important;
+ background:#ffd100!important;
+ border:0!important;
+ border-radius:11px!important;
+}
+
+@media(max-width:430px){
+ .ir-prototype-activation__card{
+  width:100%!important;
+ }
+
+ .ir-student-courses-svg{
+  width:100%!important;
+  padding-right:18px!important;
+  padding-left:18px!important;
+ }
+}
+
+@media(max-height:760px){
+ .ir-prototype-activation__card{
+  min-height:820px!important;
+ }
+
+ .ir-prototype-activation__orb{
+  width:220px!important;
+  height:270px!important;
+ }
+
+ .ir-prototype-activation__orb i:nth-child(1){
+  width:220px!important;
+  height:220px!important;
+ }
+
+ .ir-prototype-activation__orb i:nth-child(2){
+  width:178px!important;
+  height:178px!important;
+ }
+
+ .ir-prototype-activation__orb i:nth-child(3){
+  width:148px!important;
+  height:148px!important;
+ }
+}
+.ir-svg-prototype-page{width:100vw;height:100svh;max-height:100svh;overflow:hidden}
+.ir-svg-prototype-page__viewport{grid-template-rows:auto minmax(0,1fr) 76px;width:min(430px,100vw);max-width:100vw;height:100svh;max-height:100svh;overflow:hidden}
+.ir-svg-prototype-page__body{overflow:hidden}
+.ir-svg-prototype-page__viewport>nav{align-self:end;min-height:58px;margin:0 12px 10px;padding:6px;background:#18181b;border-radius:22px;box-shadow:0 10px 28px rgba(0,0,0,.18)}
+.ir-svg-prototype-page__viewport>nav button{min-width:0;min-height:46px;padding:4px 2px;line-height:1.2}
+.ir-svg-prototype-page__viewport>nav button span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ir-svg-prototype-page__viewport>nav button:nth-child(3){margin-top:0;transform:translateY(-13px);box-shadow:0 8px 20px rgba(255,209,0,.28)}
+.ir-svg-home,.ir-svg-list,.ir-svg-chat,.ir-svg-course,.ir-svg-profile,.ir-svg-settings,.ir-svg-payment,.ir-svg-rating,.ir-svg-form{height:100%;overflow:hidden}
+.ir-svg-card{min-height:62px!important;margin-bottom:7px!important;padding:9px!important}
+.ir-svg-form{gap:8px}
+.ir-svg-form input{min-height:40px}
+.ir-svg-form textarea{min-height:70px}
+.ir-svg-form .ir-svg-primary{min-height:44px!important}
+.ir-svg-search__brand{margin-bottom:24px}
+.ir-svg-search>label,.ir-svg-list>label{min-height:44px}
+@media(max-width:430px){.ir-svg-prototype-page__viewport{width:100vw}.ir-svg-prototype-page__viewport>nav{margin-right:10px;margin-left:10px}.ir-svg-card{grid-template-columns:38px minmax(0,1fr) 20px!important}.ir-svg-card>.ir-svg-page-glyph:first-child{width:34px;height:34px}.ir-svg-card strong{font-size:10px}.ir-svg-card small{font-size:7.5px}}
+@media(max-height:700px){.ir-svg-prototype-page__viewport{grid-template-rows:auto minmax(0,1fr) 66px}.ir-svg-prototype-page__viewport>header{min-height:46px;padding-top:4px;padding-bottom:4px}.ir-svg-prototype-page__viewport>nav{min-height:52px;margin-bottom:7px}.ir-svg-prototype-page__viewport>nav button{min-height:40px}.ir-svg-prototype-page__viewport>nav button:nth-child(3){width:42px;height:42px;transform:translateY(-10px)}.ir-svg-chat,.ir-svg-home,.ir-svg-list,.ir-svg-course,.ir-svg-profile,.ir-svg-settings,.ir-svg-payment,.ir-svg-rating,.ir-svg-form{padding:11px}.ir-svg-card{min-height:56px!important;margin-bottom:5px!important}.ir-svg-hero{margin-bottom:9px;padding:11px}.ir-svg-home h3{margin-bottom:7px}.ir-svg-profile>i,.ir-svg-rating>i{width:62px;height:62px}.ir-svg-settings>button{min-height:48px;margin-bottom:6px}.ir-svg-payment>article{padding:11px;margin-bottom:8px}.ir-svg-form label{gap:4px}.ir-svg-form input{min-height:36px}.ir-svg-form textarea{min-height:56px}}
+
+
+
+/* Final identity and supplied SVG alignment. */
+.ir-toast-stack,.ir-toast{display:none!important}
+.ir-auth-entry,.ir-role-selection-reference,.ir-credential-page{min-height:100svh!important;background:#fffbe4!important;color:#1b1c24!important;direction:rtl!important}
+.ir-auth-entry__panel,.ir-role-selection-reference__panel,.ir-credential-page__panel{width:min(402px,100%)!important;min-height:100svh!important;margin:0 auto!important;padding:28px 22px!important;background:#fffbe4!important}
+.ir-auth-entry__brand{display:grid!important;justify-items:center!important;gap:10px!important;margin:14px 0 18px!important}.ir-auth-entry__brand>span,.ir-role-selection-reference__brand>span{display:grid!important;width:64px!important;height:64px!important;place-items:center!important;background:#ffd000!important;border-radius:20px!important}.ir-auth-entry__brand h1,.ir-role-selection-reference__panel h1,.ir-credential-page__heading h1{margin:0!important;font-size:27px!important;font-weight:1000!important}.ir-auth-entry__brand p,.ir-role-selection-reference__panel header p,.ir-credential-page__heading p{margin:5px 0 0!important;color:#7d7d87!important;font-size:9px!important;line-height:1.9!important;text-align:center!important}
+.ir-auth-entry__tabs{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:4px!important;margin-bottom:18px!important;padding:4px!important;background:#eeeada!important;border-radius:14px!important}.ir-auth-entry__tabs button{min-height:40px!important;border:0!important;border-radius:11px!important;background:transparent!important;color:#777781!important;font-size:10px!important;font-weight:900!important}.ir-auth-entry__tabs button.is-active{background:#fff!important;color:#1b1c24!important;box-shadow:0 4px 12px rgba(0,0,0,.06)!important}
+.ir-auth-entry__form,.ir-credential-page__form{display:grid!important;gap:10px!important}.ir-auth-entry__field,.ir-credential-page .ir-field{display:grid!important;gap:6px!important}.ir-auth-entry__field>div,.ir-mobile-login-light__field,.ir-credential-page .ir-field input{min-height:50px!important;background:#fff!important;border:1px solid #dddccf!important;border-radius:13px!important}.ir-auth-entry__field input,.ir-mobile-login-light__field input{font-family:var(--ir-font-family)!important}.ir-auth-entry__submit,.ir-credential-page__submit{min-height:48px!important;margin-top:5px!important;border:0!important;border-radius:13px!important;background:#ffd000!important;color:#1b1c24!important;font-size:11px!important;font-weight:1000!important}.ir-auth-entry__error,.ir-mobile-login-light__error{display:block!important;margin-top:-5px!important;color:#b42318!important;font-size:8px!important}.ir-auth-entry__demo{padding:10px 12px!important;border:1px dashed #c9bb55!important;border-radius:12px!important;background:#fff8c5!important;color:#625d35!important;font-size:8px!important;line-height:1.8!important}.ir-auth-entry__otp{min-height:44px!important;border:1px solid #d9d7c9!important;border-radius:12px!important;background:#fff!important;color:#1b1c24!important;font-size:9px!important;font-weight:900!important}
+.ir-role-selection-reference__brand{display:flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;margin:5px 0 25px!important}.ir-role-selection-reference__panel>header{text-align:center!important}.ir-role-selection-reference__panel>header h1{font-size:32px!important}.ir-role-selection-reference__list{display:grid!important;gap:12px!important;margin:38px 0 20px!important}.ir-role-selection-reference__list>button{display:grid!important;grid-template-columns:52px minmax(0,1fr) 26px!important;align-items:center!important;gap:12px!important;min-height:86px!important;padding:14px!important;text-align:right!important;color:#1b1c24!important;background:#fff!important;border:2px solid transparent!important;border-radius:19px!important;box-shadow:0 8px 25px rgba(65,57,9,.05)!important}.ir-role-selection-reference__list>button.is-selected{border-color:#ffd000!important;background:#fffdf0!important}.ir-role-selection-reference__list>button.is-disabled{opacity:.42!important}.ir-role-selection-reference__icon{display:grid!important;width:52px!important;height:52px!important;place-items:center!important;background:#f1f1f3!important;border-radius:15px!important}.ir-role-selection-reference__list>button.is-selected .ir-role-selection-reference__icon{background:#ffd000!important}.ir-role-selection-reference__list strong{display:block!important;font-size:12px!important}.ir-role-selection-reference__list small{display:block!important;margin-top:5px!important;color:#85858f!important;font-size:8px!important;line-height:1.7!important}.ir-role-selection-reference__list i{display:grid!important;width:24px!important;height:24px!important;place-items:center!important;border:2px solid #d4d3ca!important;border-radius:50%!important;color:#1b1c24!important;font-size:12px!important;font-style:normal!important}.ir-role-selection-reference__list>button.is-selected i{border-color:#ffd000!important;background:#ffd000!important}.ir-role-selection-reference__continue{width:100%!important;min-height:50px!important;border:0!important;border-radius:13px!important;background:#ffd000!important;color:#1b1c24!important;font-size:11px!important;font-weight:1000!important}.ir-role-selection-reference__continue:disabled{background:#e6e3d4!important}.ir-role-selection-reference__panel footer{display:flex!important;justify-content:center!important;gap:5px!important;margin-top:20px!important;color:#7f7f88!important;font-size:9px!important}.ir-role-selection-reference__panel footer button{padding:0!important;border:0!important;background:transparent!important;color:#1b1c24!important;font-weight:1000!important}
+.ir-credential-page__top{display:flex!important;align-items:center!important;justify-content:space-between!important}.ir-credential-page__top button{display:grid!important;width:42px!important;height:42px!important;place-items:center!important;border:1px solid #dddccf!important;border-radius:13px!important;background:#fff!important}.ir-credential-page__top svg{width:18px!important;fill:none!important;stroke:currentColor!important;stroke-width:2!important}.ir-credential-page__top>span{color:#85858f!important;font-size:8px!important}.ir-credential-page__heading{display:grid!important;justify-items:center!important;margin:28px 0 18px!important;text-align:center!important}.ir-credential-page__shield{display:grid!important;width:62px!important;height:62px!important;place-items:center!important;margin-bottom:12px!important;background:#ffd000!important;border-radius:19px!important}.ir-credential-page__identity{display:grid!important;grid-template-columns:48px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;margin-bottom:16px!important;padding:12px!important;background:#fff!important;border-radius:16px!important}.ir-credential-page__identity>span{display:grid!important;width:48px!important;height:48px!important;place-items:center!important;background:#fff2a8!important;border-radius:14px!important;font-weight:1000!important}.ir-credential-page__identity div{display:grid!important;gap:3px!important}.ir-credential-page__identity strong{font-size:10px!important}.ir-credential-page__identity small{color:#85858f!important;font-size:7px!important}.ir-credential-page__identity b{padding:5px 7px!important;color:#177345!important;background:#e8f8ed!important;border-radius:999px!important;font-size:7px!important}.ir-credential-page__security{display:flex!important;align-items:flex-start!important;gap:8px!important;margin-top:14px!important;padding:11px!important;color:#6c6747!important;background:#fff8c8!important;border-radius:12px!important;font-size:8px!important;line-height:1.8!important}
+.ir-exact-student-dashboard{background:#fffbe4!important}.ir-exact-student-dashboard__header{direction:ltr!important}.ir-exact-student-dashboard__header>div{direction:rtl!important}.ir-exact-student-dashboard__welcome{background:linear-gradient(145deg,#ffd000,#ffe878)!important}.ir-exact-student-dashboard__chisty{background:#1b1b20!important}.ir-exact-student-dashboard__section-heading{margin-top:0!important}.ir-exact-student-dock{grid-template-columns:repeat(5,1fr)!important;background:#18181c!important}.ir-exact-student-dock button{position:relative!important}.ir-exact-student-dock button.is-center{width:54px!important;height:54px!important;margin:-22px auto 0!important;color:#1b1c24!important;background:#ffd000!important;border:5px solid #fffbe4!important;border-radius:50%!important;box-shadow:0 7px 18px rgba(0,0,0,.22)!important}.ir-exact-student-dock button.is-center svg{width:23px!important;height:23px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8!important}.ir-exact-student-dock button.is-active{color:#ffd000!important}
+@media(max-width:430px){.ir-auth-entry__panel,.ir-role-selection-reference__panel,.ir-credential-page__panel{width:100%!important}.ir-role-selection-reference__panel>header h1{font-size:29px!important}}
+
+/* Student classes and profile */
+.ir-student-classes-page,
+.ir-student-profile-page{
+ width:min(430px,100%);
+ min-height:100svh;
+ margin:0 auto;
+ padding:18px 16px var(--ir-app-dock-space,110px);
+ direction:rtl;
+ color:#202024;
+ background:#fffbe4;
+ font-family:var(--ir-font-family)!important;
+}
+
+.ir-student-mobile-header{
+ display:grid;
+ grid-template-columns:44px minmax(0,1fr) 44px;
+ align-items:center;
+ gap:10px;
+ margin-bottom:18px;
+}
+
+.ir-student-mobile-header>button{
+ display:grid;
+ width:44px;
+ height:44px;
+ padding:0;
+ place-items:center;
+ color:#202024;
+ background:#fff;
+ border:1px solid #e2dfcc;
+ border-radius:14px;
+ box-shadow:0 5px 15px rgba(48,42,9,.05);
+}
+
+.ir-student-mobile-header>button:first-child svg{
+ transform:rotate(180deg);
+}
+
+.ir-student-mobile-header>div{
+ min-width:0;
+ text-align:center;
+}
+
+.ir-student-mobile-header h1{
+ margin:0;
+ overflow:hidden;
+ font-size:18px;
+ font-weight:1000;
+ line-height:1.5;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-mobile-header p{
+ margin:2px 0 0;
+ color:#85858e;
+ font-size:9px;
+ line-height:1.5;
+}
+
+.ir-student-classes-summary{
+ display:grid;
+ grid-template-columns:54px minmax(0,1fr) auto;
+ align-items:center;
+ gap:12px;
+ margin-bottom:16px;
+ padding:16px;
+ color:#202024;
+ background:linear-gradient(145deg,#ffd100,#ffe783);
+ border-radius:20px;
+ box-shadow:0 10px 28px rgba(128,103,0,.12);
+}
+
+.ir-student-classes-summary__icon{
+ display:grid;
+ width:54px;
+ height:54px;
+ place-items:center;
+ background:rgba(255,255,255,.65);
+ border-radius:16px;
+}
+
+.ir-student-classes-summary>div:nth-child(2){
+ display:grid;
+ gap:2px;
+ min-width:0;
+}
+
+.ir-student-classes-summary span{
+ font-size:9px;
+ font-weight:800;
+}
+
+.ir-student-classes-summary strong{
+ font-size:27px;
+ font-weight:1000;
+ line-height:1.2;
+}
+
+.ir-student-classes-summary small{
+ overflow:hidden;
+ color:#675b20;
+ font-size:7.5px;
+ line-height:1.7;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-classes-summary>button{
+ min-height:36px;
+ padding:7px 10px;
+ color:#fff;
+ background:#202024;
+ border:0;
+ border-radius:11px;
+ font-size:8px;
+ font-weight:900;
+ white-space:nowrap;
+}
+
+.ir-student-classes-tabs{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:5px;
+ margin-bottom:14px;
+ padding:4px;
+ background:#eeebd9;
+ border-radius:14px;
+}
+
+.ir-student-classes-tabs button{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:6px;
+ min-height:40px;
+ color:#797983;
+ background:transparent;
+ border:0;
+ border-radius:11px;
+ font-size:9px;
+ font-weight:900;
+}
+
+.ir-student-classes-tabs button span{
+ display:grid;
+ min-width:20px;
+ height:20px;
+ padding:0 5px;
+ place-items:center;
+ background:rgba(0,0,0,.06);
+ border-radius:999px;
+ font-size:7px;
+}
+
+.ir-student-classes-tabs button.is-active{
+ color:#202024;
+ background:#fff;
+ box-shadow:0 4px 13px rgba(42,36,5,.07);
+}
+
+.ir-student-classes-list{
+ display:grid;
+ gap:12px;
+}
+
+.ir-student-class-card{
+ overflow:hidden;
+ padding:14px;
+ background:#fff;
+ border:1px solid #e5e2d4;
+ border-radius:18px;
+ box-shadow:0 8px 24px rgba(58,49,9,.05);
+}
+
+.ir-student-class-card.is-live{
+ border-color:#ffd100;
+ box-shadow:0 0 0 2px rgba(255,209,0,.12),0 8px 24px rgba(58,49,9,.07);
+}
+
+.ir-student-class-card>header{
+ display:grid;
+ grid-template-columns:46px minmax(0,1fr) auto;
+ align-items:center;
+ gap:10px;
+}
+
+.ir-student-class-card__date{
+ display:grid;
+ width:46px;
+ height:50px;
+ place-items:center;
+ align-content:center;
+ background:#fff6bf;
+ border-radius:13px;
+}
+
+.ir-student-class-card__date b{
+ font-size:16px;
+ line-height:1.1;
+}
+
+.ir-student-class-card__date small{
+ margin-top:2px;
+ color:#6d632d;
+ font-size:7px;
+}
+
+.ir-student-class-card>header>div{
+ min-width:0;
+}
+
+.ir-student-class-card h2{
+ margin:0;
+ overflow:hidden;
+ font-size:11px;
+ font-weight:1000;
+ line-height:1.7;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-class-card>header p{
+ display:flex;
+ align-items:center;
+ gap:4px;
+ margin:3px 0 0;
+ color:#878790;
+ font-size:7.5px;
+ line-height:1.5;
+}
+
+.ir-student-class-card__details{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px;
+ margin:13px 0;
+ padding:10px;
+ background:#f8f7f1;
+ border-radius:12px;
+}
+
+.ir-student-class-card__details span{
+ display:flex;
+ min-width:0;
+ align-items:center;
+ justify-content:center;
+ gap:4px;
+ color:#6f6f78;
+ font-size:7px;
+ text-align:center;
+}
+
+.ir-student-class-card__details svg{
+ flex:0 0 auto;
+ width:15px;
+ height:15px;
+ fill:none;
+ stroke:#202024;
+ stroke-width:1.8;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+}
+
+.ir-student-class-card__details b{
+ overflow:hidden;
+ font-weight:800;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-class-card>footer{
+ display:grid;
+ grid-template-columns:.8fr 1.2fr;
+ gap:8px;
+}
+
+.ir-student-class-card>footer button{
+ min-height:39px;
+ border-radius:11px;
+ font-size:8px;
+ font-weight:1000;
+}
+
+.ir-student-class-card__secondary{
+ color:#202024;
+ background:#fff;
+ border:1px solid #dddace;
+}
+
+.ir-student-class-card__primary{
+ color:#202024;
+ background:#ffd100;
+ border:1px solid #ffd100;
+}
+
+.ir-student-mobile-empty{
+ display:flex;
+ min-height:340px;
+ padding:32px 24px;
+ flex-direction:column;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ background:#fff;
+ border:1px solid #e5e2d4;
+ border-radius:20px;
+}
+
+.ir-student-mobile-empty>span{
+ display:grid;
+ width:64px;
+ height:64px;
+ place-items:center;
+ color:#202024;
+ background:#fff2a4;
+ border-radius:20px;
+}
+
+.ir-student-mobile-empty h2{
+ margin:16px 0 5px;
+ font-size:15px;
+}
+
+.ir-student-mobile-empty p{
+ max-width:280px;
+ margin:0;
+ color:#85858e;
+ font-size:9px;
+ line-height:1.9;
+}
+
+.ir-student-mobile-empty button{
+ min-height:42px;
+ margin-top:17px;
+ padding:9px 18px;
+ color:#202024;
+ background:#ffd100;
+ border:0;
+ border-radius:12px;
+ font-size:9px;
+ font-weight:1000;
+}
+
+.ir-student-profile-hero{
+ display:grid;
+ grid-template-columns:68px minmax(0,1fr) auto;
+ align-items:center;
+ gap:13px;
+ margin-bottom:13px;
+ padding:16px;
+ background:linear-gradient(145deg,#ffd100,#ffe783);
+ border-radius:21px;
+ box-shadow:0 10px 28px rgba(128,103,0,.12);
+}
+
+.ir-student-profile-hero__avatar{
+ position:relative;
+ width:68px;
+ height:68px;
+}
+
+.ir-student-profile-hero__avatar>span{
+ display:grid;
+ width:68px;
+ height:68px;
+ place-items:center;
+ color:#202024;
+ background:#fff;
+ border:3px solid rgba(255,255,255,.65);
+ border-radius:21px;
+ font-size:26px;
+ font-weight:1000;
+}
+
+.ir-student-profile-hero__avatar>i{
+ position:absolute;
+ right:-3px;
+ bottom:-3px;
+ display:grid;
+ width:25px;
+ height:25px;
+ place-items:center;
+ color:#fff;
+ background:#218557;
+ border:3px solid #ffd100;
+ border-radius:50%;
+ font-style:normal;
+}
+
+.ir-student-profile-hero__identity{
+ min-width:0;
+}
+
+.ir-student-profile-hero__identity h2{
+ margin:0;
+ overflow:hidden;
+ font-size:16px;
+ font-weight:1000;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-profile-hero__identity p{
+ margin:3px 0;
+ color:#655b2b;
+ font-size:8px;
+ line-height:1.5;
+}
+
+.ir-student-profile-hero__identity>span{
+ display:flex;
+ align-items:center;
+ gap:5px;
+ font-size:7px;
+ font-weight:900;
+}
+
+.ir-student-profile-hero__identity>span i{
+ width:7px;
+ height:7px;
+ background:#218557;
+ border-radius:50%;
+}
+
+.ir-student-profile-hero>button{
+ min-height:34px;
+ padding:7px 10px;
+ color:#202024;
+ background:rgba(255,255,255,.72);
+ border:0;
+ border-radius:10px;
+ font-size:8px;
+ font-weight:1000;
+}
+
+.ir-student-profile-metrics{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:8px;
+ margin-bottom:13px;
+}
+
+.ir-student-profile-metrics article{
+ display:grid;
+ min-width:0;
+ padding:12px 5px;
+ place-items:center;
+ background:#fff;
+ border:1px solid #e5e2d4;
+ border-radius:15px;
+ box-shadow:0 6px 18px rgba(58,49,9,.04);
+}
+
+.ir-student-profile-metrics span{
+ display:grid;
+ width:34px;
+ height:34px;
+ margin-bottom:5px;
+ place-items:center;
+ background:#fff4b4;
+ border-radius:10px;
+}
+
+.ir-student-profile-metrics strong{
+ font-size:15px;
+ font-weight:1000;
+}
+
+.ir-student-profile-metrics small{
+ margin-top:2px;
+ color:#86868f;
+ font-size:7px;
+}
+
+.ir-student-profile-section{
+ margin-bottom:13px;
+ padding:15px;
+ background:#fff;
+ border:1px solid #e5e2d4;
+ border-radius:18px;
+ box-shadow:0 7px 22px rgba(58,49,9,.04);
+}
+
+.ir-student-profile-section>header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:10px;
+}
+
+.ir-student-profile-section>header h2{
+ margin:0;
+ font-size:12px;
+ font-weight:1000;
+}
+
+.ir-student-profile-section>header>span{
+ padding:4px 8px;
+ color:#177345;
+ background:#e8f8ed;
+ border-radius:999px;
+ font-size:7px;
+ font-weight:900;
+}
+
+.ir-student-profile-details{
+ margin:0;
+}
+
+.ir-student-profile-details>div{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:12px;
+ min-height:43px;
+ border-bottom:1px solid #efede5;
+}
+
+.ir-student-profile-details>div:last-child{
+ border-bottom:0;
+}
+
+.ir-student-profile-details dt{
+ display:flex;
+ align-items:center;
+ gap:7px;
+ color:#787881;
+ font-size:8px;
+}
+
+.ir-student-profile-details dt svg{
+ width:17px;
+ height:17px;
+ fill:none;
+ stroke:#202024;
+ stroke-width:1.8;
+ stroke-linecap:round;
+ stroke-linejoin:round;
+}
+
+.ir-student-profile-details dd{
+ max-width:55%;
+ margin:0;
+ overflow:hidden;
+ color:#202024;
+ font-size:8.5px;
+ font-weight:900;
+ text-align:left;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-profile-actions{
+ display:grid;
+ gap:4px;
+}
+
+.ir-student-profile-actions>button{
+ display:grid;
+ grid-template-columns:40px minmax(0,1fr) 20px;
+ align-items:center;
+ gap:10px;
+ min-height:58px;
+ padding:8px 0;
+ color:#202024;
+ text-align:right;
+ background:transparent;
+ border:0;
+ border-bottom:1px solid #efede5;
+}
+
+.ir-student-profile-actions>button:last-child{
+ border-bottom:0;
+}
+
+.ir-student-profile-actions>button>span{
+ display:grid;
+ width:40px;
+ height:40px;
+ place-items:center;
+ background:#fff3ad;
+ border-radius:12px;
+}
+
+.ir-student-profile-actions>button>div{
+ display:grid;
+ gap:3px;
+ min-width:0;
+}
+
+.ir-student-profile-actions strong{
+ font-size:9px;
+}
+
+.ir-student-profile-actions small{
+ overflow:hidden;
+ color:#888890;
+ font-size:7px;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+
+.ir-student-profile-actions>button>svg:last-child{
+ transform:rotate(180deg);
+}
+
+.ir-student-profile-logout{
+ width:100%;
+ min-height:45px;
+ color:#b42318;
+ background:#fff;
+ border:1px solid #efc8c5;
+ border-radius:13px;
+ font-size:9px;
+ font-weight:1000;
+}
+
+.ir-route-layer-host.has-persistent-dock .ir-student-classes-page,
+.ir-route-layer-host.has-persistent-dock .ir-student-profile-page{
+ padding-bottom:var(--ir-app-dock-space)!important;
+}
+
+@media(min-width:431px){
+ .ir-student-classes-page,
+ .ir-student-profile-page{
+  border-right:1px solid #e7e3cf;
+  border-left:1px solid #e7e3cf;
+ }
+}
+
+@media(max-width:360px){
+ .ir-student-classes-page,
+ .ir-student-profile-page{
+  padding-right:12px;
+  padding-left:12px;
+ }
+
+ .ir-student-classes-summary{
+  grid-template-columns:48px minmax(0,1fr);
+ }
+
+ .ir-student-classes-summary>button{
+  grid-column:1/-1;
+ }
+
+ .ir-student-class-card__details{
+  grid-template-columns:1fr;
+ }
+
+ .ir-student-profile-hero{
+  grid-template-columns:60px minmax(0,1fr);
+ }
+
+ .ir-student-profile-hero__avatar,
+ .ir-student-profile-hero__avatar>span{
+  width:60px;
+  height:60px;
+ }
+
+ .ir-student-profile-hero>button{
+  grid-column:1/-1;
+ }
+}
+
+
+/* Final readable UI system for every role and page. */
+html,body,#root{font-family:var(--ir-font-family)!important;font-size:16px!important;line-height:1.75!important;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+body{color:#202024!important;background:#f7f7f2!important}
+svg text{font-family:var(--ir-font-family)!important}
+button,input,textarea,select,option{font-family:var(--ir-font-family)!important;font-size:14px!important;line-height:1.6!important}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid rgba(255,209,0,.42)!important;outline-offset:2px!important}
+
+.ir-screen-surface{
+ --ir-page-gutter:clamp(20px,5vw,40px);
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ margin:0!important;
+ box-sizing:border-box!important;
+}
+
+.ir-screen-surface>*{
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ margin-right:0!important;
+ margin-left:0!important;
+ box-sizing:border-box!important;
+}
+
+.ir-screen-surface.is-full-bleed{
+ padding:0!important;
+ overflow:hidden!important;
+ background:#fffbe4!important;
+}
+
+.ir-screen-surface.is-full-bleed>*{
+ width:100%!important;
+ max-width:none!important;
+}
+
+.ir-screen-surface.is-standard{
+ width:100%!important;
+ max-width:none!important;
+ padding:var(--ir-page-gutter)!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ background:linear-gradient(180deg,#fffdf2 0,#f7f7f2 240px)!important;
+ scrollbar-gutter:stable;
+}
+
+.ir-screen-surface.is-standard>*{
+ width:100%!important;
+ min-width:0!important;
+ max-width:none!important;
+ margin:0!important;
+}
+
+.ir-route-layer-host.has-persistent-dock .ir-screen-surface.is-standard{
+ padding-bottom:calc(var(--ir-app-dock-space) + var(--ir-page-gutter))!important;
+}
+
+.ir-page-header{margin-bottom:24px!important}
+.ir-page-header>div{align-items:flex-start!important}
+.ir-page-header span,.ir-kicker{margin-bottom:8px!important;font-size:12px!important;line-height:1.6!important}
+.ir-page-header h1{margin-bottom:8px!important;font-size:clamp(25px,4vw,38px)!important;line-height:1.35!important;letter-spacing:-.025em!important}
+.ir-page-header p{max-width:760px!important;color:#65656f!important;font-size:14px!important;line-height:1.9!important}
+.ir-page-header aside{align-items:center!important}
+.ir-button{min-height:46px!important;padding:10px 18px!important;border-radius:13px!important;font-size:14px!important;line-height:1.5!important}
+
+.ir-card{border-color:#e3e1d8!important;border-radius:20px!important;box-shadow:0 10px 30px rgba(42,36,8,.06)!important}
+.ir-card__header{padding:20px 20px 0!important}
+.ir-card__header h2{font-size:18px!important;line-height:1.55!important}
+.ir-card__header p{font-size:13px!important;line-height:1.8!important}
+.ir-card__body{padding:20px!important;font-size:14px!important}
+.ir-stats-grid{gap:14px!important}
+.ir-stat{min-height:92px!important;padding:16px!important;border-color:#e3e1d8!important}
+.ir-stat small{font-size:12px!important;line-height:1.6!important}
+.ir-stat strong{font-size:22px!important;line-height:1.35!important}
+.ir-stat em{font-size:11px!important}
+.ir-stat__icon{width:46px!important;height:46px!important;background:#fff4b3!important}
+.ir-trust-strip{gap:10px!important;padding:14px!important;background:#fff8cf!important;border-color:#ead36c!important}
+.ir-trust-strip span{font-size:12px!important;line-height:1.6!important}
+.ir-list-row,.ir-action-row,.ir-class-row,.ir-payment-row,.ir-request-row{min-height:66px!important;padding:14px 0!important}
+.ir-list-row strong,.ir-action-row strong,.ir-class-row strong,.ir-payment-row strong,.ir-request-row strong{font-size:14px!important;line-height:1.7!important}
+.ir-list-row small,.ir-action-row small,.ir-class-row small,.ir-payment-row small,.ir-request-row small{font-size:12px!important;line-height:1.7!important}
+.ir-list-row>button,.ir-action-row>button{min-height:38px!important;padding:8px 12px!important;font-size:12px!important}
+.ir-badge{padding:6px 10px!important;font-size:11px!important;line-height:1.4!important}
+.ir-field{gap:8px!important;font-size:13px!important}
+.ir-field input,.ir-field textarea,.ir-field select{min-height:48px!important;padding:11px 13px!important;font-size:14px!important}
+.ir-field small{font-size:11px!important;line-height:1.7!important}
+.ir-state h3{font-size:20px!important}
+.ir-state p{font-size:14px!important;line-height:1.9!important}
+.ir-section-title h2{font-size:20px!important}
+.ir-section-title p{font-size:13px!important}
+
+.ir-generic-page{display:grid!important;gap:18px!important}
+.ir-generic-page__grid{align-items:start!important}
+.ir-generic-grid{display:grid!important;grid-template-columns:1fr!important;gap:10px!important}
+.ir-generic-grid article{display:grid!important;grid-template-columns:48px minmax(0,1fr) auto!important;align-items:center!important;gap:12px!important;min-height:82px!important;padding:14px!important;background:#faf9f4!important;border:1px solid #ebe8dc!important;border-radius:15px!important;box-shadow:none!important}
+.ir-generic-grid article.is-actionable:hover{border-color:#e0b900!important;background:#fffdf0!important}
+.ir-generic-grid__icon{display:grid!important;width:48px!important;height:48px!important;place-items:center!important;color:#202024!important;background:#ffd100!important;border-radius:14px!important;font-size:15px!important;font-weight:1000!important}
+.ir-generic-grid h3{margin:0 0 4px!important;font-size:15px!important;line-height:1.6!important}
+.ir-generic-grid p{margin:0!important;color:#73737d!important;font-size:12px!important;line-height:1.8!important}
+.ir-generic-grid article>button{display:grid!important;width:40px!important;height:40px!important;place-items:center!important;color:#202024!important;background:#fff!important;border:1px solid #dfddd2!important;border-radius:12px!important}
+.ir-generic-grid article>button .ir-icon{transform:none!important}
+.ir-generic-grid__status{padding:5px 8px!important;color:#26734d!important;background:#e7f5ec!important;border-radius:999px!important;font-size:10px!important}
+.ir-generic-empty{min-height:280px!important;padding:30px!important;text-align:center!important}
+.ir-generic-empty>span{display:grid!important;width:64px!important;height:64px!important;margin:0 auto 14px!important;place-items:center!important;background:#fff3ad!important;border-radius:20px!important}
+.ir-generic-empty h3{font-size:19px!important}
+.ir-generic-empty p{font-size:13px!important}
+
+.ir-exact-student-dashboard,.ir-exact-family-home,.ir-exact-family-children,.ir-student-courses-svg,.ir-family-payments-svg,.ir-family-profile-svg{font-size:14px!important}
+.ir-exact-student-dashboard{overflow-x:hidden!important;overflow-y:auto!important;scrollbar-width:none!important}
+.ir-exact-student-dashboard::-webkit-scrollbar{display:none!important}
+.ir-exact-student-dashboard__header strong{font-size:15px!important;line-height:1.6!important}
+.ir-exact-student-dashboard__header span{font-size:11px!important;line-height:1.6!important}
+.ir-exact-student-dashboard__header button i{display:grid!important;min-width:18px!important;height:18px!important;padding:0 4px!important;place-items:center!important;font-size:9px!important;font-style:normal!important}
+.ir-exact-student-dashboard__welcome h1{font-size:24px!important;line-height:1.55!important}
+.ir-exact-student-dashboard__welcome p{font-size:13px!important;line-height:1.8!important}
+.ir-exact-student-dashboard__progress-label{font-size:12px!important}
+.ir-exact-student-dashboard__welcome footer button{min-height:42px!important;font-size:12px!important}
+.ir-exact-student-dashboard__chisty small{font-size:12px!important}
+.ir-exact-student-dashboard__chisty strong{font-size:14px!important;line-height:1.75!important}
+.ir-exact-student-dashboard__chisty button span{font-size:12px!important}
+.ir-exact-student-dashboard__section-heading h2{font-size:19px!important}
+.ir-exact-student-dashboard__section-heading button{font-size:12px!important}
+.ir-exact-student-dashboard__schedule button{min-height:76px!important;padding:13px!important}
+.ir-exact-student-dashboard__schedule strong{font-size:14px!important;line-height:1.65!important}
+.ir-exact-student-dashboard__schedule small{font-size:11px!important;line-height:1.6!important}
+.ir-exact-student-dashboard__schedule em{font-size:10px!important}
+
+.ir-exact-family-home small,.ir-exact-family-children small,.ir-family-payments-svg small,.ir-family-profile-svg small,.ir-student-courses-svg small{font-size:11px!important;line-height:1.65!important}
+.ir-exact-family-home strong,.ir-exact-family-children strong,.ir-family-payments-svg strong,.ir-family-profile-svg strong,.ir-student-courses-svg strong{line-height:1.6!important}
+.ir-exact-family-home__summary small,.ir-exact-family-home__child>small,.ir-exact-family-children__security b{font-size:10px!important}
+.ir-exact-family-home__summary>button,.ir-exact-family-home__child>button,.ir-exact-family-children__list article>footer button,.ir-exact-family-children__add{font-size:12px!important}
+.ir-exact-family-home__child header strong,.ir-exact-family-children__list article>header strong{font-size:14px!important}
+.ir-exact-family-home__quick button span,.ir-exact-family-children__security strong{font-size:12px!important}
+.ir-exact-family-children>header p{font-size:12px!important}
+
+.ir-svg-prototype-page h1{font-size:22px!important;line-height:1.45!important}
+.ir-svg-prototype-page h2{font-size:19px!important;line-height:1.55!important}
+.ir-svg-prototype-page h3{font-size:16px!important;line-height:1.6!important}
+.ir-svg-prototype-page p{font-size:13px!important;line-height:1.8!important}
+.ir-svg-prototype-page button,.ir-svg-prototype-page input,.ir-svg-prototype-page textarea,.ir-svg-prototype-page select{font-size:13px!important}
+.ir-svg-card strong{font-size:14px!important;line-height:1.6!important}
+.ir-svg-card small{font-size:11px!important;line-height:1.6!important}
+
+.ir-auth-entry__brand p,.ir-role-selection-reference__panel header p,.ir-credential-page__heading p{font-size:13px!important;line-height:1.8!important}
+.ir-auth-entry__tabs button{font-size:13px!important}
+.ir-auth-entry__field label,.ir-credential-page .ir-field>span{font-size:13px!important}
+.ir-auth-entry__demo,.ir-auth-entry__error,.ir-mobile-login-light__error{font-size:11px!important;line-height:1.7!important}
+.ir-auth-entry__submit,.ir-credential-page__submit,.ir-role-selection-reference__continue{font-size:14px!important}
+.ir-auth-entry__otp{font-size:12px!important}
+.ir-role-selection-reference__list strong{font-size:15px!important}
+.ir-role-selection-reference__list small{font-size:12px!important;line-height:1.7!important}
+.ir-role-selection-reference__panel footer,.ir-credential-page__top>span{font-size:12px!important}
+.ir-credential-page__identity strong{font-size:14px!important}
+.ir-credential-page__identity small,.ir-credential-page__identity b{font-size:11px!important}
+.ir-credential-page__security{font-size:12px!important;line-height:1.8!important}
+
+.ir-student-classes-page,.ir-student-profile-page{height:100%!important;min-height:0!important;padding:20px 16px var(--ir-app-dock-space)!important;overflow-x:hidden!important;overflow-y:auto!important;scrollbar-width:none!important}
+.ir-student-classes-page::-webkit-scrollbar,.ir-student-profile-page::-webkit-scrollbar{display:none!important}
+.ir-student-mobile-header h1{font-size:20px!important}
+.ir-student-mobile-header p{font-size:12px!important}
+.ir-student-mobile-header>button:first-child .ir-icon{transform:rotate(180deg)!important}
+.ir-student-classes-summary span{font-size:12px!important}
+.ir-student-classes-summary small{font-size:11px!important;line-height:1.6!important;white-space:normal!important}
+.ir-student-classes-summary>button{font-size:12px!important}
+.ir-student-classes-tabs button{font-size:13px!important}
+.ir-student-classes-tabs button span{font-size:10px!important}
+.ir-student-class-card h2{font-size:15px!important}
+.ir-student-class-card>header p{font-size:11px!important}
+.ir-student-class-card__date small{font-size:10px!important}
+.ir-student-class-card__details span{justify-content:flex-start!important;font-size:11px!important;text-align:right!important}
+.ir-student-class-card__details b{white-space:normal!important}
+.ir-student-class-card>footer button{font-size:12px!important}
+.ir-student-mobile-empty h2{font-size:19px!important}
+.ir-student-mobile-empty p{font-size:13px!important}
+.ir-student-mobile-empty button{font-size:13px!important}
+.ir-student-profile-hero__identity h2{font-size:18px!important}
+.ir-student-profile-hero__identity p,.ir-student-profile-hero__identity>span{font-size:11px!important}
+.ir-student-profile-hero>button{font-size:12px!important}
+.ir-student-profile-metrics strong{font-size:18px!important}
+.ir-student-profile-metrics small{font-size:11px!important}
+.ir-student-profile-section>header h2{font-size:16px!important}
+.ir-student-profile-section>header>span{font-size:10px!important}
+.ir-student-profile-details dt,.ir-student-profile-details dd{font-size:12px!important;line-height:1.7!important}
+.ir-student-profile-actions strong{font-size:13px!important}
+.ir-student-profile-actions small{font-size:11px!important;line-height:1.6!important}
+.ir-student-profile-actions>button>svg:last-child{transform:none!important}
+.ir-student-profile-logout{font-size:13px!important}
+
+/* student-profile.svg + student-profile-edit.svg + student-profile-photo-change.svg */
+.ir-student-profile-main-page,
+.ir-student-profile-main-page *,
+.ir-student-profile-edit-page,
+.ir-student-profile-edit-page *,
+.ir-student-profile-photo-page,
+.ir-student-profile-photo-page *{
+ box-sizing:border-box!important;
+ font-family:var(--ir-font-family)!important;
+}
+
+.ir-student-profile-main-page{
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:22px clamp(20px,5.8vw,34px) calc(var(--ir-app-dock-space,96px) + 34px)!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ direction:rtl!important;
+ color:#202024!important;
+ background:#fffae0!important;
+ scrollbar-width:none!important;
+ overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;
+ scroll-padding-bottom:calc(var(--ir-app-dock-space,96px) + 28px)!important;
+}
+
+.ir-student-profile-main-page::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-profile-main-page__header{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ width:100%!important;
+ min-height:55px!important;
+ margin:0 0 29px!important;
+ padding:0!important;
+}
+
+.ir-student-profile-main-page__header h1{
+ margin:0!important;
+ color:#202024!important;
+ font-size:24px!important;
+ font-weight:900!important;
+ line-height:1.4!important;
+ letter-spacing:-.025em!important;
+}
+
+.ir-student-profile-main-page__identity{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ width:100%!important;
+ margin:0 0 40px!important;
+ text-align:center!important;
+}
+
+.ir-student-profile-main-page__avatar-button{
+ display:grid!important;
+ width:112px!important;
+ height:112px!important;
+ place-items:center!important;
+ margin:0 0 13px!important;
+ padding:0!important;
+ overflow:hidden!important;
+ background:#fff!important;
+ border:3px solid #ffd000!important;
+ border-radius:50%!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-main-page__avatar{
+ display:grid!important;
+ width:100%!important;
+ height:100%!important;
+ place-items:center!important;
+ overflow:hidden!important;
+ background:#efeee8!important;
+ border-radius:50%!important;
+}
+
+.ir-student-profile-main-page__avatar img{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ object-fit:cover!important;
+ object-position:center!important;
+}
+
+.ir-student-profile-main-page__avatar b{
+ display:grid!important;
+ width:100%!important;
+ height:100%!important;
+ place-items:center!important;
+ color:#5f5f65!important;
+ background:#f0eee5!important;
+ font-size:36px!important;
+ font-weight:900!important;
+}
+
+.ir-student-profile-main-page__identity h2{
+ margin:0!important;
+ color:#202024!important;
+ font-size:22px!important;
+ font-weight:900!important;
+ line-height:1.55!important;
+ letter-spacing:-.02em!important;
+}
+
+.ir-student-profile-main-page__identity p{
+ margin:3px 0 0!important;
+ color:#929299!important;
+ font-size:12px!important;
+ font-weight:500!important;
+ line-height:1.7!important;
+}
+
+.ir-student-profile-main-page__metrics{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:12px!important;
+ width:100%!important;
+ margin:0 0 34px!important;
+}
+
+.ir-student-profile-main-page__metrics article{
+ display:flex!important;
+ min-width:0!important;
+ min-height:87px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ margin:0!important;
+ padding:12px 7px!important;
+ background:#fff!important;
+ border:0!important;
+ border-radius:16px!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-main-page__metrics strong{
+ color:#202024!important;
+ font-size:20px!important;
+ font-weight:900!important;
+ line-height:1.2!important;
+}
+
+.ir-student-profile-main-page__metrics span{
+ margin-top:8px!important;
+ color:#929299!important;
+ font-size:10px!important;
+ font-weight:500!important;
+ line-height:1.45!important;
+ white-space:nowrap!important;
+}
+
+.ir-student-profile-main-page__menu{
+ width:100%!important;
+ margin:0!important;
+ padding:10px 18px!important;
+ overflow:hidden!important;
+ background:#fff!important;
+ border:0!important;
+ border-radius:24px!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-main-page__menu>button{
+ display:grid!important;
+ grid-template-columns:42px minmax(0,1fr) 26px!important;
+ align-items:center!important;
+ gap:13px!important;
+ width:100%!important;
+ min-height:69px!important;
+ margin:0!important;
+ padding:8px 0!important;
+ direction:rtl!important;
+ color:#202024!important;
+ text-align:right!important;
+ background:transparent!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-main-page__menu>button>span{
+ display:grid!important;
+ width:38px!important;
+ height:38px!important;
+ place-items:center!important;
+ border-radius:11px!important;
+}
+
+.ir-student-profile-main-page__menu>button>span.is-yellow{
+ color:#ffc900!important;
+ background:#fff8d9!important;
+}
+
+.ir-student-profile-main-page__menu>button>span.is-green{
+ color:#1fc56a!important;
+ background:#e5f8eb!important;
+}
+
+.ir-student-profile-main-page__menu>button>span.is-red{
+ color:#ff4747!important;
+ background:#ffe9e9!important;
+}
+
+.ir-student-profile-main-page__menu>button>span svg{
+ width:23px!important;
+ height:23px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-main-page__menu>button>strong{
+ min-width:0!important;
+ color:#242428!important;
+ font-size:15px!important;
+ font-weight:800!important;
+ line-height:1.6!important;
+}
+
+.ir-student-profile-main-page__menu>button.is-logout>strong{
+ color:#ff4040!important;
+}
+
+.ir-student-profile-main-page__chevron{
+ justify-self:end!important;
+ width:18px!important;
+ height:18px!important;
+ fill:none!important;
+ stroke:#ffc800!important;
+ stroke-width:2.2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-main-page__menu>button.is-logout{
+ grid-template-columns:42px minmax(0,1fr)!important;
+ padding-top:11px!important;
+}
+
+.ir-student-profile-main-page__inline-panel{
+ width:100%!important;
+ margin:16px 0 0!important;
+ padding:16px!important;
+ background:#fff!important;
+ border:1px solid #ece9d9!important;
+ border-radius:17px!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-main-page__inline-panel.is-privacy{
+ border-color:#d8efdf!important;
+}
+
+.ir-student-profile-main-page__inline-panel>header{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ gap:10px!important;
+}
+
+.ir-student-profile-main-page__inline-panel>header strong{
+ color:#222226!important;
+ font-size:14px!important;
+ font-weight:900!important;
+}
+
+.ir-student-profile-main-page__inline-panel>header button{
+ display:grid!important;
+ width:30px!important;
+ height:30px!important;
+ place-items:center!important;
+ margin:0!important;
+ padding:0!important;
+ color:#77787e!important;
+ background:#f3f3f3!important;
+ border:0!important;
+ border-radius:50%!important;
+ font-size:19px!important;
+ font-weight:500!important;
+}
+
+.ir-student-profile-main-page__inline-panel>p{
+ margin:9px 0 13px!important;
+ color:#83838b!important;
+ font-size:11px!important;
+ font-weight:500!important;
+ line-height:1.9!important;
+}
+
+.ir-student-profile-main-page__inline-panel>button{
+ min-height:40px!important;
+ margin:0!important;
+ padding:7px 13px!important;
+ color:#202024!important;
+ background:#ffd000!important;
+ border:0!important;
+ border-radius:11px!important;
+ font-size:11px!important;
+ font-weight:900!important;
+}
+
+/* Profile edit */
+.ir-screen-surface.is-full-bleed:has(.ir-student-profile-edit-page),
+.ir-screen-surface.is-full-bleed:has(.ir-student-profile-photo-page){
+ position:relative!important;
+ display:flex!important;
+ flex-direction:column!important;
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ max-height:100%!important;
+ margin:0!important;
+ padding:0!important;
+ overflow:hidden!important;
+ background:#fffae0!important;
+}
+
+.ir-screen-surface.is-full-bleed:has(.ir-student-profile-edit-page)>.ir-student-profile-edit-page,
+.ir-screen-surface.is-full-bleed:has(.ir-student-profile-photo-page)>.ir-student-profile-photo-page{
+ flex:1 1 auto!important;
+ min-height:0!important;
+}
+
+.ir-student-profile-edit-page{
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:24px clamp(24px,6vw,38px) calc(38px + env(safe-area-inset-bottom))!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ direction:rtl!important;
+ color:#202024!important;
+ background:#fffae0!important;
+ scrollbar-width:none!important;
+ overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;
+}
+
+.ir-student-profile-edit-page::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-profile-edit-page__header{
+ display:grid!important;
+ grid-template-columns:44px minmax(0,1fr)!important;
+ align-items:center!important;
+ gap:14px!important;
+ width:100%!important;
+ min-height:52px!important;
+ margin:0 0 31px!important;
+ direction:ltr!important;
+}
+
+.ir-student-profile-edit-page__header>button{
+ display:grid!important;
+ width:42px!important;
+ height:42px!important;
+ place-items:center!important;
+ margin:0!important;
+ padding:0!important;
+ color:#252529!important;
+ background:#fffdf0!important;
+ border:1px solid #e4e1cf!important;
+ border-radius:50%!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-edit-page__header>button svg{
+ width:24px!important;
+ height:24px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-edit-page__header h1{
+ margin:0!important;
+ direction:rtl!important;
+ color:#202024!important;
+ font-size:24px!important;
+ font-weight:900!important;
+ line-height:1.45!important;
+ text-align:right!important;
+ letter-spacing:-.025em!important;
+}
+
+.ir-student-profile-edit-page__avatar-button{
+ position:relative!important;
+ display:grid!important;
+ width:122px!important;
+ height:122px!important;
+ place-items:center!important;
+ margin:0 auto 40px!important;
+ padding:0!important;
+ background:transparent!important;
+ border:0!important;
+ border-radius:50%!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-edit-page__avatar{
+ display:grid!important;
+ width:118px!important;
+ height:118px!important;
+ place-items:center!important;
+ overflow:hidden!important;
+ background:#efeee8!important;
+ border:4px solid #ffd000!important;
+ border-radius:50%!important;
+}
+
+.ir-student-profile-edit-page__avatar img{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ object-fit:cover!important;
+}
+
+.ir-student-profile-edit-page__avatar b{
+ display:grid!important;
+ width:100%!important;
+ height:100%!important;
+ place-items:center!important;
+ color:#58585e!important;
+ font-size:36px!important;
+ font-weight:900!important;
+}
+
+.ir-student-profile-edit-page__avatar-button>i{
+ position:absolute!important;
+ right:-1px!important;
+ bottom:7px!important;
+ display:grid!important;
+ width:39px!important;
+ height:39px!important;
+ place-items:center!important;
+ color:#fff!important;
+ background:#ffcb00!important;
+ border:3px solid #fff!important;
+ border-radius:50%!important;
+ font-style:normal!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-edit-page__avatar-button>i svg{
+ width:21px!important;
+ height:21px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-edit-page__family-notice{
+ position:relative!important;
+ display:grid!important;
+ grid-template-columns:54px minmax(0,1fr)!important;
+ align-items:center!important;
+ gap:13px!important;
+ width:100%!important;
+ min-height:103px!important;
+ margin:0 0 27px!important;
+ padding:14px 14px!important;
+ overflow:hidden!important;
+ direction:rtl!important;
+ background:#fff!important;
+ border:1.5px solid #ffc900!important;
+ border-radius:15px!important;
+}
+
+.ir-student-profile-edit-page__family-notice::after{
+ content:""!important;
+ position:absolute!important;
+ top:0!important;
+ right:0!important;
+ bottom:0!important;
+ width:5px!important;
+ background:#ffd000!important;
+}
+
+.ir-student-profile-edit-page__family-notice>span{
+ display:grid!important;
+ width:50px!important;
+ height:56px!important;
+ place-items:center!important;
+ color:#ffc900!important;
+ background:#fffdf1!important;
+ border:1px solid #ffd000!important;
+ border-radius:14px!important;
+}
+
+.ir-student-profile-edit-page__family-notice>span svg{
+ width:27px!important;
+ height:27px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-edit-page__family-notice>div{
+ min-width:0!important;
+}
+
+.ir-student-profile-edit-page__family-notice strong{
+ display:block!important;
+ margin:0!important;
+ color:#d2d2d5!important;
+ font-size:15px!important;
+ font-weight:900!important;
+ line-height:1.7!important;
+}
+
+.ir-student-profile-edit-page__family-notice p{
+ margin:4px 0 0!important;
+ color:#919198!important;
+ font-size:10px!important;
+ font-weight:500!important;
+ line-height:1.8!important;
+}
+
+.ir-student-profile-edit-page__form{
+ display:flex!important;
+ flex-direction:column!important;
+ width:100%!important;
+ margin:0!important;
+ padding:0!important;
+ gap:17px!important;
+}
+
+.ir-student-profile-edit-page__form>label{
+ display:flex!important;
+ flex-direction:column!important;
+ gap:8px!important;
+ width:100%!important;
+ margin:0!important;
+ color:#929299!important;
+}
+
+.ir-student-profile-edit-page__form>label>span:first-child{
+ display:block!important;
+ padding-right:2px!important;
+ font-size:11px!important;
+ font-weight:600!important;
+ line-height:1.5!important;
+}
+
+.ir-student-profile-edit-page__form input,
+.ir-student-profile-edit-page__form select{
+ width:100%!important;
+ min-width:0!important;
+ height:57px!important;
+ margin:0!important;
+ padding:0 16px!important;
+ color:#26262a!important;
+ background:#fff!important;
+ border:1.5px solid transparent!important;
+ border-radius:15px!important;
+ outline:0!important;
+ box-shadow:none!important;
+ font-size:13px!important;
+ font-weight:700!important;
+ line-height:1.5!important;
+}
+
+.ir-student-profile-edit-page__form>label:first-child input{
+ border-color:#ffc900!important;
+}
+
+.ir-student-profile-edit-page__form input[dir="ltr"]{
+ direction:ltr!important;
+ text-align:right!important;
+}
+
+.ir-student-profile-edit-page__form input:focus,
+.ir-student-profile-edit-page__form select:focus{
+ border-color:#ffc900!important;
+ outline:0!important;
+ box-shadow:0 0 0 3px rgba(255,201,0,.08)!important;
+}
+
+.ir-student-profile-edit-page__select{
+ position:relative!important;
+ display:block!important;
+ width:100%!important;
+}
+
+.ir-student-profile-edit-page__select select{
+ appearance:none!important;
+ -webkit-appearance:none!important;
+ padding-left:45px!important;
+ direction:rtl!important;
+}
+
+.ir-student-profile-edit-page__select>svg{
+ position:absolute!important;
+ top:50%!important;
+ left:16px!important;
+ width:20px!important;
+ height:20px!important;
+ pointer-events:none!important;
+ fill:none!important;
+ stroke:#ffc900!important;
+ stroke-width:2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+ transform:translateY(-50%)!important;
+}
+
+.ir-student-profile-edit-page__error{
+ margin:-3px 0 0!important;
+ padding:9px 11px!important;
+ color:#bc3737!important;
+ background:#ffeded!important;
+ border-radius:10px!important;
+ font-size:10px!important;
+ font-weight:700!important;
+ line-height:1.7!important;
+}
+
+.ir-student-profile-edit-page__submit{
+ width:100%!important;
+ min-height:58px!important;
+ margin:18px 0 0!important;
+ padding:10px 15px!important;
+ color:#171719!important;
+ background:#ffd000!important;
+ border:0!important;
+ border-radius:17px!important;
+ box-shadow:none!important;
+ font-size:16px!important;
+ font-weight:900!important;
+ line-height:1.45!important;
+}
+
+/* Profile photo bottom sheet */
+.ir-student-profile-photo-page{
+ position:relative!important;
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ margin:0!important;
+ overflow:hidden!important;
+ direction:rtl!important;
+ color:#202024!important;
+ background:#313131!important;
+ isolation:isolate!important;
+}
+
+.ir-student-profile-photo-page__backdrop{
+ position:absolute!important;
+ inset:0!important;
+ z-index:0!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ padding:28px clamp(24px,6vw,38px)!important;
+ background:#fffae0!important;
+ filter:brightness(.31)!important;
+ pointer-events:none!important;
+}
+
+.ir-student-profile-photo-page__backdrop>header{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) 46px!important;
+ align-items:center!important;
+ width:100%!important;
+ margin-bottom:43px!important;
+}
+
+.ir-student-profile-photo-page__backdrop h1{
+ margin:0!important;
+ color:#202024!important;
+ font-size:24px!important;
+ font-weight:900!important;
+ text-align:center!important;
+}
+
+.ir-student-profile-photo-page__backdrop header svg{
+ width:34px!important;
+ height:34px!important;
+ justify-self:end!important;
+ fill:none!important;
+ stroke:#202024!important;
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-photo-page__backdrop-avatar{
+ display:grid!important;
+ width:110px!important;
+ height:110px!important;
+ place-items:center!important;
+ overflow:hidden!important;
+ background:#eee!important;
+ border:3px solid #ffd000!important;
+ border-radius:50%!important;
+}
+
+.ir-student-profile-photo-page__backdrop-avatar img{
+ width:100%!important;
+ height:100%!important;
+ object-fit:cover!important;
+}
+
+.ir-student-profile-photo-page__backdrop-avatar b{
+ display:grid!important;
+ width:100%!important;
+ height:100%!important;
+ place-items:center!important;
+ font-size:34px!important;
+ font-weight:900!important;
+}
+
+.ir-student-profile-photo-page__sheet{
+ position:absolute!important;
+ right:0!important;
+ bottom:0!important;
+ left:0!important;
+ z-index:2147483000!important;
+ display:flex!important;
+ width:100%!important;
+ max-height:73%!important;
+ min-height:64%!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ margin:0!important;
+ padding:41px clamp(28px,7vw,48px) calc(28px + env(safe-area-inset-bottom))!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ direction:rtl!important;
+ background:#fff!important;
+ border-radius:25px 25px 0 0!important;
+ box-shadow:0 -22px 55px rgba(0,0,0,.18)!important;
+ scrollbar-width:none!important;
+ -webkit-overflow-scrolling:touch!important;
+}
+
+.ir-student-profile-photo-page__sheet::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-profile-photo-page__handle{
+ position:absolute!important;
+ top:12px!important;
+ left:50%!important;
+ width:47px!important;
+ height:4px!important;
+ background:#d8d8db!important;
+ border-radius:999px!important;
+ transform:translateX(-50%)!important;
+}
+
+.ir-student-profile-photo-page__sheet>h1{
+ margin:0 0 33px!important;
+ color:#242428!important;
+ font-size:19px!important;
+ font-weight:900!important;
+ line-height:1.5!important;
+ text-align:center!important;
+}
+
+.ir-student-profile-photo-page__preview{
+ display:grid!important;
+ width:145px!important;
+ height:145px!important;
+ place-items:center!important;
+ margin:0 0 34px!important;
+ padding:5px!important;
+ overflow:hidden!important;
+ background:#fff!important;
+ border:3px solid #ffd000!important;
+ border-radius:50%!important;
+ box-shadow:0 0 0 3px #fff,0 0 0 5px #ffd000!important;
+}
+
+.ir-student-profile-photo-page__preview img{
+ display:block!important;
+ width:100%!important;
+ height:100%!important;
+ object-fit:cover!important;
+ border-radius:50%!important;
+}
+
+.ir-student-profile-photo-page__preview b{
+ display:grid!important;
+ width:100%!important;
+ height:100%!important;
+ place-items:center!important;
+ color:#58585e!important;
+ background:#f0eee8!important;
+ border-radius:50%!important;
+ font-size:44px!important;
+ font-weight:900!important;
+}
+
+.ir-student-profile-photo-page__actions{
+ display:flex!important;
+ flex-direction:column!important;
+ width:100%!important;
+ gap:13px!important;
+}
+
+.ir-student-profile-photo-page__actions>button{
+ display:grid!important;
+ grid-template-columns:48px minmax(0,1fr) 24px!important;
+ align-items:center!important;
+ gap:12px!important;
+ width:100%!important;
+ min-height:69px!important;
+ margin:0!important;
+ padding:8px 0!important;
+ direction:rtl!important;
+ color:#242428!important;
+ text-align:right!important;
+ background:transparent!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+}
+
+.ir-student-profile-photo-page__actions>button>span{
+ display:grid!important;
+ width:44px!important;
+ height:44px!important;
+ place-items:center!important;
+ color:#ffc900!important;
+ background:#fff7d8!important;
+ border-radius:13px!important;
+}
+
+.ir-student-profile-photo-page__actions>button>span svg{
+ width:25px!important;
+ height:25px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-photo-page__actions strong{
+ color:#2b2b2f!important;
+ font-size:15px!important;
+ font-weight:800!important;
+ line-height:1.55!important;
+}
+
+.ir-student-profile-photo-page__chevron{
+ justify-self:end!important;
+ width:17px!important;
+ height:17px!important;
+ fill:none!important;
+ stroke:#e5e6ea!important;
+ stroke-width:2.2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-profile-photo-page__remove{
+ margin:21px 0 0!important;
+ padding:8px 13px!important;
+ color:#ffc300!important;
+ background:transparent!important;
+ border:0!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+ font-size:13px!important;
+ font-weight:800!important;
+}
+
+.ir-student-profile-photo-page__error{
+ width:100%!important;
+ margin:9px 0 0!important;
+ padding:9px 11px!important;
+ color:#b93838!important;
+ text-align:center!important;
+ background:#ffeded!important;
+ border-radius:10px!important;
+ font-size:10px!important;
+ font-weight:700!important;
+}
+
+.ir-exact-student-dashboard__avatar-initial{
+ display:grid!important;
+ width:100%!important;
+ height:100%!important;
+ place-items:center!important;
+ color:#202024!important;
+ background:#ffd000!important;
+ border-radius:50%!important;
+ font-size:16px!important;
+ font-weight:900!important;
+ line-height:1!important;
+}
+
+@media(min-width:700px){
+ .ir-student-profile-main-page{
+  padding-right:clamp(32px,7vw,70px)!important;
+  padding-left:clamp(32px,7vw,70px)!important;
+ }
+
+ .ir-student-profile-edit-page{
+  padding-right:clamp(38px,8vw,82px)!important;
+  padding-left:clamp(38px,8vw,82px)!important;
+ }
+
+ .ir-student-profile-photo-page__sheet{
+  right:50%!important;
+  left:auto!important;
+  width:min(560px,100%)!important;
+  transform:translateX(50%)!important;
+ }
+
+ .ir-student-profile-main-page__metrics{
+  gap:18px!important;
+ }
+
+ .ir-student-profile-main-page__metrics article{
+  min-height:96px!important;
+ }
+}
+
+@media(max-width:420px){
+ .ir-student-profile-main-page{
+  padding-top:18px!important;
+  padding-right:24px!important;
+  padding-left:24px!important;
+ }
+
+ .ir-student-profile-main-page__header{
+  margin-bottom:22px!important;
+ }
+
+ .ir-student-profile-main-page__avatar-button{
+  width:108px!important;
+  height:108px!important;
+ }
+
+ .ir-student-profile-main-page__metrics{
+  gap:11px!important;
+ }
+
+ .ir-student-profile-main-page__menu{
+  padding-right:15px!important;
+  padding-left:15px!important;
+ }
+
+ .ir-student-profile-edit-page{
+  padding-top:20px!important;
+  padding-right:24px!important;
+  padding-left:24px!important;
+ }
+
+ .ir-student-profile-edit-page__header{
+  margin-bottom:27px!important;
+ }
+
+ .ir-student-profile-edit-page__avatar-button{
+  margin-bottom:35px!important;
+ }
+
+ .ir-student-profile-photo-page__sheet{
+  min-height:66%!important;
+  padding-right:31px!important;
+  padding-left:31px!important;
+ }
+
+ .ir-student-profile-photo-page__preview{
+  width:140px!important;
+  height:140px!important;
+ }
+}
+
+@media(max-width:350px){
+ .ir-student-profile-main-page{
+  padding-right:16px!important;
+  padding-left:16px!important;
+ }
+
+ .ir-student-profile-main-page__metrics{
+  gap:7px!important;
+ }
+
+ .ir-student-profile-main-page__metrics article{
+  min-height:80px!important;
+  padding-right:3px!important;
+  padding-left:3px!important;
+ }
+
+ .ir-student-profile-main-page__metrics strong{
+  font-size:18px!important;
+ }
+
+ .ir-student-profile-main-page__metrics span{
+  font-size:9px!important;
+ }
+
+ .ir-student-profile-main-page__menu>button{
+  grid-template-columns:38px minmax(0,1fr) 22px!important;
+  gap:9px!important;
+ }
+
+ .ir-student-profile-edit-page{
+  padding-right:16px!important;
+  padding-left:16px!important;
+ }
+
+ .ir-student-profile-edit-page__family-notice{
+  grid-template-columns:47px minmax(0,1fr)!important;
+  padding-right:11px!important;
+  padding-left:11px!important;
+ }
+
+ .ir-student-profile-photo-page__sheet{
+  padding-right:22px!important;
+  padding-left:22px!important;
+ }
+
+ .ir-student-profile-photo-page__preview{
+  width:125px!important;
+  height:125px!important;
+ }
+
+ .ir-student-profile-photo-page__actions>button{
+  grid-template-columns:44px minmax(0,1fr) 20px!important;
+  gap:8px!important;
+ }
+}
+
+@media(max-height:700px){
+ .ir-student-profile-edit-page{
+  padding-top:14px!important;
+ }
+
+ .ir-student-profile-edit-page__header{
+  margin-bottom:14px!important;
+ }
+
+ .ir-student-profile-edit-page__avatar-button{
+  width:92px!important;
+  height:92px!important;
+  margin-bottom:17px!important;
+ }
+
+ .ir-student-profile-edit-page__avatar{
+  width:90px!important;
+  height:90px!important;
+ }
+
+ .ir-student-profile-edit-page__avatar-button>i{
+  width:34px!important;
+  height:34px!important;
+ }
+
+ .ir-student-profile-edit-page__family-notice{
+  min-height:86px!important;
+  margin-bottom:17px!important;
+ }
+
+ .ir-student-profile-edit-page__form{
+  gap:10px!important;
+ }
+
+ .ir-student-profile-edit-page__form input,
+ .ir-student-profile-edit-page__form select{
+  height:50px!important;
+ }
+
+ .ir-student-profile-edit-page__submit{
+  min-height:52px!important;
+  margin-top:10px!important;
+ }
+
+ .ir-student-profile-photo-page__sheet{
+  min-height:74%!important;
+  max-height:78%!important;
+  padding-top:33px!important;
+ }
+
+ .ir-student-profile-photo-page__sheet>h1{
+  margin-bottom:16px!important;
+ }
+
+ .ir-student-profile-photo-page__preview{
+  width:105px!important;
+  height:105px!important;
+  margin-bottom:16px!important;
+ }
+
+ .ir-student-profile-photo-page__actions{
+  gap:5px!important;
+ }
+
+ .ir-student-profile-photo-page__actions>button{
+  min-height:57px!important;
+ }
+
+ .ir-student-profile-photo-page__remove{
+  margin-top:8px!important;
+ }
+}
+
+@media(prefers-reduced-motion:reduce){
+ .ir-student-profile-main-page,
+ .ir-student-profile-edit-page,
+ .ir-student-profile-photo-page__sheet{
+  scroll-behavior:auto!important;
+ }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Student SVG wave: courses, achievements, badges, notifications, privacy,   */
+/* support, post-class rating and secure external Dialogee handoff.            */
+/* -------------------------------------------------------------------------- */
+
+.ir-student-subpage,
+.ir-student-subpage *,
+.ir-student-notifications-page,
+.ir-student-notifications-page *,
+.ir-student-support-page,
+.ir-student-support-page *,
+.ir-post-rating-page,
+.ir-post-rating-page *,
+.ir-dialogi-handoff,
+.ir-dialogi-handoff *{
+ box-sizing:border-box!important;
+ font-family:var(--ir-font-family)!important;
+}
+
+.ir-screen-surface.is-full-bleed:has(.ir-student-subpage),
+.ir-screen-surface.is-full-bleed:has(.ir-student-notifications-page),
+.ir-screen-surface.is-full-bleed:has(.ir-student-support-page),
+.ir-screen-surface.is-full-bleed:has(.ir-post-rating-page),
+.ir-screen-surface.is-full-bleed:has(.ir-dialogi-handoff){
+ position:relative!important;
+ display:flex!important;
+ flex-direction:column!important;
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ max-height:100%!important;
+ margin:0!important;
+ padding:0!important;
+ overflow:hidden!important;
+ background:#fffbe5!important;
+}
+
+.ir-screen-surface.is-full-bleed:has(.ir-student-subpage)>.ir-student-subpage,
+.ir-screen-surface.is-full-bleed:has(.ir-student-notifications-page)>.ir-student-notifications-page,
+.ir-screen-surface.is-full-bleed:has(.ir-student-support-page)>.ir-student-support-page,
+.ir-screen-surface.is-full-bleed:has(.ir-post-rating-page)>.ir-post-rating-page,
+.ir-screen-surface.is-full-bleed:has(.ir-dialogi-handoff)>.ir-dialogi-handoff{
+ flex:1 1 auto!important;
+ min-height:0!important;
+}
+
+.ir-student-subpage,
+.ir-student-notifications-page,
+.ir-student-support-page,
+.ir-post-rating-page,
+.ir-dialogi-handoff{
+ position:relative!important;
+ display:block!important;
+ width:100%!important;
+ max-width:none!important;
+ height:100%!important;
+ min-height:0!important;
+ max-height:100%!important;
+ margin:0!important;
+ padding:18px clamp(20px,5.8vw,34px) calc(44px + env(safe-area-inset-bottom))!important;
+ overflow-x:hidden!important;
+ overflow-y:auto!important;
+ direction:rtl!important;
+ color:#242428!important;
+ background:#fffbe5!important;
+ scrollbar-width:none!important;
+ overscroll-behavior-x:none!important;
+ overscroll-behavior-y:contain!important;
+ -webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;
+ scroll-padding-top:18px!important;
+ scroll-padding-bottom:52px!important;
+}
+
+.ir-student-subpage::-webkit-scrollbar,
+.ir-student-notifications-page::-webkit-scrollbar,
+.ir-student-support-page::-webkit-scrollbar,
+.ir-post-rating-page::-webkit-scrollbar,
+.ir-dialogi-handoff::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-subpage__topbar{
+ display:grid!important;
+ grid-template-columns:44px minmax(0,1fr) 44px!important;
+ align-items:center!important;
+ width:100%!important;
+ min-height:56px!important;
+ margin:0 0 24px!important;
+ padding:0!important;
+ direction:ltr!important;
+}
+
+.ir-student-subpage__topbar>button{
+ display:grid!important;
+ width:42px!important;
+ height:42px!important;
+ place-items:center!important;
+ margin:0!important;
+ padding:0!important;
+ color:#252529!important;
+ background:transparent!important;
+ border:0!important;
+ border-radius:50%!important;
+ box-shadow:none!important;
+}
+
+.ir-student-subpage__topbar>button:last-child{
+ justify-self:end!important;
+}
+
+.ir-student-subpage__topbar>button svg{
+ width:24px!important;
+ height:24px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:2!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}
+
+.ir-student-subpage__topbar h1{
+ grid-column:2!important;
+ margin:0!important;
+ direction:rtl!important;
+ color:#202024!important;
+ font-size:20px!important;
+ font-weight:900!important;
+ line-height:1.5!important;
+ letter-spacing:-.025em!important;
+ text-align:center!important;
+}
+
+.ir-student-subpage__topbar>span{
+ display:block!important;
+ width:42px!important;
+}
+
+.ir-student-subpage__chips{
+ display:flex!important;
+ align-items:center!important;
+ gap:8px!important;
+ width:100%!important;
+ margin:0 0 20px!important;
+ padding:0 0 3px!important;
+ overflow-x:auto!important;
+ direction:rtl!important;
+ scrollbar-width:none!important;
+}
+
+.ir-student-subpage__chips::-webkit-scrollbar{
+ display:none!important;
+}
+
+.ir-student-subpage__chips>button{
+ flex:0 0 auto!important;
+ min-height:36px!important;
+ margin:0!important;
+ padding:7px 15px!important;
+ color:#8d8e94!important;
+ background:#fff!important;
+ border:1px solid #ecebdc!important;
+ border-radius:999px!important;
+ box-shadow:none!important;
+ font-size:11px!important;
+ font-weight:700!important;
+ line-height:1.5!important;
+ white-space:nowrap!important;
+}
+
+.ir-student-subpage__chips>button.is-active{
+ color:#242428!important;
+ background:#ffd000!important;
+ border-color:#ffd000!important;
+ font-weight:900!important;
+}
+
+.ir-student-subpage__primary{
+ display:block!important;
+ width:100%!important;
+ min-height:56px!important;
+ margin:22px 0 0!important;
+ padding:10px 16px!important;
+ color:#171719!important;
+ background:#ffd000!important;
+ border:0!important;
+ border-radius:15px!important;
+ box-shadow:none!important;
+ font-size:14px!important;
+ font-weight:900!important;
+ line-height:1.5!important;
+}
+
+.ir-student-subpage__primary:disabled{
+ color:#a6a5a0!important;
+ background:#e8e6da!important;
+ opacity:1!important;
+}
+
+.ir-student-subpage__empty{
+ display:flex!important;
+ width:100%!important;
+ min-height:330px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ padding:30px 20px!important;
+ color:#9a9a9f!important;
+ text-align:center!important;
+}
+
+.ir-student-subpage__empty.is-compact{
+ min-height:220px!important;
+}
+
+.ir-student-subpage__empty>span{
+ display:grid!important;
+ width:72px!important;
+ height:72px!important;
+ place-items:center!important;
+ margin-bottom:16px!important;
+ color:#c3c3c6!important;
+ background:#fff!important;
+ border-radius:50%!important;
+ font-size:30px!important;
+}
+
+.ir-student-subpage__empty>strong{
+ margin:0 0 7px!important;
+ color:#313136!important;
+ font-size:15px!important;
+ font-weight:900!important;
+}
+
+.ir-student-subpage__empty>p{
+ max-width:300px!important;
+ margin:0!important;
+ color:#9a9a9f!important;
+ font-size:11px!important;
+ line-height:1.9!important;
+}.ir-student-subpage__empty>button{
+ min-height:40px!important;
+ margin:15px 0 0!important;
+ padding:7px 14px!important;
+ color:#242428!important;
+ background:#ffd000!important;
+ border:0!important;
+ border-radius:11px!important;
+ font-size:11px!important;
+ font-weight:900!important;
+}
+
+/* My Courses --------------------------------------------------------------- */
+
+.ir-my-courses-page__summary{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:10px!important;
+ width:100%!important;
+ margin:0 0 18px!important;
+ padding:15px 13px!important;
+ background:#fff!important;
+ border:0!important;
+ border-radius:18px!important;
+}.ir-my-courses-page__summary article{
+ display:flex!important;
+ min-width:0!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ padding:4px!important;
+ border-left:1px solid #efefe9!important;
+}
+
+.ir-my-courses-page__summary article:last-child{
+ border-left:0!important;
+}
+
+.ir-my-courses-page__summary strong{
+ color:#232327!important;
+ font-size:19px!important;
+ font-weight:900!important;
+ line-height:1.2!important;
+}
+
+.ir-my-courses-page__summary span{
+ margin-top:6px!important;
+ color:#a0a0a5!important;
+ font-size:9px!important;
+ font-weight:600!important;
+ white-space:nowrap!important;
+}
+
+.ir-my-courses-page__list{
+ display:flex!important;
+ width:100%!important;
+ flex-direction:column!important;
+ gap:14px!important;
+ padding-bottom:10px!important;
+}
+
+.ir-my-course-card{
+ display:grid!important;
+ grid-template-columns:118px minmax(0,1fr)!important;
+ gap:13px!important;
+ width:100%!important;
+ margin:0!important;
+ padding:13px!important;
+ background:#fff!important;
+ border:1px solid #efeee7!important;
+ border-radius:18px!important;
+ box-shadow:none!important;
+}
+
+.ir-my-course-card__media{
+ position:relative!important;
+ width:118px!important;
+ min-height:126px!important;
+ overflow:hidden!important;
+ border-radius:13px!important;
+}
+
+.ir-my-course-card__media>.ir-binayi-home__media{
+ width:100%!important;
+ height:100%!important;
+ min-height:126px!important;
+ border-radius:13px!important;
+}
+
+.ir-my-course-card__media>span:last-child{
+ position:absolute!important;
+ top:8px!important;
+ right:8px!important;
+ z-index:3!important;
+ display:inline-flex!important;
+ min-height:22px!important;
+ align-items:center!important;
+ padding:3px 8px!important;
+ color:#49494e!important;
+ background:#fff!important;
+ border-radius:999px!important;
+ font-size:8px!important;
+ font-weight:900!important;
+}
+
+.ir-my-course-card__media>span:last-child.is-live{
+ color:#167447!important;
+ background:#e4f8eb!important;
+}
+
+.ir-my-course-card__media>span:last-child.is-video{
+ color:#6a46a7!important;
+ background:#f0e9fb!important;
+}
+
+.ir-my-course-card__media>span:last-child.is-private{
+ color:#8f6500!important;
+ background:#fff3c5!important;
+}
+
+.ir-my-course-card__body{
+ display:flex!important;
+ min-width:0!important;
+ flex-direction:column!important;
+ justify-content:center!important;
+}
+
+.ir-my-course-card__heading{
+ display:flex!important;
+ align-items:flex-start!important;
+ justify-content:space-between!important;
+ gap:8px!important;
+}
+
+.ir-my-course-card__heading>div{
+ min-width:0!important;
+}
+
+.ir-my-course-card__heading h2{
+ margin:0!important;
+ overflow:hidden!important;
+ color:#252529!important;
+ font-size:12px!important;
+ font-weight:900!important;
+ line-height:1.75!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-my-course-card__heading p{
+ margin:2px 0 0!important;
+ overflow:hidden!important;
+ color:#a0a0a6!important;
+ font-size:9px!important;
+ line-height:1.6!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-my-course-card__completed{
+ flex:0 0 auto!important;
+ padding:3px 7px!important;
+ color:#159252!important;
+ background:#e8f8ee!important;
+ border-radius:999px!important;
+ font-size:7px!important;
+ font-weight:900!important;
+}
+
+.ir-my-course-card__progress-copy{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ margin-top:11px!important;
+}
+
+.ir-my-course-card__progress-copy span,
+.ir-my-course-card__progress-copy strong{
+ color:#8c8d92!important;
+ font-size:8px!important;
+ font-weight:700!important;
+}
+
+.ir-my-course-card__progress-copy strong{
+ color:#4d4d52!important;
+}
+
+.ir-my-course-card__progress{
+ width:100%!important;
+ height:5px!important;
+ margin-top:5px!important;
+ overflow:hidden!important;
+ background:#eeeDE7!important;
+ border-radius:999px!important;
+}
+
+.ir-my-course-card__progress>span{
+ display:block!important;
+ height:100%!important;
+ background:#ffd000!important;
+ border-radius:inherit!important;
+}
+
+.ir-my-course-card__body>small{
+ display:block!important;
+ margin-top:7px!important;
+ overflow:hidden!important;
+ color:#aaaab0!important;
+ font-size:8px!important;
+ line-height:1.6!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-my-course-card__body>button{
+ width:100%!important;
+ min-height:35px!important;
+ margin:10px 0 0!important;
+ padding:6px 9px!important;
+ color:#242428!important;
+ background:#ffd000!important;
+ border:0!important;
+ border-radius:10px!important;
+ font-size:9px!important;
+ font-weight:900!important;
+}
+
+/* Achievements -------------------------------------------------------------- */
+
+.ir-achievements-page__hero{
+ display:grid!important;
+ grid-template-columns:94px minmax(0,1fr)!important;
+ align-items:center!important;
+ gap:16px!important;
+ width:100%!important;
+ margin-bottom:15px!important;
+ padding:18px!important;
+ background:#fff!important;
+ border-radius:19px!important;
+}
+
+.ir-achievements-page__level-ring{
+ --ir-level-progress:70%;
+ display:flex!important;
+ width:86px!important;
+ height:86px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ background:
+  radial-gradient(circle closest-side,#fff 74%,transparent 76% 99%),
+  conic-gradient(#ffd000 var(--ir-level-progress),#efeee8 0)!important;
+ border-radius:50%!important;
+}
+
+.ir-achievements-page__level-ring span{
+ color:#99999e!important;
+ font-size:8px!important;
+ font-weight:700!important;
+}
+
+.ir-achievements-page__level-ring strong{
+ color:#29292d!important;
+ font-size:22px!important;
+ font-weight:900!important;
+ line-height:1.2!important;
+}
+
+.ir-achievements-page__hero>div:last-child{
+ min-width:0!important;
+}
+
+.ir-achievements-page__hero h2{
+ margin:0!important;
+ color:#252529!important;
+ font-size:17px!important;
+ font-weight:900!important;
+ line-height:1.5!important;
+}
+
+.ir-achievements-page__hero p{
+ margin:2px 0 9px!important;
+ color:#99999f!important;
+ font-size:9px!important;
+ line-height:1.6!important;
+}
+
+.ir-achievements-page__hero-progress{
+ width:100%!important;
+ height:6px!important;
+ overflow:hidden!important;
+ background:#ecece7!important;
+ border-radius:999px!important;
+}
+
+.ir-achievements-page__hero-progress>span{
+ display:block!important;
+ height:100%!important;
+ background:#ffd000!important;
+ border-radius:inherit!important;
+}
+
+.ir-achievements-page__hero small{
+ display:block!important;
+ margin-top:5px!important;
+ color:#a4a4a9!important;
+ font-size:8px!important;
+}
+
+.ir-achievements-page__stats{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:10px!important;
+ width:100%!important;
+ margin-bottom:27px!important;
+}
+
+.ir-achievements-page__stats article{
+ display:flex!important;
+ min-height:76px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ background:#fff!important;
+ border-radius:15px!important;
+}
+
+.ir-achievements-page__stats strong{
+ color:#252529!important;
+ font-size:17px!important;
+ font-weight:900!important;
+}
+
+.ir-achievements-page__stats span{
+ margin-top:5px!important;
+ color:#9d9da2!important;
+ font-size:8px!important;
+ font-weight:600!important;
+}
+
+.ir-achievements-page__section{
+ width:100%!important;
+ margin-bottom:27px!important;
+}
+
+.ir-achievements-page__section>header{
+ display:flex!important;
+ align-items:center!important;
+ justify-content:space-between!important;
+ margin-bottom:12px!important;
+}
+
+.ir-achievements-page__section>header h2{
+ margin:0!important;
+ color:#29292d!important;
+ font-size:14px!important;
+ font-weight:900!important;
+}
+
+.ir-achievements-page__section>header button{
+ margin:0!important;
+ padding:3px!important;
+ color:#9d7b00!important;
+ background:transparent!important;
+ border:0!important;
+ font-size:9px!important;
+ font-weight:800!important;
+}
+
+.ir-achievements-page__recent{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:9px!important;
+}
+
+.ir-achievements-page__recent>button{
+ display:flex!important;
+ min-width:0!important;
+ min-height:128px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ margin:0!important;
+ padding:12px 7px!important;
+ text-align:center!important;
+ background:#fff!important;
+ border:0!important;
+ border-radius:16px!important;
+}
+
+.ir-achievements-page__recent>button>span{
+ display:grid!important;
+ width:46px!important;
+ height:46px!important;
+ place-items:center!important;
+ margin-bottom:9px!important;
+ color:#886800!important;
+ background:#fff1ad!important;
+ border-radius:50%!important;
+ font-size:20px!important;
+}
+
+.ir-achievements-page__recent>button>span.is-2{
+ color:#7551a6!important;
+ background:#f1e9fa!important;
+}
+
+.ir-achievements-page__recent>button>span.is-3{
+ color:#25805a!important;
+ background:#e5f6ed!important;
+}
+
+.ir-achievements-page__recent strong{
+ max-width:100%!important;
+ overflow:hidden!important;
+ color:#323237!important;
+ font-size:9px!important;
+ font-weight:900!important;
+ line-height:1.6!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-achievements-page__recent small{
+ margin-top:3px!important;
+ color:#aaaab0!important;
+ font-size:7px!important;
+ line-height:1.5!important;
+}
+
+.ir-achievements-page__progress-list{
+ display:flex!important;
+ flex-direction:column!important;
+ gap:9px!important;
+}
+
+.ir-achievements-page__progress-list article{
+ display:grid!important;
+ grid-template-columns:42px minmax(0,1fr) auto!important;
+ align-items:center!important;
+ gap:11px!important;
+ min-height:74px!important;
+ padding:11px 13px!important;
+ background:#fff!important;
+ border-radius:14px!important;
+}
+
+.ir-achievements-page__progress-list article>span{
+ display:grid!important;
+ width:39px!important;
+ height:39px!important;
+ place-items:center!important;
+ border-radius:11px!important;
+}
+
+.ir-achievements-page__progress-list .is-yellow{
+ color:#ba8e00!important;
+ background:#fff4bf!important;
+}
+
+.ir-achievements-page__progress-list .is-green{
+ color:#22835a!important;
+ background:#e7f6ed!important;
+}
+
+.ir-achievements-page__progress-list .is-blue{
+ color:#416f9c!important;
+ background:#e7f1fa!important;
+}
+
+.ir-achievements-page__progress-list article>div{
+ min-width:0!important;
+}
+
+.ir-achievements-page__progress-list strong{
+ display:block!important;
+ color:#303034!important;
+ font-size:10px!important;
+ font-weight:900!important;
+}
+
+.ir-achievements-page__progress-list small{
+ display:block!important;
+ margin-top:2px!important;
+ color:#a0a0a5!important;
+ font-size:7px!important;
+}
+
+.ir-achievements-page__progress-list i{
+ display:block!important;
+ width:100%!important;
+ height:4px!important;
+ margin-top:6px!important;
+ overflow:hidden!important;
+ background:#efeee9!important;
+ border-radius:999px!important;
+}
+
+.ir-achievements-page__progress-list i>b{
+ display:block!important;
+ height:100%!important;
+ background:#ffd000!important;
+ border-radius:inherit!important;
+}
+
+.ir-achievements-page__progress-list em{
+ color:#77777d!important;
+ font-size:8px!important;
+ font-style:normal!important;
+ font-weight:900!important;
+}
+
+/* Badges ------------------------------------------------------------------- */
+
+.ir-badges-page__summary{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:10px!important;
+ margin-bottom:18px!important;
+}
+
+.ir-badges-page__summary>div{
+ display:flex!important;
+ min-height:72px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ background:#fff!important;
+ border-radius:15px!important;
+}
+
+.ir-badges-page__summary strong{
+ color:#28282c!important;
+ font-size:19px!important;
+ font-weight:900!important;
+}
+
+.ir-badges-page__summary span{
+ margin-top:4px!important;
+ color:#a0a0a5!important;
+ font-size:8px!important;
+}
+
+.ir-badges-page__grid{
+ display:grid!important;
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:11px!important;
+ width:100%!important;
+}
+
+.ir-badges-page__grid>button{
+ display:flex!important;
+ min-width:0!important;
+ min-height:176px!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ margin:0!important;
+ padding:14px 10px!important;
+ text-align:center!important;
+ background:#fff!important;
+ border:1px solid #efeee7!important;
+ border-radius:17px!important;
+ box-shadow:none!important;
+}
+
+.ir-badges-page__grid>button.is-locked{
+ filter:saturate(.25)!important;
+ opacity:.63!important;
+}
+
+.ir-badges-page__grid>button>span{
+ display:grid!important;
+ width:62px!important;
+ height:62px!important;
+ place-items:center!important;
+ margin-bottom:10px!important;
+ color:#a97d00!important;
+ background:#fff0a7!important;
+ border-radius:50%!important;
+ font-size:27px!important;
+}
+
+.ir-badges-page__grid>button>span.is-2{
+ color:#5e8a4d!important;
+ background:#eaf6e3!important;
+}
+
+.ir-badges-page__grid>button>span.is-3{
+ color:#6f57a5!important;
+ background:#eee7fa!important;
+}
+
+.ir-badges-page__grid>button>span.is-4{
+ color:#4280a2!important;
+ background:#e7f3f8!important;
+}
+
+.ir-badges-page__grid strong{
+ max-width:100%!important;
+ overflow:hidden!important;
+ color:#303034!important;
+ font-size:11px!important;
+ font-weight:900!important;
+ text-overflow:ellipsis!important;
+ white-space:nowrap!important;
+}
+
+.ir-badges-page__grid small{
+ min-height:29px!important;
+ margin-top:4px!important;
+ color:#9d9da3!important;
+ font-size:8px!important;
+ line-height:1.7!important;
+}
+
+.ir-badges-page__grid em{
+ margin-top:8px!important;
+ padding:3px 8px!important;
+ color:#16894f!important;
+ background:#e8f7ee!important;
+ border-radius:999px!important;
+ font-size:7px!important;
+ font-style:normal!important;
+ font-weight:900!important;
+}
+
+.ir-badges-page__grid>button.is-locked em{
+ color:#8f8f94!important;
+ background:#efefef!important;
+}
+
+.ir-badges-page__detail{
+ position:relative!important;
+ display:grid!important;
+ grid-template-columns:58px minmax(0,1fr)!important;
+ align-items:center!important;
+ gap:13px!important;
+ width:100%!important;
+ margin:15px 0 0!important;
+ padding:16px!important;
+ background:#fff!important;
+ border:1px solid #ffd000!important;
+ border-radius:17px!important;
+}
+
+.ir-badges-page__detail>button{
+ position:absolute!important;
+ top:7px!important;
+ left:8px!important;
+ display:grid!important;
+ width:28px!important;
+ height:28px!important;
+ place-items:center!important;
+ margin:0!important;
+ padding:0!important;
+ color:#97979c!important;
+ background:#f5f5f3!important;
+ border:0!important;
+ border-radius:50%!important;
+ font-size:17px!important;
+}
+
+.ir-badges-page__detail>span{
+ display:grid!important;
+ width:56px!important;
+ height:56px!important;
+ place-items:center!important;
+ color:#9c7300!important;
+ background:#fff1aa!important;
+ border-radius:50%!important;
+ font-size:25px!important;
+}
+
+.ir-badges-page__detail strong{
+ color:#29292e!important;
+ font-size:12px!important;
+ font-weight:900!important;
+}
+
+.ir-badges-page__detail p,
+.ir-badges-page__detail small{
+ display:block!important;
+ margin:3px 0 0!important;
+ color:#99999f!important;
+ font-size:8px!important;
+ line-height:1.7!important;
+}
+
+.ir-badges-page__next{
+ width:100%!important;
+ margin-top:20px!important;
+ padding:15px!important;
+ background:#fff!important;
+ border-radius:16px!important;
+}
+
+.ir-badges-page__next strong{
+ color:#303034!important;
+ font-size:11px!important;
+ font-weight:900!important;
+}
+
+.ir-badges-page__next p{
+ margin:4px 0 9px!important;
+ color:#99999f!important;
+ font-size:8px!important;
+}
+
+.ir-badges-page__next>div{
+ width:100%!important;
+ height:5px!important;
+ overflow:hidden!important;
+ background:#efeee8!important;
+ border-radius:999px!important;
+}
+
+.ir-badges-page__next>div>span{
+ display:block!important;
+ height:100%!important;
+ background:#ffd000!important;
+ border-radius:inherit!important;
+}
+
+/* Privacy ------------------------------------------------------------------ */
+
+.ir-privacy-page__trust{
+ display:grid!important;
+ grid-template-columns:48px minmax(0,1fr)!important;
+ align-items:center!important;
+ gap:12px!important;
+ width:100%!important;
+ margin-bottom:24px!important;
+ padding:14px!important;
+ background:#eef9f1!important;
+ border:1px solid #bfe5ca!important;
+ border-radius:15px!important;
+}
+
+.ir-privacy-page__trust>span{
+ display:grid!important;
+ width:45px!important;
+ height:45px!important;
+ place-items:center!important;
+ color:#24a762!important;
+ background:#dff4e6!important;
+ border-radius:13px!important;
+}
+
+.ir-privacy-page__trust svg{
+ width:25px!important;
+ height:25px!important;
+ fill:none!important;
+ stroke:currentColor!important;
+ stroke-width:1.8!important;
+ stroke-linecap:round!important;
+ stroke-linejoin:round!important;
+}

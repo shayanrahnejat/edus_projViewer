@@ -217,7 +217,7 @@ const IRANCELL_CORE_STORE_V2_SAFE_SEED=Object.freeze({
   providerVerification:{}
  },
  chisti:{conversationsById:{},problemsById:{},recommendationsByProblemId:{},activeConversationId:null,activeJob:null,lastCompletedProblemId:null,status:'idle',error:null},
- content:{catalogueById:{},search:'',recommendations:[],watchProgress:{},ratings:{},enrollmentsByUserId:{},selectedContentId:null,selectedView:'course',status:'idle'},
+ content:{catalogueById:{},search:'',recommendations:[],watchProgress:{},progressByStudentId:{},assignmentSubmissionsByStudentId:{},ratings:{},enrollmentsByUserId:{},selectedContentId:null,selectedView:'course',status:'idle'},
  marketplace:{requestsById:{},offersById:{},providersById:{},availability:{},selectedOfferId:null},
  consent:{documentsById:{},gatesBySessionId:{}},
  payment:{paymentsById:{},escrowByOrderId:{},invoicesById:{},refundsById:{}},

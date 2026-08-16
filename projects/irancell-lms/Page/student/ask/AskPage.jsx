@@ -247,41 +247,80 @@ export function IrancellStudentAskPage({params,onNavigate,onBack}){
 
  function renderAttachmentOverlay(){
   if(!attachmentOverlayOpen)return null;
+
+  function chooseAttachment({accept,capture}){
+   if(typeof document==='undefined')return;
+
+   const nativeInput=document.createElement('input');
+   nativeInput.type='file';
+   nativeInput.accept=accept;
+   nativeInput.tabIndex=-1;
+   nativeInput.setAttribute('aria-hidden','true');
+   if(capture)nativeInput.setAttribute('capture',capture);
+
+   nativeInput.style.setProperty('display','none','important');
+   nativeInput.style.setProperty('position','fixed','important');
+   nativeInput.style.setProperty('width','0','important');
+   nativeInput.style.setProperty('height','0','important');
+   nativeInput.style.setProperty('opacity','0','important');
+   nativeInput.style.setProperty('pointer-events','none','important');
+
+   const removeNativeInput=()=>nativeInput.remove();
+
+   nativeInput.addEventListener('change',event=>{
+    handleAttachmentSelected(event);
+    removeNativeInput();
+   },{once:true});
+   nativeInput.addEventListener('cancel',removeNativeInput,{once:true});
+
+   document.body.appendChild(nativeInput);
+   nativeInput.click()
+  }
+
   const overlay=<div className="ir-chisti-attachment-overlay" role="presentation" onMouseDown={()=>setAttachmentOverlayOpen(false)}>
    <section className="ir-chisti-attachment-sheet" role="dialog" aria-modal="true" aria-label="افزودن پیوست" onMouseDown={event=>event.stopPropagation()}>
     <span className="ir-chisti-attachment-sheet__handle" aria-hidden="true"/>
 
-    <button type="button" className="ir-chisti-attachment-sheet__option" onClick={()=>openAttachmentSource(attachmentCameraInputRef)}>
+    <button type="button" className="ir-chisti-attachment-sheet__option" onClick={()=>chooseAttachment({accept:'image/*',capture:'environment'})}>
      <span className="ir-chisti-attachment-sheet__option-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      <svg viewBox="0 0 24 24" style={{display:'block',width:'22px',height:'22px',fill:'none',stroke:'#202024',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}>
+       <path d="M4 8.5h3l1.6-2.2h6.8L17 8.5h3v10.2H4Z"/>
+       <circle cx="12" cy="13.2" r="3.4"/>
+      </svg>
      </span>
      <span>گرفتن عکس</span>
     </button>
 
-    <button type="button" className="ir-chisti-attachment-sheet__option" onClick={()=>openAttachmentSource(attachmentGalleryInputRef)}>
+    <button type="button" className="ir-chisti-attachment-sheet__option" onClick={()=>chooseAttachment({accept:'image/*'})}>
      <span className="ir-chisti-attachment-sheet__option-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg>
+      <svg viewBox="0 0 24 24" style={{display:'block',width:'22px',height:'22px',fill:'none',stroke:'#202024',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}>
+       <rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/>
+       <circle cx="9" cy="9.5" r="1.7"/>
+       <path d="m5.5 17.5 4.6-4.6 3.2 3.2 2.1-2.1 3.1 3.5"/>
+      </svg>
      </span>
      <span>انتخاب از گالری</span>
     </button>
 
-    <button type="button" className="ir-chisti-attachment-sheet__option" onClick={()=>openAttachmentSource(attachmentFileInputRef)}>
+    <button type="button" className="ir-chisti-attachment-sheet__option" onClick={()=>chooseAttachment({accept:'image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt'})}>
      <span className="ir-chisti-attachment-sheet__option-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6Z"/><path d="M14 3v5h5"/></svg>
+      <svg viewBox="0 0 24 24" style={{display:'block',width:'22px',height:'22px',fill:'none',stroke:'#202024',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}>
+       <path d="M6.5 3.5h7.7l3.8 3.8v13.2H6.5Z"/>
+       <path d="M14 3.7v4h3.8M9 12h6M9 15.5h6"/>
+      </svg>
      </span>
      <span>انتخاب فایل</span>
     </button>
 
     <button type="button" className="ir-chisti-attachment-sheet__option is-cancel" onClick={()=>setAttachmentOverlayOpen(false)}>
      <span className="ir-chisti-attachment-sheet__option-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m9 9 6 6M15 9l-6 6"/></svg>
+      <svg viewBox="0 0 24 24" style={{display:'block',width:'22px',height:'22px',fill:'none',stroke:'#B3261E',strokeWidth:1.9,strokeLinecap:'round',strokeLinejoin:'round'}}>
+       <circle cx="12" cy="12" r="8"/>
+       <path d="m9 9 6 6M15 9l-6 6"/>
+      </svg>
      </span>
      <span>انصراف</span>
     </button>
-
-    <input ref={attachmentCameraInputRef} className="ir-chisti-attachment-sheet__native-input" type="file" accept="image/*" capture="environment" onChange={handleAttachmentSelected}/>
-    <input ref={attachmentGalleryInputRef} className="ir-chisti-attachment-sheet__native-input" type="file" accept="image/*" onChange={handleAttachmentSelected}/>
-    <input ref={attachmentFileInputRef} className="ir-chisti-attachment-sheet__native-input" type="file" accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" onChange={handleAttachmentSelected}/>
    </section>
   </div>;
   if(typeof document!=='undefined'&&typeof ReactDOM!=='undefined'&&typeof ReactDOM.createPortal==='function')return ReactDOM.createPortal(overlay,document.body);
@@ -528,60 +567,62 @@ export function IrancellStudentAskPage({params,onNavigate,onBack}){
   </section>
  }
 
- return <section className="ir-chisti-search-page" aria-label="هوش مصنوعی آموزشی">
-  <div className="ir-chisti-search-page__content">
-   <header className="ir-chisti-search-page__brand">
-    <div className="ir-chisti-search-page__brand-title">
-     <span aria-hidden="true">
-      <svg viewBox="0 0 24 24"><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3Z"/><path d="m19 3 .7 2.3L22 6l-2.3.7L19 9l-.7-2.3L16 6l2.3-.7Z"/></svg>
+ const searchFont='"Vazirmatn", Tahoma, Arial, sans-serif';
+ const searchIconStyle={display:'block',width:'20px',height:'20px',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'};
+ const searchIconButtonStyle={boxSizing:'border-box',display:'grid',width:'42px',minWidth:'42px',height:'42px',placeItems:'center',margin:0,padding:0,cursor:'pointer',color:'#777982',background:'transparent',border:0,borderRadius:'12px',fontFamily:searchFont};
+
+ return <section aria-label="هوش مصنوعی آموزشی" dir="rtl" style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,minHeight:'100%',placeItems:'center',margin:0,padding:'clamp(28px,7vh,74px) clamp(14px,4vw,38px) 48px',color:'#202024',background:'#FFFAE0',fontFamily:searchFont}}>
+  <div style={{boxSizing:'border-box',display:'flex',width:'100%',maxWidth:'760px',minWidth:0,flexDirection:'column',gap:'24px',margin:'auto',padding:'clamp(24px,4vw,42px)',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'28px',boxShadow:'0 20px 55px rgba(48,39,0,.11)',fontFamily:searchFont}}>
+   <header style={{display:'flex',width:'100%',alignItems:'center',justifyContent:'flex-start'}}>
+    <div style={{display:'inline-flex',alignItems:'center',gap:'9px'}}>
+     <span aria-hidden="true" style={{display:'grid',width:'34px',height:'34px',placeItems:'center',color:'#202024',background:'#FFD100',borderRadius:'50%'}}>
+      <svg viewBox="0 0 24 24" style={searchIconStyle}><path d="M12 2 14 9l7 3-7 3-2 7-2-7-7-3 7-3Z"/><path d="m19 3 .7 2.3L22 6l-2.3.7L19 9l-.7-2.3L16 6l2.3-.7Z"/></svg>
      </span>
-     <strong>هوش مصنوعی آموزشی</strong>
+     <strong style={{fontFamily:searchFont,fontSize:'14px',fontWeight:900}}>چیستی · هوش مصنوعی آموزشی</strong>
     </div>
    </header>
 
-   <section className="ir-chisti-search-page__hero">
-    <h1>بپرس. یاد بگیر.</h1>
-    <p>دستیار هوش مصنوعی شما آماده پاسخگویی است</p>
+   <section style={{display:'flex',width:'100%',flexDirection:'column',alignItems:'center',gap:'6px',padding:'4px 0',textAlign:'center'}}>
+    <h1 style={{margin:0,color:'#202024',fontFamily:searchFont,fontSize:'clamp(30px,5vw,42px)',fontWeight:900,lineHeight:1.45}}>بپرس. یاد بگیر.</h1>
+    <p style={{margin:0,color:'#777982',fontFamily:searchFont,fontSize:'13px',fontWeight:600,lineHeight:1.9}}>دستیار هوش مصنوعی شما آماده پاسخگویی به سؤال‌های درسی شماست</p>
    </section>
 
-   <form className={`ir-chisti-search-page__composer ${fieldMessage?'has-error':''}`} onSubmit={submit} noValidate>
-    <button type="submit" className="ir-chisti-search-page__submit" aria-label="جستجو" disabled={state.chisti.status==='loading'||state.ui.offline}>
-     {state.chisti.status==='loading'?<span className="ir-chisti-search-page__spinner"/>:<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>}
+   <form onSubmit={submit} noValidate style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'46px minmax(0,1fr) 42px 42px',alignItems:'center',gap:'4px',margin:0,padding:'5px 7px',background:'#FFFFFF',border:`1.5px solid ${fieldMessage?'#A12626':'#E7BD00'}`,borderRadius:'999px',boxShadow:'0 8px 22px rgba(92,73,0,.05)',fontFamily:searchFont}}>
+    <button type="submit" aria-label="جستجو" disabled={state.chisti.status==='loading'||state.ui.offline} style={{boxSizing:'border-box',display:'grid',width:'42px',minWidth:'42px',height:'42px',placeItems:'center',margin:0,padding:0,cursor:state.chisti.status==='loading'||state.ui.offline?'not-allowed':'pointer',color:'#171719',background:'#FFD100',border:'1px solid #E7BD00',borderRadius:'50%',fontFamily:searchFont,opacity:state.chisti.status==='loading'||state.ui.offline?0.6:1}}>
+     {state.chisti.status==='loading'?<span aria-hidden="true" style={{fontFamily:searchFont,fontSize:'16px',fontWeight:900}}>…</span>:<svg viewBox="0 0 24 24" aria-hidden="true" style={searchIconStyle}><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg>}
     </button>
 
-    <input value={text} onChange={event=>{setText(event.target.value);setFieldMessage('');setSubmitted(false)}} placeholder="چیزی می‌خوای یاد بگیری؟" aria-label="سؤال آموزشی"/>
+    <input value={text} onChange={event=>{setText(event.target.value);setFieldMessage('');setSubmitted(false)}} placeholder="چیزی می‌خوای یاد بگیری؟" aria-label="سؤال آموزشی" style={{boxSizing:'border-box',display:'block',width:'100%',minWidth:0,height:'42px',margin:0,padding:'0 10px',direction:'rtl',color:'#202024',background:'transparent',border:0,borderRadius:'12px',outline:'none',fontFamily:searchFont,fontSize:'13px',fontWeight:600}}/>
 
-    <button type="button" className="ir-chisti-search-page__attachment" aria-label="افزودن فایل" aria-haspopup="dialog" onClick={()=>setAttachmentOverlayOpen(true)}>
-     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 11.6-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>
+    <button type="button" aria-label="افزودن فایل" aria-haspopup="dialog" onClick={()=>setAttachmentOverlayOpen(true)} style={searchIconButtonStyle}>
+     <svg viewBox="0 0 24 24" aria-hidden="true" style={searchIconStyle}><path d="m21.4 11.6-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"/></svg>
     </button>
 
-    <button type="button" className="ir-chisti-search-page__voice" aria-label="پرسش صوتی" onClick={startVoice}>
-     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+    <button type="button" aria-label="پرسش صوتی" onClick={startVoice} style={searchIconButtonStyle}>
+     <svg viewBox="0 0 24 24" aria-hidden="true" style={searchIconStyle}><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
     </button>
    </form>
 
    {renderAttachmentState()}
 
-   {fieldMessage&&<p className="ir-chisti-search-page__message" role="alert">{fieldMessage}</p>}
+   {fieldMessage&&<p role="alert" style={{margin:'-12px 8px 0',color:'#A12626',fontFamily:searchFont,fontSize:'11px',fontWeight:700,lineHeight:1.8}}>{fieldMessage}</p>}
 
-   <section className="ir-chisti-search-page__recent" aria-labelledby="irancell-chisti-recent-title">
-    <h2 id="irancell-chisti-recent-title">آخرین جستجوها</h2>
-    <div>
-     {recentItems.map(item=><button type="button" key={item.id} onClick={()=>chooseRecent(item)}>
-      <strong>{item.label}</strong>
-      <span className="ir-chisti-search-page__recent-go" aria-hidden="true">
-       <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+   <section aria-labelledby="irancell-chisti-recent-title" style={{display:'flex',width:'100%',minWidth:0,flexDirection:'column',gap:'10px'}}>
+    <h2 id="irancell-chisti-recent-title" style={{margin:0,color:'#202024',fontFamily:searchFont,fontSize:'14px',fontWeight:900}}>آخرین جستجوها</h2>
+    <div style={{display:'flex',width:'100%',minWidth:0,flexDirection:'row',flexWrap:'wrap',alignItems:'center',gap:'8px',overflowX:'auto',padding:'1px 0 4px'}}>
+     {recentItems.map(item=><button type="button" key={item.id} onClick={()=>chooseRecent(item)} style={{boxSizing:'border-box',display:'inline-flex',minWidth:'max-content',minHeight:'38px',alignItems:'center',justifyContent:'center',gap:'8px',margin:0,padding:'8px 13px',cursor:'pointer',color:'#3F4046',background:'#F7F7F8',border:'1px solid #E2E2E6',borderRadius:'13px',fontFamily:searchFont}}>
+      <strong style={{fontFamily:searchFont,fontSize:'10px',fontWeight:800}}>{item.label}</strong>
+      <span aria-hidden="true" style={{display:'grid',width:'18px',height:'18px',placeItems:'center',color:'#8B8C92'}}>
+       <svg viewBox="0 0 24 24" style={{...searchIconStyle,width:'17px',height:'17px'}}><path d="m15 18-6-6 6-6"/></svg>
       </span>
      </button>)}
     </div>
    </section>
 
-   {suggestions.length>0&&<section className="ir-chisti-search-page__suggestions" aria-labelledby="irancell-chisti-suggestions-title">
-    <h2 id="irancell-chisti-suggestions-title">موضوعات پیشنهادی</h2>
-    <div>
-     {suggestions.map(item=><button type="button" key={item.label} className={activeSuggestion===item.label?'is-active':''} onClick={()=>chooseSuggestion(item)}>
-      <span>{item.label}</span>
-     </button>)}
+   {suggestions.length>0&&<section aria-labelledby="irancell-chisti-suggestions-title" style={{display:'flex',width:'100%',minWidth:0,flexDirection:'column',gap:'10px'}}>
+    <h2 id="irancell-chisti-suggestions-title" style={{margin:0,color:'#202024',fontFamily:searchFont,fontSize:'14px',fontWeight:900}}>موضوعات پیشنهادی</h2>
+    <div style={{display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',alignItems:'center',gap:'8px'}}>
+     {suggestions.map(item=>{const active=activeSuggestion===item.label;return <button type="button" key={item.label} aria-pressed={active} onClick={()=>chooseSuggestion(item)} style={{boxSizing:'border-box',display:'inline-flex',minHeight:'36px',alignItems:'center',justifyContent:'center',margin:0,padding:'8px 14px',cursor:'pointer',color:'#202024',background:active?'#FFD100':'#FFFFFF',border:`1px solid ${active?'#E7BD00':'#E1E1E5'}`,borderRadius:'999px',fontFamily:searchFont,fontSize:'10px',fontWeight:active?900:700,boxShadow:active?'0 6px 14px rgba(255,209,0,.15)':'none'}}>{item.label}</button>})}
     </div>
    </section>}
   </div>

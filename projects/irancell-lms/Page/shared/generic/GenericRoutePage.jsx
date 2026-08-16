@@ -489,5 +489,29 @@ export function IrancellSharedGenericRoutePage({config,onNavigate}){
  const roleLabels={student:'دانش‌آموز',parent:'خانواده',teacher:'مدرس',academy:'آموزشگاه','content-provider':'تولید محتوا',admin:'مدیریت سامانه',shared:'خدمات کاربری'};
  const metrics=IrancellPageGenericResolveMetrics(state,role);
  const moduleItems=IrancellPageGenericResolveItems(config,shortcuts);
- return <section className="ir-generic-page"><IrancellPageHeader eyebrow={roleLabels[role]} title={config.title} description={config.description} actions={shortcuts[0]&&<IrancellButton onClick={()=>onNavigate?.(shortcuts[0].route)}>{shortcuts[0].title}</IrancellButton>}/><IrancellTrustStrip/><div className="ir-stats-grid">{metrics.map(item=><IrancellStatCard key={item.label}{...item}/>)}</div><div className="ir-dashboard-grid ir-generic-page__grid"><IrancellCard title="امکانات این بخش" subtitle="اطلاعات مهم و اقدام‌های اصلی در یک نگاه"><IrancellGenericModulePage title={config.title} description={config.description} items={moduleItems} onNavigate={onNavigate}/></IrancellCard><IrancellCard title="دسترسی سریع" subtitle="مسیرهای مرتبط با نقش فعال">{shortcuts.map(item=><article className="ir-action-row" key={item.route}><div><strong>{item.title}</strong><small>{item.description}</small></div><button type="button" onClick={()=>onNavigate?.(item.route)}>مشاهده</button></article>)}</IrancellCard></div></section>
+ const font='"Vazirmatn", Tahoma, Arial, sans-serif';
+ return <section className="ir-generic-page" dir="rtl" style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,maxWidth:'none',minHeight:'100%',flexDirection:'column',gap:'18px',margin:0,padding:'clamp(14px,3vw,28px)',direction:'rtl',color:'#202024',background:'#FFFAE0',fontFamily:font}}>
+  <IrancellPageHeader eyebrow={roleLabels[role]} title={config.title} description={config.description} actions={shortcuts[0]&&<IrancellButton onClick={()=>onNavigate?.(shortcuts[0].route)}>{shortcuts[0].title}</IrancellButton>}/>
+  <IrancellTrustStrip/>
+  <div className="ir-stats-grid" style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:'12px'}}>
+   {metrics.map(item=><IrancellStatCard key={item.label}{...item}/>)}
+  </div>
+  <div className="ir-dashboard-grid ir-generic-page__grid" style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,390px),1fr))',alignItems:'stretch',gap:'16px'}}>
+   <IrancellCard title="امکانات این بخش" subtitle="اطلاعات مهم و اقدام‌های اصلی در یک نگاه" style={{height:'100%'}}>
+    <IrancellGenericModulePage title={config.title} description={config.description} items={moduleItems} onNavigate={onNavigate}/>
+   </IrancellCard>
+   <IrancellCard title="دسترسی سریع" subtitle="مسیرهای مرتبط با نقش فعال" style={{height:'100%'}}>
+    <div style={{display:'grid',width:'100%',minWidth:0,gap:'9px'}}>
+     {shortcuts.map((item,index)=><article className="ir-action-row" key={item.route} style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'38px minmax(0,1fr) auto',alignItems:'center',gap:'11px',margin:0,padding:'12px',background:'#FFFEFA',border:'1px solid #E7E2CC',borderRadius:'15px',fontFamily:font}}>
+      <span aria-hidden="true" style={{display:'grid',width:'38px',height:'38px',placeItems:'center',color:'#665500',background:'#FFF3AE',borderRadius:'11px',fontFamily:font,fontSize:'11px',fontWeight:900}}>{IrancellFormatPersianNumber(index+1)}</span>
+      <div style={{display:'flex',minWidth:0,flexDirection:'column',gap:'2px'}}>
+       <strong style={{overflowWrap:'anywhere',color:'#202024',fontFamily:font,fontSize:'12px',fontWeight:900,lineHeight:1.7}}>{item.title}</strong>
+       <small style={{overflowWrap:'anywhere',color:'#777982',fontFamily:font,fontSize:'10px',fontWeight:500,lineHeight:1.7}}>{item.description}</small>
+      </div>
+      <button type="button" onClick={()=>onNavigate?.(item.route)} aria-label={`مشاهده ${item.title}`} style={{boxSizing:'border-box',display:'inline-flex',minWidth:'78px',minHeight:'36px',alignItems:'center',justifyContent:'center',gap:'5px',margin:0,padding:'7px 11px',cursor:'pointer',color:'#202024',background:'#FFD100',border:'1px solid #E7BD00',borderRadius:'10px',fontFamily:font,fontSize:'10px',fontWeight:900}}><span>مشاهده</span><ArrowLeft size={15}/></button>
+     </article>)}
+    </div>
+   </IrancellCard>
+  </div>
+ </section>
 }

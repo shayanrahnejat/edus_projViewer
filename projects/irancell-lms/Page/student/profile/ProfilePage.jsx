@@ -23,6 +23,11 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
  const[certificateVerification,setCertificateVerification]=useState('');
  const[privacyDraft,setPrivacyDraft]=useState(()=>({
   profileVisible:user?.privacySettings?.profileVisible!==false,
+  displayNameVisible:user?.privacySettings?.displayNameVisible!==false,
+  avatarVisible:user?.privacySettings?.avatarVisible!==false,
+  gradeVisible:user?.privacySettings?.gradeVisible!==false,
+  completedCoursesVisible:user?.privacySettings?.completedCoursesVisible!==false,
+  certificatesVisible:user?.privacySettings?.certificatesVisible!==false,
   achievementsVisible:user?.privacySettings?.achievementsVisible!==false,
   learningActivityVisible:Boolean(user?.privacySettings?.learningActivityVisible),
   personalizedRecommendations:user?.privacySettings?.personalizedRecommendations!==false,
@@ -38,9 +43,11 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
  const[privacyStoredOpen,setPrivacyStoredOpen]=useState('account');
  const[exportSelections,setExportSelections]=useState({profile:true,courses:true,assignments:true,certificates:true,chisti:true,files:true});
  const[exportFormat,setExportFormat]=useState('zip');
- const[deleteSelections,setDeleteSelections]=useState({chisti:false,uploadedFiles:false,learningHistory:false,searchHistory:false});
+ const[deleteSelections,setDeleteSelections]=useState({chisti:false,uploadedFiles:false,searchHistory:false,personalizedRecommendations:false});
  const[deleteReason,setDeleteReason]=useState('دیگر از برنامه استفاده نمی‌کنم');
+ const[deleteReasonDetail,setDeleteReasonDetail]=useState('');
  const[deleteAcknowledged,setDeleteAcknowledged]=useState(false);
+ const[parentGateOtpSent,setParentGateOtpSent]=useState(false);
  const[parentGateCode,setParentGateCode]=useState('');
  const[parentGateSubmitted,setParentGateSubmitted]=useState(false);
 
@@ -53,7 +60,7 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
  const classes=Object.values(state.classroom.sessionsById||{}).filter(item=>item.studentId===studentId);
  const completedClasses=classes.filter(item=>item.status==='completed').length;
  const catalogueCount=Object.keys(state.content.catalogueById||{}).length;
- const completedLearningCount=Object.values(state.content.watchProgress||{}).filter(value=>Number(value)>=90).length;
+ const completedLearningCount=Object.values(state.content.progressByStudentId?.[studentId]||{}).filter(value=>Number(value)>=90).length;
  const courseCount=Math.max(12,catalogueCount);
  const completedCourseCount=Math.max(8,completedLearningCount);
  const certificateCount=Math.max(5,completedClasses);
@@ -201,13 +208,15 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
  }
 
  function submitAccountDeletion(){
-  if(!deleteAcknowledged)return;
-  onNavigate?.('student/privacy/parent-gate',{action:'account-delete',next:'student/privacy/delete/account-confirm',reason:deleteReason})
+  const resolvedReason=deleteReason==='دلیل دیگر'?(deleteReasonDetail.trim()||deleteReason):deleteReason;
+  if(!deleteAcknowledged||(deleteReason==='دلیل دیگر'&&!deleteReasonDetail.trim()))return;
+  onNavigate?.('student/privacy/parent-gate',{action:'account-delete',next:'student/privacy/delete/account-confirm',reason:resolvedReason})
  }
 
  function verifyPrivacyParentGate(){
   setParentGateSubmitted(true);
-  if(String(parentGateCode||'').replace(/\D/g,'').length<5)return;
+  const expectedLength=Math.max(4,String(IRANCELL_APP_CONFIG.otpCode||'12345').replace(/\D/g,'').length||5);
+  if(!parentGateOtpSent||String(parentGateCode||'').replace(/\D/g,'').length<expectedLength)return;
   dispatch({
    type:'IRANCELL_STUDENT_PARENT_GATE_VERIFY',
    userId:studentId,
@@ -215,6 +224,13 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
    code:String(parentGateCode||'').replace(/\D/g,'')
   })
  }
+
+ useEffect(function IrancellStudentProfileParentGateReset(){
+  if(route!=='student/privacy/parent-gate')return;
+  setParentGateOtpSent(false);
+  setParentGateCode('');
+  setParentGateSubmitted(false)
+ },[route,params?.action]);
 
  useEffect(function IrancellStudentProfileParentGateCompletion(){
   if(route!=='student/privacy/parent-gate'||!parentGateSubmitted)return;
@@ -237,76 +253,57 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
    {id:'class',title:'فعال در کلاس',subtitle:'حضور منظم در جلسات',symbol:'✓'}
   ];
 
-  return <section className="ir-student-subpage ir-achievements-page">
-   <header className="ir-student-subpage__topbar">
-    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/profile')}>
-     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
+  const achievementsFont='"Vazirmatn", Tahoma, Arial, sans-serif';
+  const achievementsCard={boxSizing:'border-box',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'20px',boxShadow:'0 10px 28px rgba(62,52,12,.07)',fontFamily:achievementsFont};
+  const achievementProgressRows=[
+   {title:'یادگیری مستمر',description:'۵ روز از ۷ روز هدف هفتگی',value:'۵/۷',progress:71,color:'#FFD100',soft:'#FFF7CE',symbol:'✦'},
+   {title:'تکمیل درس‌ها',description:'۳ درس جدید در این هفته',value:'۳/۵',progress:60,color:'#35C96F',soft:'#E9F7EE',symbol:'✓'},
+   {title:'کلاس‌های موفق',description:'حضور و مشارکت در کلاس',value:'۸۰٪',progress:80,color:'#7867E8',soft:'#F0EDFF',symbol:'★'}
+  ];
+
+  return <section dir="rtl" style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,minHeight:'100%',flexDirection:'column',gap:'18px',margin:0,padding:'24px clamp(14px,3vw,30px) 48px',color:'#202024',background:'#FFFAE0',fontFamily:achievementsFont}}>
+   <header style={{boxSizing:'border-box',display:'grid',width:'100%',gridTemplateColumns:'44px minmax(0,1fr) 44px',alignItems:'center',gap:'10px',padding:'0 0 12px',borderBottom:'1px solid rgba(222,214,179,.72)'}}>
+    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/profile')} style={{boxSizing:'border-box',display:'grid',width:'44px',height:'44px',placeItems:'center',margin:0,padding:0,cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'13px',fontFamily:achievementsFont}}>
+     <svg viewBox="0 0 24 24" aria-hidden="true" style={{display:'block',width:'21px',height:'21px',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
     </button>
-    <h1>دستاوردهای من</h1>
+    <div><h1 style={{margin:0,fontFamily:achievementsFont,fontSize:'clamp(22px,3vw,30px)',fontWeight:900,lineHeight:1.5}}>دستاوردهای من</h1><small style={{color:'#777982',fontFamily:achievementsFont,fontSize:'10px',fontWeight:600}}>داشبورد / دستاوردهای من</small></div>
     <span/>
    </header>
 
-   <section className="ir-achievements-page__hero">
-    <div className="ir-achievements-page__level-ring" style={{'--ir-level-progress':`${progressToNext}%`}}>
-     <span>سطح</span>
-     <strong>{IrancellFormatPersianNumber(7)}</strong>
+   <section style={{...achievementsCard,display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',alignItems:'center',gap:'18px',padding:'18px 20px'}}>
+    <div aria-label={`سطح ۷، ${IrancellFormatPersianNumber(progressToNext)} درصد پیشرفت`} style={{boxSizing:'border-box',display:'grid',width:'78px',minWidth:'78px',height:'78px',placeItems:'center',padding:'7px',background:`conic-gradient(#FFD100 0 ${progressToNext}%,#EEEAD8 ${progressToNext}% 100%)`,borderRadius:'50%'}}>
+     <div style={{display:'flex',width:'62px',height:'62px',flexDirection:'column',alignItems:'center',justifyContent:'center',color:'#202024',background:'#FFFFFF',borderRadius:'50%'}}><span style={{fontSize:'9px',fontWeight:700}}>سطح</span><strong style={{fontSize:'22px',fontWeight:900}}>{IrancellFormatPersianNumber(7)}</strong></div>
     </div>
-    <div>
-     <h2>{user.name}</h2>
-     <p>یادگیرنده پرتلاش</p>
-     <div className="ir-achievements-page__hero-progress">
-      <span style={{width:`${progressToNext}%`}}/>
-     </div>
-     <small>{IrancellFormatPersianNumber(100-progressToNext)}٪ تا سطح بعدی</small>
+    <span style={{display:'grid',width:'58px',minWidth:'58px',height:'58px',placeItems:'center',overflow:'hidden',color:'#171719',background:'#FFD100',border:'2px solid #FFFFFF',borderRadius:'50%',boxShadow:'0 5px 14px rgba(62,52,12,.12)',fontFamily:achievementsFont,fontSize:'18px',fontWeight:900}}>{avatarSource?<img src={avatarSource} alt={user.name} style={{display:'block',width:'100%',height:'100%',objectFit:'cover'}}/>:<b aria-hidden="true">{avatarInitial}</b>}</span>
+    <div style={{display:'flex',minWidth:'220px',flex:'1 1 320px',flexDirection:'column',gap:'5px'}}>
+     <h2 style={{margin:0,fontFamily:achievementsFont,fontSize:'17px',fontWeight:900}}>{user.name}</h2>
+     <p style={{margin:0,color:'#777982',fontFamily:achievementsFont,fontSize:'11px',fontWeight:700}}>یادگیرنده پرتلاش</p>
+     <div style={{display:'block',width:'100%',height:'7px',overflow:'hidden',direction:'ltr',background:'#ECEDEF',borderRadius:'999px'}}><span style={{display:'block',width:`${progressToNext}%`,height:'100%',background:'#FFD100',borderRadius:'inherit'}}/></div>
+     <small style={{color:'#777982',fontFamily:achievementsFont,fontSize:'9px'}}>{IrancellFormatPersianNumber(100-progressToNext)}٪ تا سطح بعدی</small>
     </div>
    </section>
 
-   <section className="ir-achievements-page__stats">
-    <article><strong>{IrancellFormatPersianNumber(achievementPoints)}</strong><span>امتیاز</span></article>
-    <article><strong>{IrancellFormatPersianNumber(Math.max(9,completedCourseCount))}</strong><span>نشان</span></article>
-    <article><strong>{IrancellFormatPersianNumber(certificateCount)}</strong><span>گواهینامه</span></article>
+   <section style={{display:'grid',width:'100%',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:'10px'}}>
+    {[{value:achievementPoints,label:'امتیاز',symbol:'☆'},{value:Math.max(9,completedCourseCount),label:'نشان',symbol:'♙'},{value:certificateCount,label:'گواهینامه',symbol:'▣'}].map(item=><article key={item.label} style={{...achievementsCard,display:'flex',minWidth:0,alignItems:'center',justifyContent:'space-between',gap:'8px',padding:'14px clamp(10px,2vw,18px)'}}><div style={{display:'flex',minWidth:0,flexDirection:'column'}}><strong style={{fontFamily:achievementsFont,fontSize:'clamp(16px,2.4vw,22px)',fontWeight:900}}>{IrancellFormatPersianNumber(item.value)}</strong><span style={{color:'#777982',fontFamily:achievementsFont,fontSize:'9px',fontWeight:700}}>{item.label}</span></div><b aria-hidden="true" style={{display:'grid',width:'34px',minWidth:'34px',height:'34px',placeItems:'center',color:'#8A7200',background:'#FFF7CE',borderRadius:'11px',fontFamily:achievementsFont}}>{item.symbol}</b></article>)}
    </section>
 
-   <section className="ir-achievements-page__section">
-    <header>
-     <h2>نشان‌های اخیر</h2>
-     <button type="button" onClick={()=>onNavigate?.('student/badges')}>مشاهده همه <span>←</span></button>
-    </header>
-    <div className="ir-achievements-page__recent">
-     {recentBadges.map((badge,index)=><button type="button" key={badge.id} onClick={()=>onNavigate?.('student/badges')}>
-      <span className={`is-${index+1}`}>{badge.symbol}</span>
-      <strong>{badge.title}</strong>
-      <small>{badge.subtitle}</small>
-     </button>)}
+   <section style={{...achievementsCard,display:'flex',width:'100%',flexDirection:'column',gap:'14px',padding:'18px'}}>
+    <header style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'12px'}}><h2 style={{margin:0,fontFamily:achievementsFont,fontSize:'16px',fontWeight:900}}>نشان‌های اخیر</h2><button type="button" onClick={()=>onNavigate?.('student/badges')} style={{cursor:'pointer',color:'#6657D9',background:'transparent',border:0,fontFamily:achievementsFont,fontSize:'10px',fontWeight:800}}>مشاهده همه ←</button></header>
+    <div style={{display:'grid',width:'100%',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:'10px'}}>
+     {recentBadges.map((badge,index)=><button type="button" key={badge.id} onClick={()=>onNavigate?.('student/badges')} style={{boxSizing:'border-box',display:'flex',minWidth:0,flexDirection:'column',alignItems:'center',gap:'5px',padding:'14px 10px',cursor:'pointer',color:'#202024',background:index===0?'#FFFDF2':'#FFFFFF',border:'1px solid #EEE9D4',borderRadius:'16px',fontFamily:achievementsFont}}><span aria-hidden="true" style={{display:'grid',width:'42px',height:'42px',placeItems:'center',color:index===1?'#7867E8':index===2?'#21663D':'#8A7200',background:index===1?'#F0EDFF':index===2?'#E9F7EE':'#FFF7CE',borderRadius:'50%',fontSize:'18px'}}>{badge.symbol}</span><strong style={{fontFamily:achievementsFont,fontSize:'11px',fontWeight:900}}>{badge.title}</strong><small style={{color:'#777982',fontFamily:achievementsFont,fontSize:'8px',textAlign:'center'}}>{badge.subtitle}</small></button>)}
     </div>
    </section>
 
-   <section className="ir-achievements-page__section">
-    <header><h2>پیشرفت این هفته</h2></header>
-    <div className="ir-achievements-page__progress-list">
-     <article>
-      <span className="is-yellow">✦</span>
-      <div><strong>یادگیری مستمر</strong><small>۵ روز از ۷ روز هدف هفتگی</small><i><b style={{width:'71%'}}/></i></div>
-      <em>۵/۷</em>
-     </article>
-     <article>
-      <span className="is-green">✓</span>
-      <div><strong>تکمیل درس‌ها</strong><small>۳ درس جدید در این هفته</small><i><b style={{width:'60%'}}/></i></div>
-      <em>۳/۵</em>
-     </article>
-     <article>
-      <span className="is-blue">★</span>
-      <div><strong>کلاس‌های موفق</strong><small>حضور و مشارکت در کلاس</small><i><b style={{width:'80%'}}/></i></div>
-      <em>۸۰٪</em>
-     </article>
-    </div>
+   <section style={{...achievementsCard,display:'flex',width:'100%',flexDirection:'column',gap:'12px',padding:'18px'}}>
+    <h2 style={{margin:0,fontFamily:achievementsFont,fontSize:'16px',fontWeight:900}}>پیشرفت این هفته</h2>
+    {achievementProgressRows.map(row=><article key={row.title} style={{boxSizing:'border-box',display:'grid',width:'100%',gridTemplateColumns:'38px minmax(0,1fr) auto',alignItems:'center',gap:'11px',padding:'10px 0',borderBottom:'1px solid #F0ECD9'}}><span aria-hidden="true" style={{display:'grid',width:'38px',height:'38px',placeItems:'center',color:row.color,background:row.soft,borderRadius:'50%',fontWeight:900}}>{row.symbol}</span><div style={{display:'flex',minWidth:0,flexDirection:'column',gap:'3px'}}><strong style={{fontFamily:achievementsFont,fontSize:'11px',fontWeight:900}}>{row.title}</strong><small style={{color:'#777982',fontFamily:achievementsFont,fontSize:'8px'}}>{row.description}</small><i style={{display:'block',width:'100%',height:'5px',overflow:'hidden',direction:'ltr',background:'#ECEDEF',borderRadius:'999px'}}><b style={{display:'block',width:`${row.progress}%`,height:'100%',background:row.color,borderRadius:'inherit'}}/></i></div><em style={{fontFamily:achievementsFont,fontSize:'10px',fontStyle:'normal',fontWeight:900}}>{row.value}</em></article>)}
    </section>
 
-   <div className="ir-achievements-page__footer-actions">
-    <button type="button" onClick={()=>onNavigate?.('student/points')}>امتیازها و سطح‌ها</button>
-    <button type="button" onClick={()=>onNavigate?.('student/certificates')}>گواهینامه‌های من</button>
+   <div style={{display:'grid',width:'100%',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:'10px'}}>
+    <button type="button" onClick={()=>onNavigate?.('student/points')} style={{minHeight:'46px',cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'14px',fontFamily:achievementsFont,fontSize:'11px',fontWeight:900}}>امتیازها و سطح‌ها</button>
+    <button type="button" onClick={()=>onNavigate?.('student/certificates')} style={{minHeight:'46px',cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'14px',fontFamily:achievementsFont,fontSize:'11px',fontWeight:900}}>گواهینامه‌های من</button>
    </div>
-   <button type="button" className="ir-student-subpage__primary" onClick={()=>onNavigate?.('student/badges')}>مشاهده همه نشان‌ها</button>
+   <button type="button" onClick={()=>onNavigate?.('student/badges')} style={{boxSizing:'border-box',display:'inline-flex',width:'100%',minHeight:'48px',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'#171719',background:'#FFD100',border:'1px solid #E7BD00',borderRadius:'14px',fontFamily:achievementsFont,fontSize:'12px',fontWeight:900}}>مشاهده همه نشان‌ها</button>
   </section>
  }
 
@@ -398,38 +395,36 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
    {title:'نشان دریافت شد',description:badge.date,done:badge.earned}
   ];
 
-  return <section className="ir-student-subpage ir-badge-detail-page">
-   <header className="ir-student-subpage__topbar">
-    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/badges')}>
-     <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
+  const badgeDetailFont='"Vazirmatn", Tahoma, Arial, sans-serif';
+  return <section dir="rtl" style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,minHeight:'100%',flexDirection:'column',gap:'16px',margin:0,padding:'20px clamp(14px,4vw,34px) 48px',color:'#202024',background:'#FFFAE0',fontFamily:badgeDetailFont}}>
+   <header style={{boxSizing:'border-box',display:'grid',width:'100%',gridTemplateColumns:'44px minmax(0,1fr) 44px',alignItems:'center',gap:'10px',padding:'0 0 12px',borderBottom:'1px solid rgba(222,214,179,.72)'}}>
+    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/badges')} style={{boxSizing:'border-box',display:'grid',width:'44px',height:'44px',placeItems:'center',margin:0,padding:0,cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'13px',fontFamily:badgeDetailFont}}>
+     <svg viewBox="0 0 24 24" aria-hidden="true" style={{display:'block',width:'21px',height:'21px',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
     </button>
-    <h1>جزئیات دستاورد</h1>
+    <div><h1 style={{margin:0,fontFamily:badgeDetailFont,fontSize:'clamp(20px,3vw,28px)',fontWeight:900,lineHeight:1.5}}>جزئیات دستاورد</h1><small style={{color:'#777982',fontFamily:badgeDetailFont,fontSize:'9px'}}>دستاوردها / {badge.title}</small></div>
     <span/>
    </header>
 
-   <section className="ir-badge-detail-page__hero">
-    <span>{badge.symbol}</span>
-    <em>{badge.earned?'دریافت‌شده':'در انتظار'}</em>
-    <h2>{badge.title}</h2>
-    <p>{badge.description}</p>
-   </section>
+   <article style={{boxSizing:'border-box',display:'flex',width:'100%',maxWidth:'720px',minWidth:0,flexDirection:'column',alignItems:'center',gap:'14px',margin:'0 auto',padding:'22px clamp(16px,4vw,34px)',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'22px',boxShadow:'0 14px 38px rgba(62,52,12,.09)',fontFamily:badgeDetailFont}}>
+    <section style={{display:'flex',width:'100%',flexDirection:'column',alignItems:'center',gap:'7px',textAlign:'center'}}>
+     <span aria-hidden="true" style={{display:'grid',width:'74px',height:'74px',placeItems:'center',color:'#8A7200',background:'#FFF7CE',border:'1px solid #F0D763',borderRadius:'50%',fontFamily:badgeDetailFont,fontSize:'30px',boxShadow:'0 8px 22px rgba(255,209,0,.14)'}}>{badge.symbol}</span>
+     <em style={{padding:'5px 10px',color:badge.earned?'#21663D':'#765F00',background:badge.earned?'#E9F7EE':'#FFF7CE',borderRadius:'999px',fontFamily:badgeDetailFont,fontSize:'9px',fontStyle:'normal',fontWeight:900}}>{badge.earned?'دریافت‌شده':'در انتظار'}</em>
+     <h2 style={{margin:'2px 0 0',fontFamily:badgeDetailFont,fontSize:'20px',fontWeight:900}}>{badge.title}</h2>
+     <p style={{maxWidth:'520px',margin:0,color:'#777982',fontFamily:badgeDetailFont,fontSize:'11px',fontWeight:600,lineHeight:1.9}}>{badge.description}</p>
+    </section>
 
-   <section className="ir-badge-detail-page__stats">
-    <article><span>تاریخ</span><strong>{badge.date}</strong></article>
-    <article><span>امتیاز</span><strong>{IrancellFormatPersianNumber(badge.points)}</strong></article>
-    <article><span>دسته‌بندی</span><strong>{badge.category}</strong></article>
-   </section>
+    <section style={{display:'grid',width:'100%',gridTemplateColumns:'repeat(3,minmax(0,1fr))',gap:'8px'}}>
+     {[{label:'تاریخ',value:badge.date},{label:'امتیاز',value:IrancellFormatPersianNumber(badge.points)},{label:'دسته‌بندی',value:badge.category}].map(item=><article key={item.label} style={{display:'flex',minWidth:0,flexDirection:'column',alignItems:'center',gap:'4px',padding:'12px 7px',background:'#F8F8F8',border:'1px solid #EEEEF0',borderRadius:'13px',textAlign:'center'}}><span style={{color:'#85858D',fontFamily:badgeDetailFont,fontSize:'8px',fontWeight:700}}>{item.label}</span><strong style={{fontFamily:badgeDetailFont,fontSize:'10px',fontWeight:900}}>{item.value}</strong></article>)}
+    </section>
 
-   <section className="ir-badge-detail-page__timeline">
-    <h2>چگونه این نشان را دریافت کردی؟</h2>
-    {steps.slice().reverse().map(step=><article key={step.title} className={step.done?'is-done':''}>
-     <span>{step.done?'✓':'○'}</span>
-     <div><strong>{step.title}</strong><small>{step.description}</small></div>
-    </article>)}
-   </section>
+    <section style={{boxSizing:'border-box',display:'flex',width:'100%',flexDirection:'column',gap:'7px',padding:'14px 16px',background:'#FAFAFA',border:'1px solid #EEEEF0',borderRadius:'16px'}}>
+     <h2 style={{margin:'0 0 5px',fontFamily:badgeDetailFont,fontSize:'13px',fontWeight:900}}>چگونه این نشان را دریافت کردی؟</h2>
+     {steps.slice().reverse().map(step=><article key={step.title} style={{display:'grid',width:'100%',gridTemplateColumns:'28px minmax(0,1fr)',alignItems:'center',gap:'9px',padding:'7px 0'}}><span aria-hidden="true" style={{display:'grid',width:'26px',height:'26px',placeItems:'center',color:step.done?'#202024':'#85858D',background:step.done?'#FFD100':'#ECEDEF',borderRadius:'50%',fontSize:'10px',fontWeight:900}}>{step.done?'✓':'○'}</span><div style={{display:'flex',minWidth:0,flexDirection:'column',gap:'2px'}}><strong style={{fontFamily:badgeDetailFont,fontSize:'10px',fontWeight:900}}>{step.title}</strong><small style={{color:'#777982',fontFamily:badgeDetailFont,fontSize:'8px'}}>{step.description}</small></div></article>)}
+    </section>
 
-   <button type="button" className="ir-student-subpage__primary" onClick={()=>{if(typeof navigator!=='undefined'&&navigator.share)navigator.share({title:badge.title,text:badge.description}).catch(()=>{})}}>اشتراک‌گذاری دستاورد</button>
-   <button type="button" className="ir-badge-detail-page__secondary" onClick={()=>onNavigate?.('student/badges')}>مشاهده دستاورد مشابه</button>
+    <button type="button" onClick={()=>{if(typeof navigator!=='undefined'&&navigator.share)navigator.share({title:badge.title,text:badge.description}).catch(()=>{})}} style={{boxSizing:'border-box',display:'inline-flex',width:'100%',minHeight:'48px',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'#171719',background:'#FFD100',border:'1px solid #E7BD00',borderRadius:'13px',fontFamily:badgeDetailFont,fontSize:'11px',fontWeight:900}}>اشتراک‌گذاری دستاورد</button>
+    <button type="button" onClick={()=>onNavigate?.('student/badges')} style={{boxSizing:'border-box',display:'inline-flex',minHeight:'38px',alignItems:'center',justifyContent:'center',cursor:'pointer',color:'#6657D9',background:'transparent',border:0,borderRadius:'11px',fontFamily:badgeDetailFont,fontSize:'10px',fontWeight:800}}>مشاهده دستاورد مشابه</button>
+   </article>
   </section>
  }
 
@@ -445,9 +440,9 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
   ];
   const levels=[
    {level:7,title:'یادگیرنده فعال',requirement:'۱۲۵۰ امتیاز فعلی',active:true},
-   {level:8,title:'یادگیرنده حرفه‌ای',requirement:'۱۷۵۰ امتیاز',active:false},
-   {level:9,title:'دانش‌آموز ممتاز',requirement:'۳۰۰۰ امتیاز',active:false},
-   {level:10,title:'قهرمان یادگیری',requirement:'۵۰۰۰ امتیاز',active:false}
+   {level:8,title:'یادگیرنده حرفه‌ای',requirement:'۱۵۷۰ امتیاز',active:false},
+   {level:9,title:'دانش‌آموز ممتاز',requirement:'۲۰۰۰ امتیاز',active:false},
+   {level:10,title:'قهرمان یادگیری',requirement:'۳۰۰۰ امتیاز',active:false}
   ];
 
   return <section className="ir-student-subpage ir-points-page">
@@ -503,33 +498,36 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
   ];
   const visibleCertificates=certificateFilter==='all'?certificates:certificates.filter(certificate=>certificate.type===certificateFilter);
 
-  return <section className="ir-student-subpage ir-certificates-page">
-   <header className="ir-student-subpage__topbar">
-    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/achievements')}>
-     <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
+  const certificatesFont='"Vazirmatn", Tahoma, Arial, sans-serif';
+  const certificateFilters=[{id:'all',label:'همه'},{id:'online',label:'دوره‌های آنلاین'},{id:'live',label:'کلاس‌های زنده'},{id:'skill',label:'مهارت‌ها'}];
+  return <section dir="rtl" style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,minHeight:'100%',flexDirection:'column',gap:'16px',margin:0,padding:'20px clamp(14px,4vw,34px) 48px',color:'#202024',background:'#FFFAE0',fontFamily:certificatesFont}}>
+   <header style={{boxSizing:'border-box',display:'grid',width:'100%',gridTemplateColumns:'44px minmax(0,1fr) 44px',alignItems:'center',gap:'10px',padding:'0 0 12px',borderBottom:'1px solid rgba(222,214,179,.72)'}}>
+    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/achievements')} style={{boxSizing:'border-box',display:'grid',width:'44px',height:'44px',placeItems:'center',margin:0,padding:0,cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'13px',fontFamily:certificatesFont}}>
+     <svg viewBox="0 0 24 24" aria-hidden="true" style={{display:'block',width:'21px',height:'21px',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
     </button>
-    <h1>گواهینامه‌های من</h1>
+    <div><h1 style={{margin:0,fontFamily:certificatesFont,fontSize:'clamp(20px,3vw,28px)',fontWeight:900,lineHeight:1.5}}>گواهینامه‌های من</h1><small style={{color:'#777982',fontFamily:certificatesFont,fontSize:'9px'}}>دستاوردها / گواهینامه‌ها</small></div>
     <span/>
    </header>
 
-   <nav className="ir-student-subpage__chips">
-    <button type="button" className={certificateFilter==='all'?'is-active':''} onClick={()=>setCertificateFilter('all')}>همه</button>
-    <button type="button" className={certificateFilter==='online'?'is-active':''} onClick={()=>setCertificateFilter('online')}>دوره‌های آنلاین</button>
-    <button type="button" className={certificateFilter==='live'?'is-active':''} onClick={()=>setCertificateFilter('live')}>کلاس‌های زنده</button>
-    <button type="button" className={certificateFilter==='skill'?'is-active':''} onClick={()=>setCertificateFilter('skill')}>مهارت‌ها</button>
-   </nav>
+   <article style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,flexDirection:'column',gap:'14px',padding:'clamp(16px,3vw,24px)',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'22px',boxShadow:'0 12px 34px rgba(62,52,12,.08)',fontFamily:certificatesFont}}>
+    <h2 style={{margin:0,fontFamily:certificatesFont,fontSize:'15px',fontWeight:900}}>لیست گواهینامه‌های دریافت‌شده</h2>
+    <nav aria-label="فیلتر گواهینامه‌ها" style={{display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',alignItems:'center',gap:'7px',padding:'0 0 3px'}}>
+     {certificateFilters.map(filter=>{const active=certificateFilter===filter.id;return <button type="button" key={filter.id} aria-pressed={active} onClick={()=>setCertificateFilter(filter.id)} style={{boxSizing:'border-box',display:'inline-flex',minHeight:'34px',alignItems:'center',justifyContent:'center',margin:0,padding:'7px 13px',cursor:'pointer',color:'#202024',background:active?'#FFD100':'#F7F7F8',border:`1px solid ${active?'#E7BD00':'#E2E2E6'}`,borderRadius:'999px',fontFamily:certificatesFont,fontSize:'9px',fontWeight:active?900:700}}>{filter.label}</button>})}
+    </nav>
 
-   <div className="ir-certificates-page__list">
-    {visibleCertificates.map(certificate=><button type="button" key={certificate.id} onClick={()=>onNavigate?.(`student/certificates/${certificate.id}`)}>
-     <span className="ir-certificates-page__medal">♙</span>
-     <div>
-      <strong>{certificate.title}</strong>
-      <small>{certificate.provider}</small>
-      <em>معتبر</em>
-     </div>
-     <b>مشاهده ‹</b>
-    </button>)}
-   </div>
+    <div style={{display:'flex',width:'100%',minWidth:0,flexDirection:'column',gap:'8px'}}>
+     {visibleCertificates.map(certificate=><button type="button" key={certificate.id} onClick={()=>onNavigate?.(`student/certificates/${certificate.id}`)} style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',alignItems:'center',gap:'11px',margin:0,padding:'10px 12px',cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #EEE9D4',borderRadius:'15px',fontFamily:certificatesFont,textAlign:'right'}}>
+      <span aria-hidden="true" style={{display:'grid',width:'38px',minWidth:'38px',height:'38px',placeItems:'center',color:'#B08E00',background:'#FFF7CE',borderRadius:'50%',fontFamily:certificatesFont,fontSize:'18px'}}>♙</span>
+      <div style={{display:'flex',minWidth:'150px',flex:'1 1 280px',flexDirection:'column',gap:'2px'}}>
+       <strong style={{fontFamily:certificatesFont,fontSize:'11px',fontWeight:900}}>{certificate.title}</strong>
+       <small style={{color:'#777982',fontFamily:certificatesFont,fontSize:'8px'}}>{certificate.provider}</small>
+       <em style={{alignSelf:'flex-start',padding:'2px 6px',color:'#21663D',background:'#E9F7EE',borderRadius:'999px',fontFamily:certificatesFont,fontSize:'7px',fontStyle:'normal',fontWeight:800}}>معتبر</em>
+      </div>
+      <b style={{display:'inline-flex',minHeight:'34px',alignItems:'center',justifyContent:'center',padding:'7px 12px',color:'#171719',background:'#FFD100',border:'1px solid #E7BD00',borderRadius:'9px',fontFamily:certificatesFont,fontSize:'9px',fontWeight:900}}>مشاهده گواهینامه</b>
+     </button>)}
+     {!visibleCertificates.length&&<div role="status" style={{padding:'24px',color:'#777982',background:'#FAFAFA',border:'1px dashed #D9D4BF',borderRadius:'15px',fontFamily:certificatesFont,fontSize:'11px',textAlign:'center'}}>گواهینامه‌ای در این دسته ثبت نشده است.</div>}
+    </div>
+   </article>
   </section>
  }
 
@@ -554,40 +552,43 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
    URL.revokeObjectURL(url)
   }
 
-  return <section className="ir-student-subpage ir-certificate-detail-page">
-   <header className="ir-student-subpage__topbar">
-    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/certificates')}>
-     <svg viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
+  const certificateDetailFont='"Vazirmatn", Tahoma, Arial, sans-serif';
+  const certificateActionStyle={boxSizing:'border-box',display:'inline-flex',width:'100%',minHeight:'44px',alignItems:'center',justifyContent:'center',margin:0,padding:'9px 12px',cursor:'pointer',borderRadius:'11px',fontFamily:certificateDetailFont,fontSize:'10px',fontWeight:900};
+  return <section dir="rtl" style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,minHeight:'100%',flexDirection:'column',gap:'16px',margin:0,padding:'20px clamp(14px,4vw,34px) 48px',color:'#202024',background:'#FFFAE0',fontFamily:certificateDetailFont}}>
+   <header style={{boxSizing:'border-box',display:'grid',width:'100%',gridTemplateColumns:'44px minmax(0,1fr) 44px',alignItems:'center',gap:'10px',padding:'0 0 12px',borderBottom:'1px solid rgba(222,214,179,.72)'}}>
+    <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/certificates')} style={{boxSizing:'border-box',display:'grid',width:'44px',height:'44px',placeItems:'center',margin:0,padding:0,cursor:'pointer',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'13px',fontFamily:certificateDetailFont}}>
+     <svg viewBox="0 0 24 24" aria-hidden="true" style={{display:'block',width:'21px',height:'21px',fill:'none',stroke:'currentColor',strokeWidth:1.8,strokeLinecap:'round',strokeLinejoin:'round'}}><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
     </button>
-    <h1>جزئیات گواهینامه</h1>
+    <div><h1 style={{margin:0,fontFamily:certificateDetailFont,fontSize:'clamp(20px,3vw,28px)',fontWeight:900,lineHeight:1.5}}>جزئیات گواهینامه</h1><small style={{color:'#777982',fontFamily:certificateDetailFont,fontSize:'9px'}}>دستاوردها / گواهینامه / {certificate.title}</small></div>
     <span/>
    </header>
 
-   <section className="ir-certificate-detail-page__paper">
-    <small>گواهینامه پایان دوره</small>
-    <hr/>
-    <h2>{certificate.title}</h2>
-    <span className="ir-certificate-detail-page__seal">⌁</span>
-    <dl>
-     <div><dt>دانش‌آموز:</dt><dd>{user.name}</dd></div>
-     <div><dt>مؤسسه:</dt><dd>{certificate.provider}</dd></div>
-     <div><dt>مدرس:</dt><dd>{certificate.teacher}</dd></div>
-     <div><dt>تاریخ:</dt><dd>{certificate.date}</dd></div>
-     <div><dt>نمره نهایی:</dt><dd className="is-score">{certificate.score}</dd></div>
-     <div><dt>کد گواهینامه:</dt><dd dir="ltr">{certificate.code}</dd></div>
-    </dl>
-    <footer>گواهینامه معتبر است ✓</footer>
-   </section>
+   <div style={{display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',alignItems:'flex-start',gap:'14px'}}>
+    <aside style={{boxSizing:'border-box',display:'flex',minWidth:'min(100%,220px)',flex:'1 1 220px',flexDirection:'column',gap:'10px',padding:'14px',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'18px',boxShadow:'0 10px 28px rgba(62,52,12,.07)',fontFamily:certificateDetailFont}}>
+     <h2 style={{margin:0,fontFamily:certificateDetailFont,fontSize:'12px',fontWeight:900}}>به‌اشتراک‌گذاری و دریافت</h2>
+     <button type="button" onClick={downloadCertificate} style={{...certificateActionStyle,color:'#171719',background:'#FFD100',border:'1px solid #E7BD00'}}>دانلود گواهینامه ↓</button>
+     <button type="button" onClick={()=>{if(typeof navigator!=='undefined'&&navigator.share)navigator.share({title:certificate.title,text:`کد گواهینامه: ${certificate.code}`}).catch(()=>{})}} style={{...certificateActionStyle,color:'#202024',background:'#FFFFFF',border:'1px solid #DED9C4'}}>اشتراک‌گذاری ⤴</button>
+     <button type="button" onClick={()=>setCertificateVerification(certificate.code)} style={{...certificateActionStyle,color:'#6657D9',background:'#F6F4FF',border:'1px solid #DCD5FF'}}>بررسی اعتبار گواهینامه</button>
+     {certificateVerification===certificate.code&&<aside role="status" style={{display:'flex',flexDirection:'column',gap:'3px',padding:'10px',color:'#21663D',background:'#E9F7EE',border:'1px solid #BFE5CC',borderRadius:'11px',fontFamily:certificateDetailFont}}><strong style={{fontSize:'9px',fontWeight:900}}>گواهینامه معتبر است</strong><span style={{fontSize:'8px',lineHeight:1.8}}>کد {certificate.code} با اطلاعات این دانش‌آموز مطابقت دارد.</span></aside>}
+    </aside>
 
-   <section className="ir-certificate-detail-page__skills">
-    <h2>مهارت‌های کسب‌شده</h2>
-    <div>{certificate.skills.map(skill=><span key={skill}>{skill}</span>)}</div>
-   </section>
-
-   <button type="button" className="ir-student-subpage__primary" onClick={downloadCertificate}>دانلود گواهینامه ↓</button>
-   <button type="button" className="ir-certificate-detail-page__share" onClick={()=>{if(typeof navigator!=='undefined'&&navigator.share)navigator.share({title:certificate.title,text:`کد گواهینامه: ${certificate.code}`}).catch(()=>{})}}>اشتراک‌گذاری ⤴</button>
-   <button type="button" className="ir-certificate-detail-page__verify" onClick={()=>setCertificateVerification(certificate.code)}>بررسی اعتبار گواهینامه</button>
-   {certificateVerification===certificate.code&&<aside className="ir-certificate-detail-page__verification" role="status"><strong>گواهینامه معتبر است</strong><span>کد {certificate.code} با اطلاعات این دانش‌آموز مطابقت دارد.</span></aside>}
+    <article style={{boxSizing:'border-box',display:'flex',minWidth:'min(100%,360px)',flex:'2 1 540px',flexDirection:'column',alignItems:'stretch',gap:'12px',overflow:'hidden',background:'#FFFFFF',border:'1px solid #DDD7BC',borderRadius:'20px',boxShadow:'0 14px 40px rgba(62,52,12,.09)',fontFamily:certificateDetailFont}}>
+     <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:'8px',padding:'clamp(20px,4vw,34px) clamp(16px,4vw,32px) 10px',textAlign:'center'}}>
+      <small style={{color:'#777982',fontFamily:certificateDetailFont,fontSize:'9px',fontWeight:700}}>گواهینامه پایان دوره</small>
+      <hr style={{width:'68px',height:'2px',margin:0,background:'#FFD100',border:0,borderRadius:'999px'}}/>
+      <h2 style={{margin:'4px 0 0',fontFamily:certificateDetailFont,fontSize:'clamp(20px,3.2vw,30px)',fontWeight:900}}>{certificate.title}</h2>
+      <span aria-hidden="true" style={{display:'grid',width:'48px',height:'48px',placeItems:'center',color:'#A28100',background:'#FFF7CE',border:'1px solid #F0D763',borderRadius:'50%',fontFamily:certificateDetailFont,fontSize:'22px'}}>⌁</span>
+     </div>
+     <dl style={{boxSizing:'border-box',display:'flex',width:'100%',flexDirection:'column',gap:0,margin:0,padding:'0 clamp(16px,4vw,32px)'}}>
+      {[['دانش‌آموز:',user.name],['مؤسسه:',certificate.provider],['مدرس:',certificate.teacher],['تاریخ:',certificate.date],['نمره نهایی:',certificate.score],['کد گواهینامه:',certificate.code]].map(([label,value],index)=><div key={label} style={{display:'grid',width:'100%',gridTemplateColumns:'minmax(90px,.45fr) minmax(0,1fr)',alignItems:'center',gap:'10px',padding:'10px 0',borderBottom:index===5?0:'1px solid #EEE9D4'}}><dt style={{color:'#777982',fontFamily:certificateDetailFont,fontSize:'9px',fontWeight:700}}>{label}</dt><dd dir={label==='کد گواهینامه:'?'ltr':'rtl'} style={{margin:0,color:index===4?'#21663D':'#202024',fontFamily:certificateDetailFont,fontSize:'10px',fontWeight:900,textAlign:'right',overflowWrap:'anywhere'}}>{value}</dd></div>)}
+     </dl>
+     <section style={{display:'flex',flexDirection:'column',gap:'8px',padding:'2px clamp(16px,4vw,32px) 16px'}}>
+      <h3 style={{margin:0,fontFamily:certificateDetailFont,fontSize:'11px',fontWeight:900}}>مهارت‌های کسب‌شده</h3>
+      <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{certificate.skills.map(skill=><span key={skill} style={{padding:'5px 9px',color:'#4C4D53',background:'#F7F7F8',border:'1px solid #E2E2E6',borderRadius:'999px',fontFamily:certificateDetailFont,fontSize:'8px',fontWeight:700}}>{skill}</span>)}</div>
+     </section>
+     <footer style={{boxSizing:'border-box',display:'flex',width:'100%',minHeight:'42px',alignItems:'center',justifyContent:'center',padding:'10px 16px',color:'#171719',background:'#FFD100',borderTop:'1px solid #E7BD00',fontFamily:certificateDetailFont,fontSize:'10px',fontWeight:900}}>این گواهینامه معتبر است و امکان تأیید شده است ✓</footer>
+    </article>
+   </div>
   </section>
  }
 
@@ -686,11 +687,12 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
 
  if(route==='student/privacy/visibility'){
   const visibilityRows=[
-   {key:'profileVisible',title:'نمایش پروفایل',description:'نام و تصویر پروفایل در بخش‌های مجاز نمایش داده شود'},
-   {key:'achievementsVisible',title:'نمایش دستاوردها',description:'نشان‌ها و گواهینامه‌های آموزشی قابل مشاهده باشند'},
-   {key:'learningActivityVisible',title:'نمایش فعالیت یادگیری',description:'وضعیت فعالیت آموزشی در سطح مجاز نمایش داده شود'},
-   {key:'personalizedRecommendations',title:'پیشنهادهای شخصی‌سازی‌شده',description:'از فعالیت آموزشی برای بهتر شدن پیشنهادها استفاده شود'},
-   {key:'learningDataSharing',title:'اشتراک داده برای بهبود سرویس',description:'داده‌های غیرحساس و مجاز برای بهبود تجربه آموزشی استفاده شوند'}
+   {key:'displayNameVisible',title:'نام نمایشی',description:'استفاده از نام مستعار به جای نام کامل'},
+   {key:'avatarVisible',title:'تصویر پروفایل',description:'نمایش آواتار انتخابی برای سایر کاربران'},
+   {key:'gradeVisible',title:'پایه تحصیلی',description:'مشاهده مقطع تحصیلی در نتایج جستجو'},
+   {key:'achievementsVisible',title:'دستاوردها',description:'نمایش نشان‌ها و جوایز کسب‌شده'},
+   {key:'completedCoursesVisible',title:'دوره‌های تکمیل‌شده',description:'لیست آموزش‌هایی که با موفقیت گذرانده‌ای'},
+   {key:'certificatesVisible',title:'گواهینامه‌ها',description:'نمایش مدارک پایان دوره در پروفایل عمومی'}
   ];
 
   return <section className="ir-student-subpage ir-privacy-settings-page">
@@ -698,11 +700,11 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
     <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/privacy')}>
      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
     </button>
-    <h1>نمایش‌پذیری اطلاعات</h1>
+    <h1>نمایش پروفایل</h1>
     <span/>
    </header>
 
-   <p className="ir-privacy-settings-page__intro">مشخص کن کدام بخش از اطلاعات آموزشی و فعالیت‌های حسابت در سطح مجاز قابل استفاده یا نمایش باشد.</p>
+   <p className="ir-privacy-settings-page__intro">انتخاب کن کدام اطلاعات عمومی پروفایل برای کاربران دیگر قابل مشاهده باشد.</p>
 
    <div className="ir-privacy-settings-page__list">
     {visibilityRows.map(row=><article key={row.key}>
@@ -712,11 +714,11 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
    </div>
 
    <aside className="ir-privacy-settings-page__note">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
-    <p>بعضی اطلاعات برای عملکرد سرویس، امنیت، رضایت خانواده یا الزامات قانونی قابل غیرفعال‌سازی نیستند.</p>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 5-3 8-7 10-4-2-7-5-7-10V6Z"/></svg>
+    <p><strong>اطلاعات هویتی</strong><br/>نام کامل، شماره تماس، اطلاعات خانواده و داده‌های حساس برای سایر کاربران نمایش داده نمی‌شوند.</p>
    </aside>
 
-   {privacySaved&&<p className="ir-privacy-settings-page__saved" role="status">تنظیمات حریم خصوصی ذخیره شد.</p>}
+   {privacySaved&&<p className="ir-privacy-settings-page__saved" role="status">تغییرات با موفقیت ذخیره شد.</p>}
    <button type="button" className="ir-student-subpage__primary" onClick={savePrivacySettings}>ذخیره تغییرات</button>
   </section>
  }
@@ -954,9 +956,10 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
   const rows=[
    {key:'chisti',label:'تاریخچه چیستی'},
    {key:'uploadedFiles',label:'فایل‌های بارگذاری‌شده'},
-   {key:'learningHistory',label:'تاریخچه یادگیری'},
-   {key:'searchHistory',label:'تاریخچه جستجو و پیشنهادها'}
+   {key:'searchHistory',label:'سابقه جست‌وجو'},
+   {key:'personalizedRecommendations',label:'پیشنهادهای شخصی‌سازی‌شده'}
   ];
+  const protectedRows=['سوابق مالی','رضایت‌نامه‌های قانونی','اطلاعات کلاس‌های در حال برگزاری','گزارش‌های امنیتی ضروری'];
 
   return <section className="ir-student-subpage ir-privacy-select-delete-page">
    <header className="ir-student-subpage__topbar">
@@ -967,20 +970,18 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
     <span/>
    </header>
 
-   <p className="ir-privacy-select-delete-page__intro">مواردی را که می‌خواهی برای حذف درخواست شوند انتخاب کن.</p>
+   <p className="ir-privacy-select-delete-page__intro">اطلاعات قابل حذف</p>
 
    <div className="ir-privacy-select-delete-page__list">
     {rows.map(row=><label key={row.key}>
-     <input type="checkbox" checked={deleteSelections[row.key]} onChange={()=>setDeleteSelections(current=>({...current,[row.key]:!current[row.key]}))}/>
+     <input type="checkbox" checked={Boolean(deleteSelections[row.key])} onChange={()=>setDeleteSelections(current=>({...current,[row.key]:!current[row.key]}))}/>
      <span>{row.label}</span>
     </label>)}
    </div>
 
    <aside className="ir-privacy-select-delete-page__locked">
-    <strong>اطلاعاتی که قابل حذف مستقیم نیستند</strong>
-    <span>گواهینامه‌ها و سوابق ضروری قانونی</span>
-    <span>تراکنش‌های مالی دارای الزام نگهداری</span>
-    <span>سوابق امنیتی موردنیاز برای حفاظت حساب</span>
+    <strong>اطلاعات محافظت‌شده (غیرقابل حذف)</strong>
+    {protectedRows.map(item=><span key={item}>{item}</span>)}
    </aside>
 
    <button type="button" className="ir-privacy-select-delete-page__danger" disabled={!Object.values(deleteSelections).some(Boolean)} onClick={submitPartialDeletion}>ادامه حذف</button>
@@ -1016,7 +1017,7 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
      <input type="radio" name="delete-reason" checked={deleteReason===reason} onChange={()=>setDeleteReason(reason)}/>
      <span>{reason}</span>
     </label>)}
-    <textarea rows={3} disabled={deleteReason!=='دلیل دیگر'} placeholder="توضیحات بیشتر"/>
+    <textarea rows={3} disabled={deleteReason!=='دلیل دیگر'} value={deleteReasonDetail} onChange={event=>setDeleteReasonDetail(event.target.value)} placeholder="توضیحات بیشتر"/>
    </div>
 
    <label className="ir-delete-account-page__ack">
@@ -1024,39 +1025,49 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
     <span>پیامدهای حذف حساب را خواندم و متوجه شدم.</span>
    </label>
 
-   <button type="button" className="ir-delete-account-page__submit" disabled={!deleteAcknowledged} onClick={submitAccountDeletion}>ارسال درخواست حذف حساب</button>
+   <button type="button" className="ir-delete-account-page__submit" disabled={!deleteAcknowledged||(deleteReason==='دلیل دیگر'&&!deleteReasonDetail.trim())} onClick={submitAccountDeletion}>ارسال درخواست حذف حساب</button>
   </section>
  }
 
  if(route==='student/privacy/parent-gate'){
-  const gateError=parentGateSubmitted&&!state.ui?.parentGate?.verifiedAt?state.ui?.fieldErrors?.parentGate||'کد تأیید خانواده را بررسی کنید.':'';
+  const gateError=parentGateSubmitted&&!state.ui?.parentGate?.verifiedAt?state.ui?.fieldErrors?.parentGate||'کد تأیید والد یا سرپرست را بررسی کن.':'';
+  const relationship=Object.values(state.identity.relationshipsById||{}).find(item=>item.childId===studentId&&item.status==='active');
+  const parentUser=relationship?state.identity.usersById?.[relationship.parentId]:null;
+  const parentMobile=String(parentUser?.mobile||'').replace(/\D/g,'');
+  const maskedMobile=parentMobile.length>6?`${parentMobile.slice(0,4)}***${parentMobile.slice(-3)}`:'';
+  const expectedLength=Math.max(4,String(IRANCELL_APP_CONFIG.otpCode||'12345').replace(/\D/g,'').length||5);
+  const cancelRoute=params?.action==='account-delete'?'student/privacy/delete/account':params?.action==='chisti-history-delete'?'student/privacy/chisti':'student/privacy/delete/select';
+  const backgroundTitle=params?.action==='account-delete'?'درخواست حذف حساب':params?.action==='chisti-history-delete'?'پاک کردن تاریخچه چیستی':'حذف اطلاعات';
 
   return <section className="ir-parent-gate-page">
-   <div className="ir-parent-gate-page__background" aria-hidden="true">
-    <h1>{params?.action==='account-delete'?'درخواست حذف حساب':'حذف اطلاعات'}</h1>
-   </div>
+   <div className="ir-parent-gate-page__background" aria-hidden="true"><h1>{backgroundTitle}</h1></div>
 
-   <section className="ir-parent-gate-page__sheet" role="dialog" aria-modal="true">
+   <section className="ir-parent-gate-page__sheet" role="dialog" aria-modal="true" aria-labelledby="privacy-parent-gate-title">
     <span className="ir-parent-gate-page__handle"/>
     <span className="ir-parent-gate-page__icon">◎</span>
-    <h2>نیاز به تأیید خانواده</h2>
-    <p>برای ادامه این عملیات حساس، کد تأییدی که برای خانواده ارسال شده است را وارد کن.</p>
-
-    <label>
-     <span>کد تأیید</span>
-     <input type="tel" inputMode="numeric" dir="ltr" maxLength={6} value={parentGateCode} onChange={event=>{setParentGateCode(event.target.value.replace(/\D/g,''));setParentGateSubmitted(false)}} placeholder="------"/>
-    </label>
-
-    {gateError&&<small className="ir-parent-gate-page__error">{gateError}</small>}
-
-    <button type="button" className="ir-parent-gate-page__primary" onClick={verifyPrivacyParentGate}>تأیید و ادامه</button>
-    <button type="button" className="ir-parent-gate-page__cancel" onClick={()=>onNavigate?.('student/privacy/delete')}>انصراف</button>
+    {!parentGateOtpSent?<>
+     <h2 id="privacy-parent-gate-title">تأیید والد یا سرپرست</h2>
+     <p>برای انجام این تغییر، یک کد یک‌بارمصرف برای والد یا سرپرست ارسال می‌شود.{maskedMobile?` شماره مقصد: ${maskedMobile}`:''}</p>
+     <button type="button" className="ir-parent-gate-page__primary" onClick={()=>{setParentGateOtpSent(true);setParentGateCode('');setParentGateSubmitted(false)}}>ارسال کد یک‌بارمصرف</button>
+     <button type="button" className="ir-parent-gate-page__cancel" onClick={()=>onNavigate?.(cancelRoute)}>انصراف</button>
+    </>:<>
+     <h2 id="privacy-parent-gate-title">تأیید کد یک‌بارمصرف</h2>
+     <p>کد ارسال‌شده را وارد کن تا عملیات حساس ادامه پیدا کند.</p>
+     <label>
+      <span>کد یک‌بارمصرف</span>
+      <input type="tel" inputMode="numeric" autoComplete="one-time-code" autoFocus dir="ltr" maxLength={expectedLength} value={parentGateCode} onChange={event=>{setParentGateCode(event.target.value.replace(/\D/g,'').slice(0,expectedLength));setParentGateSubmitted(false)}} placeholder={Array(expectedLength).fill('•').join(' ')}/>
+     </label>
+     {gateError&&<small className="ir-parent-gate-page__error" role="alert">{gateError}</small>}
+     <button type="button" className="ir-parent-gate-page__primary" disabled={parentGateCode.length<expectedLength} onClick={verifyPrivacyParentGate}>تأیید</button>
+     <button type="button" className="ir-parent-gate-page__cancel" onClick={()=>onNavigate?.(cancelRoute)}>انصراف</button>
+    </>}
    </section>
   </section>
  }
 
  if(route==='student/privacy/delete/history-confirm'){
   const categories=String(params?.categories||'chisti').split(',').filter(Boolean);
+  const isChistiOnly=categories.length===1&&categories[0]==='chisti';
 
   function confirmPartialDelete(){
    dispatch({type:'IRANCELL_STUDENT_PRIVACY_DELETE_REQUEST',userId:studentId,kind:'partial',categories});
@@ -1065,12 +1076,12 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
 
   return <section className="ir-privacy-confirm-page">
    <div className="ir-privacy-confirm-page__background"/>
-   <section className="ir-privacy-confirm-page__sheet">
+   <section className="ir-privacy-confirm-page__sheet" role="dialog" aria-modal="true">
     <span className="ir-privacy-confirm-page__danger-icon">△</span>
-    <h2>اطلاعات انتخاب‌شده حذف شود؟</h2>
-    <p>پس از تأیید، درخواست حذف این اطلاعات ثبت می‌شود و بعضی سوابق ممکن است قابل بازیابی نباشند.</p>
-    <button type="button" className="is-danger" onClick={confirmPartialDelete}>بله، حذف شود</button>
-    <button type="button" onClick={()=>onNavigate?.('student/privacy/delete/select')}>انصراف</button>
+    <h2>{isChistiOnly?'تاریخچه چیستی پاک شود؟':'اطلاعات انتخاب‌شده حذف شوند؟'}</h2>
+    <p>{isChistiOnly?'بعد از پاک شدن تاریخچه، امکان بازیابی پرسش‌ها و پاسخ‌های حذف‌شده وجود ندارد.':'پس از تأیید، درخواست حذف اطلاعات انتخاب‌شده ثبت می‌شود و بخشی از آن‌ها قابل بازیابی نخواهد بود.'}</p>
+    <button type="button" className="is-danger" onClick={confirmPartialDelete}>{isChistiOnly?'پاک کردن تاریخچه':'ادامه حذف'}</button>
+    <button type="button" onClick={()=>onNavigate?.(isChistiOnly?'student/privacy/chisti':'student/privacy/delete/select')}>انصراف</button>
    </section>
   </section>
  }
@@ -1083,11 +1094,11 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
 
   return <section className="ir-privacy-confirm-page">
    <div className="ir-privacy-confirm-page__background"/>
-   <section className="ir-privacy-confirm-page__sheet">
+   <section className="ir-privacy-confirm-page__sheet" role="dialog" aria-modal="true">
     <span className="ir-privacy-confirm-page__danger-icon">△</span>
-    <h2>درخواست حذف حساب ثبت شود؟</h2>
-    <p>این درخواست پس از بررسی وضعیت کلاس‌ها، پرداخت‌ها و سوابق محافظت‌شده پردازش خواهد شد.</p>
-    <button type="button" className="is-danger" onClick={confirmAccountDelete}>ثبت درخواست حذف حساب</button>
+    <h2>درخواست حذف حساب ارسال شود؟</h2>
+    <p>درخواست برای بررسی و تأیید نهایی ارسال می‌شود و از طریق اعلان به خانواده اطلاع داده خواهد شد.</p>
+    <button type="button" className="is-danger" onClick={confirmAccountDelete}>ارسال درخواست</button>
     <button type="button" onClick={()=>onNavigate?.('student/privacy/delete/account')}>انصراف</button>
    </section>
   </section>
@@ -1095,15 +1106,17 @@ export function IrancellStudentProfilePage({params,onNavigate,screen}){
 
  if(route==='student/privacy/success'){
   const kind=params?.kind||'export';
-  const title=kind==='export'?'درخواست دریافت اطلاعات ثبت شد':kind==='account'?'درخواست حذف حساب ثبت شد':'درخواست حذف اطلاعات ثبت شد';
-  const description=kind==='export'?'پس از آماده‌شدن نسخه اطلاعات، از طریق اعلان حساب مطلع می‌شوی.':'درخواست شما ثبت شده و نتیجه بررسی از طریق اعلان حساب قابل پیگیری است.';
+  const isExport=kind==='export';
+  const title=isExport?'درخواست دریافت اطلاعات ثبت شد':'درخواست ثبت شد';
+  const description=isExport?'پس از آماده‌شدن نسخه اطلاعات، از طریق اعلان حساب مطلع می‌شوی.':'درخواست شما ثبت شد و از طریق اعلان به والد یا سرپرست اطلاع داده می‌شود.';
 
   return <section className="ir-student-subpage ir-student-success-page">
+   <header className="ir-student-subpage__topbar"><span/><h1>{isExport?'تأیید درخواست':'تأیید درخواست'}</h1><span/></header>
    <div className="ir-student-success-page__content">
     <span>✓</span>
     <h1>{title}</h1>
     <p>{description}</p>
-    <button type="button" onClick={()=>onNavigate?.('student/privacy')}>بازگشت به حریم خصوصی</button>
+    <button type="button" onClick={()=>onNavigate?.(isExport?'student/privacy':'student/profile')}>{isExport?'بازگشت به حریم خصوصی':'بازگشت به پروفایل'}</button>
    </div>
   </section>
  }

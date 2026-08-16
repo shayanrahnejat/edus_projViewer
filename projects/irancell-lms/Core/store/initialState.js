@@ -11,6 +11,8 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
   catalogueById:{},
   contentIds:[],
   watchProgress:{},
+  progressByStudentId:{},
+  assignmentSubmissionsByStudentId:{},
   studentOneEnrollments:{},
   enrollmentsByUserId:{},
   requestsById:{},
@@ -56,6 +58,7 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
  const complaintStatuses=['submitted','reviewing','provider_response','resolved'];
  const supportStatuses=['open','waiting_support','needs_student_reply','resolved'];
  result.enrollmentsByUserId['student-1']={};
+ result.progressByStudentId['student-1']={};
 
  for(let index=1;index<=20;index+=1){
   const suffix=String(index).padStart(2,'0');
@@ -244,6 +247,9 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
   };
   result.contentIds.push(contentId);
   result.watchProgress[contentId]=progress;
+  result.progressByStudentId['student-1'][contentId]=progress;
+  result.progressByStudentId[studentId]={[contentId]:progress};
+  result.assignmentSubmissionsByStudentId[studentId]={};
   result.studentOneEnrollments[contentId]={
    id:`student-1:${contentId}`,
    userId:'student-1',
@@ -638,7 +644,7 @@ export const IRANCELL_INITIAL_STATE=Object.freeze({
   'content-physics-1':{id:'content-physics-1',title:'قانون دوم نیوتن با مثال',subject:'فیزیک',grade:'دهم',topic:'دینامیک',duration:960,rating:4.7,views:12100,level:'متوسط',provider:'آکادمی آینده روشن',instructor:'مهندس رضا شریفی',deliveryType:'video',price:980000,status:'published',description:'حل مرحله‌ای مسئله‌های نیرو و شتاب.'},
   'content-english-1':{id:'content-english-1',title:'زمان حال کامل بدون ابهام',subject:'زبان انگلیسی',grade:'یازدهم',topic:'Present Perfect',duration:840,rating:4.6,views:9400,level:'مقدماتی',provider:'استودیو آموزش نو',instructor:'استاد سارا احمدی',deliveryType:'video',price:760000,status:'published',description:'ساختار، کاربرد و تمرین کوتاه.'},
   ...IRANCELL_SEED_BULK_DATA.catalogueById
- },search:'',recommendations:['content-math-1','content-physics-1','content-english-1',...IRANCELL_SEED_BULK_DATA.contentIds],watchProgress:{'content-math-1':68,'content-physics-1':34,'content-english-1':100,...IRANCELL_SEED_BULK_DATA.watchProgress},ratings:{},enrollmentsByUserId:{
+ },search:'',recommendations:['content-math-1','content-physics-1','content-english-1',...IRANCELL_SEED_BULK_DATA.contentIds],watchProgress:{'content-math-1':68,'content-physics-1':34,'content-english-1':100,...IRANCELL_SEED_BULK_DATA.watchProgress},progressByStudentId:{...IRANCELL_SEED_BULK_DATA.progressByStudentId,'student-1':{'content-math-1':68,'content-physics-1':34,'content-english-1':100,...IRANCELL_SEED_BULK_DATA.progressByStudentId['student-1']}},assignmentSubmissionsByStudentId:{...IRANCELL_SEED_BULK_DATA.assignmentSubmissionsByStudentId},ratings:{},enrollmentsByUserId:{
   'student-1':{
    'content-math-1':{id:'student-1:content-math-1',userId:'student-1',contentId:'content-math-1',status:'active',deliveryType:'video',enrolledAt:new Date(IRANCELL_SEED_NOW.getTime()-8*86400000).toISOString()},
    'content-physics-1':{id:'student-1:content-physics-1',userId:'student-1',contentId:'content-physics-1',status:'active',deliveryType:'video',enrolledAt:new Date(IRANCELL_SEED_NOW.getTime()-5*86400000).toISOString()},

@@ -1,7 +1,7 @@
 export const IRANCELL_SCREEN_REGISTRY=Object.freeze({
   'splash':Object.freeze({screenId:'001',route:'splash',role:'public',component:IrancellIdentitySplashPage,navGroup:'public',permissions:[],analyticsScreenName:'splash'}),
   'onboarding':Object.freeze({screenId:'002',route:'onboarding',role:'public',component:IrancellIdentityOnboardingPage,navGroup:'public',permissions:[],analyticsScreenName:'onboarding'}),
-  'auth-login':Object.freeze({screenId:'003',route:'auth/login',role:'public',component:IrancellIdentityLoginPage,navGroup:'public',permissions:[],analyticsScreenName:'login'}),
+  'auth-login':Object.freeze({screenId:'003',route:'auth/login',role:'public',component:IrancellIdentityLoginPageInline,navGroup:'public',permissions:[],analyticsScreenName:'login'}),
   'auth-otp':Object.freeze({screenId:'004',route:'auth/otp',role:'public',component:IrancellIdentityOtpPage,navGroup:'public',permissions:[],analyticsScreenName:'otp'}),
   'role-select':Object.freeze({screenId:'005',route:'role-select',role:'public',component:IrancellIdentityRoleSelectPage,navGroup:'public',permissions:[],analyticsScreenName:'role_select'}),
   'profile-completion':Object.freeze({screenId:'006',route:'profile-completion',role:'shared',component:IrancellIdentityProfileCompletionPage,navGroup:'shared',permissions:['shared.read'],analyticsScreenName:'profile_completion'}),
@@ -56,6 +56,8 @@ export const IRANCELL_SCREEN_REGISTRY=Object.freeze({
   'student-chisti':Object.freeze({screenId:'064',route:'student/chisti',role:'student',component:IrancellStudentAskPage,fullBleed:true,navGroup:'student',permissions:['student.ask.create','student.chats.read'],analyticsScreenName:'student_chisti'}),
   'student-chisti-history':Object.freeze({screenId:'065',route:'student/chisti/history',role:'student',component:IrancellStudentChatsPage,fullBleed:true,navGroup:'student',permissions:['student.chats.read'],analyticsScreenName:'student_chisti_history'}),
   'student-binayi':Object.freeze({screenId:'066',route:'student/binayi',role:'student',component:IrancellStudentLearningPage,navGroup:'student',permissions:['student.content.read'],analyticsScreenName:'student_binayi'}),
+  'student-assignments':Object.freeze({screenId:'196',route:'student/assignments',role:'student',component:IrancellStudentLearningPage,fullBleed:true,navGroup:'student',permissions:['student.content.read'],analyticsScreenName:'student_assignments'}),
+  'student-statistics':Object.freeze({screenId:'197',route:'student/statistics',role:'student',component:IrancellStudentLearningPage,fullBleed:true,navGroup:'student',permissions:['student.content.read'],analyticsScreenName:'student_statistics'}),
   'student-binayi-course':Object.freeze({screenId:'067',route:'student/binayi/course/:id',role:'student',component:IrancellStudentContentDetailsPage,navGroup:'student',permissions:['student.content.read'],analyticsScreenName:'student_binayi_course'}),
   'student-class-providers':Object.freeze({screenId:'068',route:'student/classes/providers',role:'student',component:IrancellStudentTeachersPage,navGroup:'student',permissions:['student.providers.read'],analyticsScreenName:'student_class_providers'}),
   'student-notifications':Object.freeze({screenId:'069',route:'student/notifications',role:'student',component:IrancellSharedNotificationsPage,fullBleed:true,navGroup:'student',permissions:['shared.read'],analyticsScreenName:'student_notifications'}),

@@ -1,6 +1,8 @@
 export function IrancellStudentLearningPage({onNavigate,screen}){
  const{state,dispatch}=useIrancellStore();
  const route=screen?.route||'student/binayi';
+ const currentUserId=state.session.currentUserId;
+ const currentProgressMap=state.content.progressByStudentId?.[currentUserId]||{};
  const[search,setSearch]=useState('');
  const[activeCategory,setActiveCategory]=useState('all');
  const[showAllCourses,setShowAllCourses]=useState(false);
@@ -9,6 +11,9 @@ export function IrancellStudentLearningPage({onNavigate,screen}){
  const[courseFilterOpen,setCourseFilterOpen]=useState(false);
  const[courseTypeFilter,setCourseTypeFilter]=useState('all');
  const[courseStatusFilter,setCourseStatusFilter]=useState(route==='student/binayi/completed'?'completed':'all');
+ const[assignmentFilter,setAssignmentFilter]=useState('all');
+ const[selectedAnswers,setSelectedAnswers]=useState({});
+ const[submissionNotice,setSubmissionNotice]=useState('');
 
  const categories=[
   {id:'all',label:'همه'},
@@ -49,7 +54,7 @@ export function IrancellStudentLearningPage({onNavigate,screen}){
  const courseItems=showAllCourses?recommendedItems:recommendedItems.slice(0,4);
  const videoItems=showAllVideos?filteredItems:filteredItems.slice(0,4);
 
- const progressItems=Object.entries(state.content.watchProgress||{})
+ const progressItems=Object.entries(currentProgressMap)
   .map(([contentId,progress])=>({contentId,progress:Math.max(0,Math.min(100,Number(progress)||0)),content:state.content.catalogueById?.[contentId]}))
   .filter(item=>item.content&&item.progress>0&&item.progress<100);
 
@@ -125,16 +130,144 @@ export function IrancellStudentLearningPage({onNavigate,screen}){
   </span>
  }
 
+ if(route==='student/assignments'||route==='student/statistics'){
+  const font='"Vazirmatn", Tahoma, Arial, sans-serif';
+  const enrollmentMap=state.content.enrollmentsByUserId?.[currentUserId]||{};
+  const enrolledContents=Object.keys(enrollmentMap).map(contentId=>state.content.catalogueById?.[contentId]).filter(content=>content&&content.status==='published');
+  const submissionMap=state.content.assignmentSubmissionsByStudentId?.[currentUserId]||{};
+
+  function buildCourseAssignments(content){
+   const topic=content.topic||content.title;
+   return[
+    {id:`${content.id}:1`,contentId:content.id,assignmentIndex:1,title:`مرور مفهوم ${topic}`,question:`برای شروع یادگیری «${topic}» کدام روش مناسب‌تر است؟`,options:[`مرور تعریف و نکات اصلی ${topic}`,'حفظ کردن پاسخ بدون مطالعه','رد شدن از مثال‌های دوره','شروع از یک موضوع نامرتبط'],correctAnswer:0},
+    {id:`${content.id}:2`,contentId:content.id,assignmentIndex:2,title:`حل مسئله ${content.subject}`,question:'در حل یک مسئله درسی، ترتیب درست انجام کار کدام است؟',options:['نوشتن پاسخ نهایی و سپس حدس داده‌ها','مشخص کردن داده‌ها، انتخاب رابطه، حل و بررسی پاسخ','حذف واحدها و نوشتن عدد تصادفی','فقط مشاهده پاسخ دیگران'],correctAnswer:1},
+    {id:`${content.id}:3`,contentId:content.id,assignmentIndex:3,title:`ارزیابی پایانی ${content.title}`,question:'پس از پاسخ اشتباه، بهترین قدم بعدی چیست؟',options:['کنار گذاشتن کامل مبحث','تغییر پاسخ بدون بررسی','مرور اشتباه، بازبینی درس و حل تمرین مشابه','حذف سابقه تمرین'],correctAnswer:2}
+   ].map(item=>({...item,content}))
+  }
+
+  const assignments=enrolledContents.flatMap(buildCourseAssignments);
+  const filteredAssignments=assignments.filter(item=>{
+   const submission=submissionMap[item.id];
+   if(assignmentFilter==='pending')return!submission;
+   if(assignmentFilter==='graded')return Boolean(submission);
+   if(assignmentFilter==='correct')return Number(submission?.score)===100;
+   return true
+  });
+  const submissions=Object.values(submissionMap).filter(item=>enrollmentMap[item.contentId]);
+  const gradedCount=submissions.length;
+  const correctCount=submissions.filter(item=>Number(item.score)===100).length;
+  const averageScore=gradedCount?Math.round(submissions.reduce((sum,item)=>sum+(Number(item.score)||0),0)/gradedCount):0;
+  const progressValues=enrolledContents.map(content=>Math.max(0,Math.min(100,Number(currentProgressMap[content.id])||0)));
+  const averageProgress=progressValues.length?Math.round(progressValues.reduce((sum,value)=>sum+value,0)/progressValues.length):0;
+  const completedCourses=enrolledContents.filter(content=>Number(currentProgressMap[content.id])>=100).length;
+  const studentClasses=Object.values(state.classroom.sessionsById||{}).filter(item=>item.studentId===currentUserId);
+  const attendedClasses=studentClasses.filter(item=>Boolean(state.classroom.attendanceBySessionId?.[item.id]?.[currentUserId])).length;
+  const subjectGroups=enrolledContents.reduce((groups,content)=>{
+   const subject=content.subject||'عمومی';
+   const current=groups[subject]||{subject,courses:0,progressTotal:0,scores:[]};
+   current.courses+=1;
+   current.progressTotal+=Math.max(0,Math.min(100,Number(currentProgressMap[content.id])||0));
+   submissions.filter(item=>item.contentId===content.id).forEach(item=>current.scores.push(Number(item.score)||0));
+   groups[subject]=current;
+   return groups
+  },{});
+  const subjectRows=Object.values(subjectGroups).map(item=>({...item,progress:Math.round(item.progressTotal/Math.max(item.courses,1)),score:item.scores.length?Math.round(item.scores.reduce((sum,value)=>sum+value,0)/item.scores.length):0}));
+
+  function submitAssignment(assignment){
+   const selectedAnswer=selectedAnswers[assignment.id];
+   if(selectedAnswer===undefined||selectedAnswer==='')return;
+   const answerIndex=Number(selectedAnswer);
+   dispatch({
+    type:'IRANCELL_CONTENT_ASSIGNMENT_SUBMIT',
+    contentId:assignment.contentId,
+    assignmentIndex:assignment.assignmentIndex,
+    title:assignment.title,
+    question:assignment.question,
+    selectedAnswer:answerIndex,
+    answerLabel:assignment.options[answerIndex],
+    correctAnswer:assignment.correctAnswer
+   });
+   setSubmissionNotice(answerIndex===assignment.correctAnswer?'پاسخ درست ثبت شد و امتیاز کامل گرفتی.':'پاسخ ثبت شد. بازخورد را بخوان و دوباره تلاش کن.');
+  }
+
+  return <section dir="rtl" style={{boxSizing:'border-box',display:'flex',width:'100%',minWidth:0,minHeight:'100%',flexDirection:'column',gap:'17px',padding:'clamp(14px,3vw,28px)',direction:'rtl',color:'#202024',background:'#FFFAE0',fontFamily:font}}>
+   <IrancellPageHeader eyebrow="یادگیری دانش‌آموز" title={route==='student/assignments'?'تکالیف و تمرین‌ها':'آمار و عملکرد یادگیری'} description={route==='student/assignments'?'تمرین‌های دوره‌های ثبت‌نام‌شده را انجام بده، بازخورد فوری بگیر و امتیازت را بهتر کن.':'پیشرفت دوره‌ها، نمره تمرین‌ها و سابقه حضور در کلاس‌ها را یکجا ببین.'} actions={<IrancellButton variant="secondary" onClick={()=>onNavigate?.('student/binayi')}>بازگشت به دوره‌ها</IrancellButton>}/>
+
+   <nav aria-label="بخش‌های یادگیری" style={{display:'flex',width:'100%',minWidth:0,flexWrap:'wrap',gap:'8px',padding:'7px',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'16px',fontFamily:font}}>
+    <button type="button" onClick={()=>onNavigate?.('student/assignments')} style={{minHeight:'40px',padding:'8px 15px',cursor:'pointer',color:'#202024',background:route==='student/assignments'?'#FFD100':'transparent',border:route==='student/assignments'?'1px solid #E7BD00':'1px solid transparent',borderRadius:'11px',fontFamily:font,fontSize:'11px',fontWeight:900}}>تکالیف</button>
+    <button type="button" onClick={()=>onNavigate?.('student/statistics')} style={{minHeight:'40px',padding:'8px 15px',cursor:'pointer',color:'#202024',background:route==='student/statistics'?'#FFD100':'transparent',border:route==='student/statistics'?'1px solid #E7BD00':'1px solid transparent',borderRadius:'11px',fontFamily:font,fontSize:'11px',fontWeight:900}}>آمار یادگیری</button>
+    <button type="button" onClick={()=>onNavigate?.('student/binayi/my-courses')} style={{minHeight:'40px',padding:'8px 15px',cursor:'pointer',color:'#55565D',background:'transparent',border:'1px solid transparent',borderRadius:'11px',fontFamily:font,fontSize:'11px',fontWeight:800}}>دوره‌های من</button>
+   </nav>
+
+   <div style={{display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,170px),1fr))',gap:'11px'}}>
+    <IrancellStatCard label="دوره‌های من" value={IrancellFormatPersianNumber(enrolledContents.length)} icon={BookOpen}/>
+    <IrancellStatCard label="پیشرفت میانگین" value={`${IrancellFormatPersianNumber(averageProgress)}٪`} icon={TrendingUp}/>
+    <IrancellStatCard label="میانگین نمره" value={`${IrancellFormatPersianNumber(Math.round(averageScore/5))} از ۲۰`} icon={Activity}/>
+    <IrancellStatCard label="حضور در کلاس" value={`${IrancellFormatPersianNumber(attendedClasses)} از ${IrancellFormatPersianNumber(studentClasses.length)}`} icon={CalendarCheck}/>
+   </div>
+
+   {route==='student/assignments'?<>
+    <IrancellCard title="وضعیت تمرین‌ها" subtitle={`${IrancellFormatPersianNumber(gradedCount)} تمرین انجام‌شده و ${IrancellFormatPersianNumber(Math.max(0,assignments.length-gradedCount))} تمرین در انتظار`}>
+     <div style={{display:'flex',width:'100%',flexWrap:'wrap',gap:'7px'}}>
+      {[['all','همه'],['pending','در انتظار'],['graded','انجام‌شده'],['correct','پاسخ درست']].map(([id,label])=><button type="button" key={id} aria-pressed={assignmentFilter===id} onClick={()=>setAssignmentFilter(id)} style={{minHeight:'36px',padding:'7px 13px',cursor:'pointer',color:'#202024',background:assignmentFilter===id?'#FFD100':'#F5F5F6',border:assignmentFilter===id?'1px solid #E7BD00':'1px solid #E2E2E6',borderRadius:'999px',fontFamily:font,fontSize:'10px',fontWeight:900}}>{label}</button>)}
+     </div>
+     {submissionNotice&&<div role="status" style={{marginTop:'12px',padding:'11px 13px',color:'#21663D',background:'#E9F7EE',border:'1px solid #BFE6CC',borderRadius:'12px',fontFamily:font,fontSize:'11px',fontWeight:800}}>{submissionNotice}</div>}
+    </IrancellCard>
+
+    {filteredAssignments.length?<div style={{display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,320px),1fr))',alignItems:'start',gap:'13px'}}>
+     {filteredAssignments.map(assignment=>{
+      const submission=submissionMap[assignment.id]||null;
+      const selectedValue=selectedAnswers[assignment.id]===undefined?submission?.selectedAnswer??'':selectedAnswers[assignment.id];
+      return <IrancellCard key={assignment.id} title={assignment.title} subtitle={`${assignment.content.subject} · ${assignment.content.title}`} action={submission?<span style={{display:'inline-flex',padding:'5px 9px',color:Number(submission.score)===100?'#21663D':'#8A4C00',background:Number(submission.score)===100?'#E9F7EE':'#FFF3D6',borderRadius:'999px',fontFamily:font,fontSize:'10px',fontWeight:900}}>{IrancellFormatPersianNumber(Math.round(Number(submission.score)/5))} از ۲۰</span>:null}>
+       <p style={{margin:'0 0 13px',color:'#303036',fontFamily:font,fontSize:'12px',fontWeight:800,lineHeight:1.9}}>{assignment.question}</p>
+       <div role="radiogroup" aria-label={assignment.question} style={{display:'grid',gap:'8px'}}>
+        {assignment.options.map((option,index)=>{
+         const selected=Number(selectedValue)===index;
+         return <button type="button" role="radio" aria-checked={selected} key={option} onClick={()=>{setSelectedAnswers(current=>({...current,[assignment.id]:index}));setSubmissionNotice('')}} style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,minHeight:'44px',gridTemplateColumns:'24px minmax(0,1fr)',alignItems:'center',gap:'9px',padding:'9px 11px',cursor:'pointer',direction:'rtl',textAlign:'right',color:'#202024',background:selected?'#FFF8D1':'#FAFAFB',border:selected?'1px solid #FFD100':'1px solid #E5E5E8',borderRadius:'12px',fontFamily:font,fontSize:'11px',fontWeight:selected?900:600}}>
+          <span aria-hidden="true" style={{display:'grid',width:'20px',height:'20px',placeItems:'center',background:selected?'#FFD100':'#FFFFFF',border:selected?'1px solid #DDB500':'1px solid #CFCFD4',borderRadius:'50%',fontSize:'10px'}}>{selected?'✓':''}</span>
+          <span>{option}</span>
+         </button>
+        })}
+       </div>
+       {submission&&<div style={{marginTop:'11px',padding:'11px',color:Number(submission.score)===100?'#21663D':'#7A4D00',background:Number(submission.score)===100?'#E9F7EE':'#FFF5D9',borderRadius:'11px',fontFamily:font,fontSize:'10px',fontWeight:700,lineHeight:1.8}}>{submission.feedback} · تلاش {IrancellFormatPersianNumber(submission.attempts)}</div>}
+       <IrancellButton block style={{marginTop:'12px'}} disabled={selectedValue===''} onClick={()=>submitAssignment(assignment)}>{submission?'ثبت تلاش جدید':'ارسال پاسخ'}</IrancellButton>
+      </IrancellCard>
+     })}
+    </div>:<IrancellStatePanel state="empty" title={enrolledContents.length?'تمرینی با این فیلتر پیدا نشد':'هنوز در دوره‌ای ثبت‌نام نکرده‌ای'} description={enrolledContents.length?'فیلتر تمرین‌ها را تغییر بده.':'از بخش بینایی یک دوره را انتخاب و به دوره‌های خود اضافه کن.'} action={<IrancellButton onClick={()=>onNavigate?.('student/binayi')}>مشاهده دوره‌ها</IrancellButton>}/>}
+   </>:<>
+    <div style={{display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,340px),1fr))',gap:'14px'}}>
+     <IrancellCard title="خلاصه عملکرد" subtitle="محاسبه‌شده از فعالیت‌های واقعی حساب">
+      <div style={{display:'grid',gap:'12px'}}>
+       {[['پیشرفت دوره‌ها',averageProgress],['دقت پاسخ تمرین‌ها',gradedCount?Math.round((correctCount/gradedCount)*100):0],['دوره‌های تکمیل‌شده',enrolledContents.length?Math.round((completedCourses/enrolledContents.length)*100):0],['نرخ حضور در کلاس',studentClasses.length?Math.round((attendedClasses/studentClasses.length)*100):0]].map(([label,value])=><div key={label} style={{display:'grid',gap:'6px'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'10px',fontFamily:font,fontSize:'11px'}}><span>{label}</span><strong>{IrancellFormatPersianNumber(value)}٪</strong></div>
+        <div style={{height:'8px',overflow:'hidden',background:'#E9E9EC',borderRadius:'999px'}}><span style={{display:'block',width:`${value}%`,height:'100%',background:'#FFD100',borderRadius:'inherit'}}/></div>
+       </div>)}
+      </div>
+     </IrancellCard>
+
+     <IrancellCard title="عملکرد در درس‌ها" subtitle="پیشرفت و نمره به تفکیک موضوع">
+      <div style={{display:'grid',gap:'9px'}}>
+       {subjectRows.length?subjectRows.map(item=><article key={item.subject} style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) auto',alignItems:'center',gap:'11px',padding:'11px',background:'#FAFAFB',border:'1px solid #E7E7EA',borderRadius:'12px'}}>
+        <div style={{display:'flex',minWidth:0,flexDirection:'column',gap:'3px'}}><strong style={{fontFamily:font,fontSize:'12px'}}>{item.subject}</strong><small style={{color:'#777982',fontFamily:font,fontSize:'10px'}}>{IrancellFormatPersianNumber(item.courses)} دوره · پیشرفت {IrancellFormatPersianNumber(item.progress)}٪</small></div>
+        <span style={{display:'grid',minWidth:'54px',height:'38px',placeItems:'center',color:'#202024',background:'#FFF3AE',borderRadius:'11px',fontFamily:font,fontSize:'11px',fontWeight:900}}>{item.scores.length?`${IrancellFormatPersianNumber(Math.round(item.score/5))}/۲۰`:'—'}</span>
+       </article>):<IrancellStatePanel state="empty" title="آمار درسی آماده نیست" description="پس از ثبت‌نام در دوره‌ها، آمار هر درس اینجا نمایش داده می‌شود."/>}
+      </div>
+     </IrancellCard>
+    </div>
+   </>}
+  </section>
+ }
+
  if(route==='student/binayi/my-courses'||route==='student/binayi/completed'){
   const currentUserId=state.session.currentUserId;
   const enrollmentMap=state.content.enrollmentsByUserId?.[currentUserId]||{};
-  const progressedIds=Object.entries(state.content.watchProgress||{}).filter(([,progress])=>Number(progress)>0).map(([contentId])=>contentId);
+  const progressedIds=Object.entries(currentProgressMap).filter(([,progress])=>Number(progress)>0).map(([contentId])=>contentId);
   const myCourseIds=[...new Set([...Object.keys(enrollmentMap),...progressedIds])];
   const myCourseRows=myCourseIds.map(contentId=>{
    const content=state.content.catalogueById?.[contentId];
    if(!content||content.status!=='published')return null;
    const enrollment=enrollmentMap[contentId]||null;
-   const progress=Math.max(0,Math.min(100,Number(state.content.watchProgress?.[contentId])||0));
+   const progress=Math.max(0,Math.min(100,Number(currentProgressMap[contentId])||0));
    const kind=content.deliveryType||enrollment?.deliveryType||'video';
    return{content,progress,kind,meta:getMeta(content),enrollment}
   }).filter(Boolean);
@@ -272,6 +405,12 @@ export function IrancellStudentLearningPage({onNavigate,screen}){
   <nav className="ir-binayi-home__categories" aria-label="فیلتر موضوعی">
    {categories.map(category=><button type="button" key={category.id} className={activeCategory===category.id?'is-active':''} aria-pressed={activeCategory===category.id} onClick={()=>chooseCategory(category.id)}>{category.label}</button>)}
   </nav>
+
+  <section aria-label="مدیریت یادگیری" style={{boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,180px),1fr))',gap:'10px',padding:'0 16px'}}>
+   <button type="button" onClick={()=>onNavigate?.('student/binayi/my-courses')} style={{display:'flex',minHeight:'58px',alignItems:'center',justifyContent:'space-between',gap:'10px',padding:'12px 14px',cursor:'pointer',direction:'rtl',color:'#202024',background:'#FFFFFF',border:'1px solid #E7E2CC',borderRadius:'15px',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif',fontSize:'11px',fontWeight:900}}><span>دوره‌های من</span><span aria-hidden="true">←</span></button>
+   <button type="button" onClick={()=>onNavigate?.('student/assignments')} style={{display:'flex',minHeight:'58px',alignItems:'center',justifyContent:'space-between',gap:'10px',padding:'12px 14px',cursor:'pointer',direction:'rtl',color:'#202024',background:'#FFF3AE',border:'1px solid #E8CF5B',borderRadius:'15px',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif',fontSize:'11px',fontWeight:900}}><span>تکالیف و تمرین‌ها</span><span aria-hidden="true">←</span></button>
+   <button type="button" onClick={()=>onNavigate?.('student/statistics')} style={{display:'flex',minHeight:'58px',alignItems:'center',justifyContent:'space-between',gap:'10px',padding:'12px 14px',cursor:'pointer',direction:'rtl',color:'#FFFFFF',background:'#202024',border:'1px solid #202024',borderRadius:'15px',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif',fontSize:'11px',fontWeight:900}}><span>آمار و نمره‌ها</span><span aria-hidden="true">←</span></button>
+  </section>
 
   <section className="ir-binayi-home__section" aria-labelledby="irancell-binayi-courses-title">
    <header className="ir-binayi-home__section-heading">

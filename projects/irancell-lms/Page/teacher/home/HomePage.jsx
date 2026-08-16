@@ -25,7 +25,7 @@ export function IrancellTeacherHomePage({params,onNavigate}){
  if(loadError)return <section className="ir-tutor-dashboard"><IrancellStatePanel state="error" title="خطا در بارگذاری داشبورد" description="اطلاعات مدرس بارگذاری نشد. اتصال اینترنت را بررسی کنید و دوباره تلاش کنید." action={<IrancellButton onClick={()=>onNavigate?.('teacher/home')}>تلاش مجدد</IrancellButton>}/></section>;
 
  if(loading)return <section className="ir-tutor-dashboard is-loading">
-  <header className="ir-tutor-dashboard__header"><span className="ir-tutor-skeleton is-avatar"/><div><span className="ir-tutor-skeleton is-title"/><span className="ir-tutor-skeleton is-copy"/></div></header>
+  <header className="ir-tutor-dashboard__header" style={{boxSizing:'border-box',width:'100%',minWidth:0,maxWidth:'none',marginInline:0}}><span className="ir-tutor-skeleton is-avatar"/><div><span className="ir-tutor-skeleton is-title"/><span className="ir-tutor-skeleton is-copy"/></div></header>
   <div className="ir-tutor-skeleton is-banner"/>
   <div className="ir-tutor-dashboard__stats">{[1,2,3,4].map(item=><span className="ir-tutor-skeleton is-stat" key={item}/>)}</div>
   <span className="ir-tutor-skeleton is-section"/>
@@ -34,7 +34,7 @@ export function IrancellTeacherHomePage({params,onNavigate}){
   <span className="ir-tutor-skeleton is-card"/>
  </section>;
 
- return <section className={`ir-tutor-dashboard${isNewTutor?' is-new-tutor':''}`}>
+ return <section data-ir-teacher-dashboard-inline="true" data-profile-state={isNewTutor?'incomplete':'ready'} dir="rtl" style={{boxSizing:'border-box',display:'block',width:'100%',minWidth:0,maxWidth:'none',minHeight:'100%',margin:0,padding:'0 clamp(16px,4vw,30px) 48px',overflow:'visible',direction:'rtl',color:'#202024',background:'#FFF9DF',fontFamily:'"Vazirmatn", Tahoma, Arial, sans-serif'}}>
   {isNewTutor&&<aside className="ir-tutor-dashboard__activation-alert">پروفایل شما ناقص است؛ لطفاً جهت فعال‌سازی تدریس اقدام کنید</aside>}
 
   <header className="ir-tutor-dashboard__header">

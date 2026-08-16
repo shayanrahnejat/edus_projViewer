@@ -41,6 +41,7 @@ import {
   IrancellContentProviderPayoutsPage,
   IrancellContentProviderProfilePage,
   IrancellContentProviderUploadPage,
+  IrancellIdentityLoginPageInline,
   IrancellIdentityLoginPage,
   IrancellIdentityOnboardingPage,
   IrancellIdentityOtpPage,

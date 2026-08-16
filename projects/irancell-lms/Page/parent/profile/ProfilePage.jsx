@@ -10,251 +10,109 @@ export function IrancellParentProfilePage({params,onNavigate,screen}){
  const children=relationships.map(item=>state.identity.usersById[item.childId]).filter(Boolean);
  const[selectedChildId,setSelectedChildId]=useState(params?.child||children[0]?.id||'');
  const[profileForm,setProfileForm]=useState({name:parent?.name||'',mobile:parent?.mobile||'',emergencyMobile:profile.emergencyMobile||'',email:profile.email||'',address:profile.address||'',city:profile.city||'',province:profile.province||''});
+ const[profileError,setProfileError]=useState('');
  const[controlDraft,setControlDraft]=useState(()=>({...family.controlsByChildId?.[params?.child||children[0]?.id]||{}}));
+ const[controlSaved,setControlSaved]=useState(false);
  const[notificationFilter,setNotificationFilter]=useState('all');
  const[selectedNotificationId,setSelectedNotificationId]=useState('');
  const[guardianInviteOpen,setGuardianInviteOpen]=useState(false);
  const[guardianInviteForm,setGuardianInviteForm]=useState({name:profile.secondaryGuardianName||'',mobile:profile.secondaryGuardianMobile||''});
+ const[guardianError,setGuardianError]=useState('');
  const[securityPanel,setSecurityPanel]=useState('');
  const[passwordForm,setPasswordForm]=useState({password:'',confirmation:''});
  const[passwordError,setPasswordError]=useState('');
  const notifications=Object.values(family.notificationItemsById||{}).filter(item=>item.parentId===parentId).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
  const unreadCount=notifications.filter(item=>!item.read).length;
  const importantCount=notifications.filter(item=>item.importance==='important').length;
+ const consentDocuments=Object.values(state.consent.documentsById||{}).filter(item=>item.parentId===parentId);
+ const font='"Vazirmatn", Tahoma, Arial, sans-serif';
+ const grid={display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,250px),1fr))',gap:'13px'};
+ const rowStyle={boxSizing:'border-box',display:'grid',width:'100%',minWidth:0,gridTemplateColumns:'48px minmax(0,1fr) auto',alignItems:'center',gap:'12px',padding:'14px',textAlign:'right',color:'#202024',background:'#FFFDF2',border:'1px solid #E8E1C7',borderRadius:'16px',fontFamily:font};
+ const iconStyle={display:'grid',width:'48px',height:'48px',placeItems:'center',color:'#202024',background:'#FFF3AE',borderRadius:'15px'};
 
- useEffect(function IrancellParentProfileSyncControls(){
-  if(!selectedChildId)return;
-  setControlDraft({...family.controlsByChildId?.[selectedChildId]||{}})
- },[selectedChildId]);
+ useEffect(function IrancellParentProfileSyncControls(){if(!selectedChildId)return;setControlDraft({...family.controlsByChildId?.[selectedChildId]||{}});setControlSaved(false)},[selectedChildId]);
 
  function saveProfile(){
-  dispatch({type:'IRANCELL_PARENT_PROFILE_UPDATE',profile:profileForm});
-  onNavigate?.('parent/profile')
+  const mobile=String(profileForm.mobile||'').replace(/\D/g,'');
+  if(!profileForm.name.trim()){setProfileError('نام سرپرست را وارد کنید.');return}
+  if(!/^09\d{9}$/.test(mobile)){setProfileError('شماره تماس اصلی معتبر نیست.');return}
+  dispatch({type:'IRANCELL_PARENT_PROFILE_UPDATE',profile:{...profileForm,mobile}});onNavigate?.('parent/profile')
  }
-
- function saveControls(){
-  if(!selectedChildId)return;
-  dispatch({type:'IRANCELL_PARENT_UPDATE_CONTROLS',childId:selectedChildId,controls:controlDraft})
- }
-
- function toggleControl(key){
-  setControlDraft(current=>({...current,[key]:!current[key]}))
- }
-
- function updateSecurity(patch){
-  dispatch({type:'IRANCELL_PARENT_SECURITY_UPDATE',security:patch})
- }
-
+ function saveControls(){if(!selectedChildId)return;dispatch({type:'IRANCELL_PARENT_UPDATE_CONTROLS',childId:selectedChildId,controls:controlDraft});setControlSaved(true)}
+ function toggleControl(key){setControlSaved(false);setControlDraft(current=>({...current,[key]:!current[key]}))}
+ function updateSecurity(patch){dispatch({type:'IRANCELL_PARENT_SECURITY_UPDATE',security:patch})}
  function submitGuardianInvite(event){
   event.preventDefault();
   const name=String(guardianInviteForm.name||'').trim(),mobile=String(guardianInviteForm.mobile||'').replace(/\D/g,'');
-  if(!name||!/^09\d{9}$/.test(mobile))return;
-  dispatch({type:'IRANCELL_PARENT_GUARDIAN_INVITE',name,mobile});
-  setGuardianInviteOpen(false)
+  if(!name){setGuardianError('نام سرپرست را وارد کنید.');return}
+  if(!/^09\d{9}$/.test(mobile)){setGuardianError('شماره موبایل سرپرست معتبر نیست.');return}
+  dispatch({type:'IRANCELL_PARENT_GUARDIAN_INVITE',name,mobile});setGuardianInviteOpen(false);setGuardianError('')
  }
-
  function submitPasswordUpdate(event){
   event.preventDefault();
   if(String(passwordForm.password||'').length<6){setPasswordError('رمز عبور باید حداقل ۶ کاراکتر باشد.');return}
   if(passwordForm.password!==passwordForm.confirmation){setPasswordError('تکرار رمز عبور با رمز جدید یکسان نیست.');return}
-  updateSecurity({passwordActive:true,passwordUpdatedAt:new Date().toISOString()});
-  setPasswordForm({password:'',confirmation:''});
-  setPasswordError('');
-  setSecurityPanel('')
+  updateSecurity({passwordActive:true,passwordUpdatedAt:new Date().toISOString()});setPasswordForm({password:'',confirmation:''});setPasswordError('');setSecurityPanel('')
  }
+ function openNotification(item){if(!item.read)dispatch({type:'IRANCELL_PARENT_NOTIFICATION_READ',notificationId:item.id});setSelectedNotificationId(item.id)}
+ function page(title,subtitle,content,actions){return <IrancellPageScaffold title={title} subtitle={subtitle} onBack={()=>onNavigate?.('parent/profile')} actions={actions}>{content}</IrancellPageScaffold>}
+ function menuButton({label,description,Icon,onClick,badge}){return <button type="button" onClick={onClick} style={{...rowStyle,cursor:'pointer'}}><span style={iconStyle}><Icon size={22}/></span><span style={{display:'flex',minWidth:0,flexDirection:'column',gap:'3px'}}><strong style={{fontSize:'13px',fontWeight:900}}>{label}</strong><small style={{color:'#777982',fontSize:'10px',lineHeight:1.7}}>{description}</small></span><span style={{display:'flex',alignItems:'center',gap:'8px'}}>{badge&&<b style={{display:'grid',minWidth:'24px',height:'24px',placeItems:'center',padding:'0 6px',background:'#FFD100',borderRadius:'999px',fontSize:'9px'}}>{badge}</b>}<ArrowLeft size={18}/></span></button>}
+ function securityButton({label,Icon,value,onClick,danger=false}){return <button type="button" onClick={onClick} style={{...rowStyle,cursor:'pointer',color:danger?'#A12626':'#202024',background:danger?'#FFF0F0':'#FFFDF2',borderColor:danger?'#F1C7C7':'#E8E1C7'}}><span style={{...iconStyle,background:danger?'#FFDADA':'#FFF3AE'}}><Icon size={21}/></span><strong style={{fontSize:'12px',fontWeight:900}}>{label}</strong><b style={{color:value==='فعال'?'#21663D':'#777982',fontSize:'10px'}}>{value||<ArrowLeft size={18}/>}</b></button>}
 
- function openNotification(item){
-  if(!item.read)dispatch({type:'IRANCELL_PARENT_NOTIFICATION_READ',notificationId:item.id});
-  setSelectedNotificationId(item.id)
- }
+ if(!parent)return <IrancellPageScaffold><IrancellStatePanel state="error" title="حساب خانواده پیدا نشد" description="اطلاعات هویتی این حساب در دسترس نیست."/></IrancellPageScaffold>;
 
- function familyHeader(title,description,backRoute='parent/profile'){
-  return <header className="ir-family-settings-header">
-   <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.(backRoute)}>←</button>
-   <div><h1>{title}</h1><p>{description}</p></div>
-  </header>
- }
+ if(route==='parent/profile/account')return page('اطلاعات حساب خانواده','اطلاعات اصلی و راه‌های ارتباطی سرپرست',<>
+  <IrancellCard style={{marginBottom:'15px'}}><div style={{display:'flex',minWidth:0,flexWrap:'wrap',alignItems:'center',gap:'14px'}}><span style={{display:'grid',width:'68px',height:'68px',placeItems:'center',flex:'0 0 68px',background:'#FFD100',borderRadius:'22px',fontSize:'25px',fontWeight:900}}>{String(parent.name||'خ').trim().charAt(0)}</span><div style={{minWidth:0,flex:'1 1 200px'}}><h2 style={{margin:0,fontSize:'18px',fontWeight:900}}>{parent.name}</h2><p style={{margin:'4px 0 0',color:'#777982',fontSize:'11px'}}>سرپرست اصلی · حساب تأییدشده</p></div><ShieldCheck size={24} color="#21663D"/></div></IrancellCard>
+  <IrancellCard title="ویرایش اطلاعات"><IrancellForm><div style={grid}><IrancellInput label="نام و نام خانوادگی سرپرست" value={profileForm.name} onChange={event=>{setProfileForm(current=>({...current,name:event.target.value}));setProfileError('')}}/><IrancellInput label="شماره تماس اصلی" type="tel" dir="ltr" inputMode="numeric" value={profileForm.mobile} onChange={event=>{setProfileForm(current=>({...current,mobile:event.target.value.replace(/\D/g,'').slice(0,11)}));setProfileError('')}}/><IrancellInput label="شماره تماس اضطراری" type="tel" dir="ltr" inputMode="numeric" value={profileForm.emergencyMobile} onChange={event=>setProfileForm(current=>({...current,emergencyMobile:event.target.value.replace(/\D/g,'').slice(0,11)}))}/><IrancellInput label="ایمیل" type="email" dir="ltr" value={profileForm.email} onChange={event=>setProfileForm(current=>({...current,email:event.target.value}))}/><IrancellInput label="شهر" value={profileForm.city} onChange={event=>setProfileForm(current=>({...current,city:event.target.value}))}/><IrancellInput label="استان" value={profileForm.province} onChange={event=>setProfileForm(current=>({...current,province:event.target.value}))}/></div><IrancellInput label="آدرس محل سکونت" value={profileForm.address} onChange={event=>setProfileForm(current=>({...current,address:event.target.value}))}/>{profileError&&<p role="alert" style={{margin:0,padding:'10px 12px',color:'#A12626',background:'#FFF0F0',borderRadius:'12px',fontSize:'11px',fontWeight:800}}>{profileError}</p>}<div style={{display:'flex',flexWrap:'wrap',gap:'9px'}}><IrancellButton onClick={saveProfile}>ذخیره تغییرات</IrancellButton><IrancellButton variant="secondary" onClick={()=>onNavigate?.('parent/profile')}>انصراف</IrancellButton></div></IrancellForm></IrancellCard>
+ </>);
 
- if(!parent)return <IrancellStatePanel state="error" title="حساب خانواده پیدا نشد" description="اطلاعات هویتی این حساب در دسترس نیست."/>;
-
- if(route==='parent/profile/account'){
-  return <section className="ir-family-settings-page">
-   {familyHeader('اطلاعات حساب خانواده','مدیریت اطلاعات اصلی خانواده و شماره‌های تماس')}
-   <article className="ir-family-account-card">
-    <span>{String(parent.name||'خ').trim().charAt(0)}</span>
-    <div><h2>{parent.name}</h2><p>سرپرست خانواده</p></div>
-    <dl><div><dt>شماره موبایل</dt><dd dir="ltr">{parent.mobile}</dd></div><div><dt>کد ملی</dt><dd>{profile.nationalIdMasked||'ثبت شده'}</dd></div><div><dt>ایمیل</dt><dd>{profile.email||'ثبت نشده'}</dd></div></dl>
-   </article>
-
-   <section className="ir-family-account-form">
-    <label><span>نام و نام خانوادگی سرپرست</span><input value={profileForm.name} onChange={event=>setProfileForm(current=>({...current,name:event.target.value}))}/></label>
-    <label><span>شماره تماس اصلی</span><input type="tel" dir="ltr" value={profileForm.mobile} onChange={event=>setProfileForm(current=>({...current,mobile:event.target.value}))}/></label>
-    <label><span>شماره تماس اضطراری</span><input type="tel" dir="ltr" value={profileForm.emergencyMobile} onChange={event=>setProfileForm(current=>({...current,emergencyMobile:event.target.value}))} placeholder="وارد کنید..."/></label>
-    <label><span>ایمیل</span><input type="email" dir="ltr" value={profileForm.email} onChange={event=>setProfileForm(current=>({...current,email:event.target.value}))}/></label>
-    <label><span>آدرس محل سکونت</span><input value={profileForm.address} onChange={event=>setProfileForm(current=>({...current,address:event.target.value}))}/></label>
-    <label><span>شهر و استان</span><input value={profileForm.city} onChange={event=>setProfileForm(current=>({...current,city:event.target.value,province:event.target.value}))}/></label>
-   </section>
-
-   <button type="button" className="ir-family-settings-primary" onClick={saveProfile}>ذخیره تغییرات</button>
-   <button type="button" className="ir-family-settings-cancel" onClick={()=>onNavigate?.('parent/profile')}>لغو تغییرات</button>
-  </section>
- }
-
- if(route==='parent/profile/permissions'){
-  return <section className="ir-family-settings-page">
-   {familyHeader('مجوزها و امضایی','مدیریت مجوزهای والدین، فرزندان و رضایت‌نامه‌ها')}
-   <section className="ir-family-permissions-card">
-    <h2>والدین و سرپرستان مجاز</h2>
-    <article><span>♙</span><div><strong>{parent.name} (سرپرست اصلی)</strong><small>حساب خانواده</small></div><b>تأیید شده</b></article>
-    <article><span>♙</span><div><strong>{profile.secondaryGuardianName||'سرپرست دوم'}</strong><small>{profile.secondaryGuardianMobile||'والد دوم'}</small></div><b className="is-pending">{profile.secondaryGuardianStatus==='pending'?'در انتظار تأیید':profile.secondaryGuardianName?'تأیید شده':'ثبت نشده'}</b></article>
-    <button type="button" onClick={()=>setGuardianInviteOpen(true)}>افزودن والد یا سرپرست</button>
-   </section>
-
-   <section className="ir-family-permissions-card">
-    <h2>فرزندان متصل به حساب</h2>
-    {children.map(child=><article key={child.id}><span>{String(child.name||'د').trim().charAt(0)}</span><div><strong>{child.name}</strong><small>{child.grade}</small></div><b>فعال</b></article>)}
-   </section>
-
-   <section className="ir-family-permissions-card">
-    <h2>رضایت‌نامه‌ها</h2>
-    <article><div><strong>رضایت‌نامه کلاس آنلاین</strong></div><b>امضا شده</b></article>
-    <article><div><strong>رضایت‌نامه پرداخت و رزرو</strong></div><b className="is-pending">نیازمند بررسی</b></article>
-    <article><div><strong>استفاده از خدمات هوش مصنوعی</strong></div><b>فعال</b></article>
-    <button type="button" className="is-link" onClick={()=>onNavigate?.('parent/consents')}>مشاهده و مدیریت رضایت‌نامه‌ها</button>
-   </section>
-
-   {guardianInviteOpen&&<div className="ir-family-form-overlay" onMouseDown={()=>setGuardianInviteOpen(false)}>
-    <form className="ir-family-form-sheet" onSubmit={submitGuardianInvite} onMouseDown={event=>event.stopPropagation()}>
-     <span className="ir-family-form-sheet__handle"/>
-     <header><h2>افزودن والد یا سرپرست</h2><button type="button" onClick={()=>setGuardianInviteOpen(false)}>×</button></header>
-     <label><span>نام و نام خانوادگی</span><input value={guardianInviteForm.name} onChange={event=>setGuardianInviteForm(current=>({...current,name:event.target.value}))} placeholder="نام سرپرست"/></label>
-     <label><span>شماره موبایل</span><input type="tel" dir="ltr" inputMode="numeric" value={guardianInviteForm.mobile} onChange={event=>setGuardianInviteForm(current=>({...current,mobile:event.target.value.replace(/\D/g,'').slice(0,11)}))} placeholder="09xxxxxxxxx"/></label>
-     <button type="submit" disabled={!guardianInviteForm.name.trim()||!/^09\d{9}$/.test(guardianInviteForm.mobile)}>ارسال دعوت‌نامه</button>
-    </form>
-   </div>}
-  </section>
- }
+ if(route==='parent/profile/permissions')return page('مجوزها و رضایت‌نامه‌ها','سرپرستان مجاز، فرزندان متصل و وضعیت اسناد خانواده',<>
+  <div style={grid}>
+   <IrancellCard title="والدین و سرپرستان" action={<IrancellButton size="sm" onClick={()=>setGuardianInviteOpen(true)}>افزودن سرپرست</IrancellButton>}><div style={{display:'grid',gap:'9px'}}><article style={rowStyle}><span style={iconStyle}><UserRound size={21}/></span><span><strong style={{display:'block',fontSize:'12px'}}>{parent.name}</strong><small style={{color:'#777982',fontSize:'10px'}}>سرپرست اصلی</small></span><b style={{color:'#21663D',fontSize:'10px'}}>تأییدشده</b></article><article style={rowStyle}><span style={{...iconStyle,background:'#F1F1F3'}}><UserRound size={21}/></span><span><strong style={{display:'block',fontSize:'12px'}}>{profile.secondaryGuardianName||'سرپرست دوم'}</strong><small dir="ltr" style={{color:'#777982',fontSize:'10px'}}>{profile.secondaryGuardianMobile||'ثبت نشده'}</small></span><b style={{color:profile.secondaryGuardianStatus==='pending'?'#765F00':'#777982',fontSize:'10px'}}>{profile.secondaryGuardianStatus==='pending'?'در انتظار':'ثبت نشده'}</b></article></div></IrancellCard>
+   <IrancellCard title="فرزندان متصل"><div style={{display:'grid',gap:'9px'}}>{children.map(child=><button type="button" key={child.id} onClick={()=>onNavigate?.(`parent/children/${child.id}`)} style={{...rowStyle,cursor:'pointer'}}><span style={iconStyle}><GraduationCap size={21}/></span><span><strong style={{display:'block',fontSize:'12px'}}>{child.name}</strong><small style={{color:'#777982',fontSize:'10px'}}>{child.grade}</small></span><b style={{color:'#21663D',fontSize:'10px'}}>فعال</b></button>)}</div></IrancellCard>
+  </div>
+  <IrancellCard title="وضعیت رضایت‌نامه‌ها" style={{marginTop:'15px'}}><div style={grid}><IrancellStatCard icon={ShieldCheck} label="کل اسناد" value={IrancellFormatPersianNumber(consentDocuments.length)}/><IrancellStatCard icon={CheckCircle2} label="امضاشده" value={IrancellFormatPersianNumber(consentDocuments.filter(item=>item.status==='signed').length)} tone="success"/><IrancellStatCard icon={Activity} label="نیازمند اقدام" value={IrancellFormatPersianNumber(consentDocuments.filter(item=>item.status!=='signed'&&new Date(item.expiresAt)>new Date()).length)} tone="warning"/></div><IrancellButton style={{marginTop:'14px'}} onClick={()=>onNavigate?.('parent/consents')}>مدیریت رضایت‌نامه‌ها</IrancellButton></IrancellCard>
+  <IrancellModal open={guardianInviteOpen} title="افزودن والد یا سرپرست" variant="sheet" onClose={()=>{setGuardianInviteOpen(false);setGuardianError('')}} actions={<><IrancellButton variant="secondary" onClick={()=>setGuardianInviteOpen(false)}>انصراف</IrancellButton><IrancellButton onClick={submitGuardianInvite}>ارسال دعوت‌نامه</IrancellButton></>}><IrancellForm onSubmit={submitGuardianInvite}><IrancellInput label="نام و نام خانوادگی" value={guardianInviteForm.name} onChange={event=>{setGuardianInviteForm(current=>({...current,name:event.target.value}));setGuardianError('')}} placeholder="نام سرپرست"/><IrancellInput label="شماره موبایل" type="tel" dir="ltr" inputMode="numeric" value={guardianInviteForm.mobile} onChange={event=>{setGuardianInviteForm(current=>({...current,mobile:event.target.value.replace(/\D/g,'').slice(0,11)}));setGuardianError('')}} placeholder="09xxxxxxxxx" error={guardianError}/><button type="submit" style={{position:'absolute',width:'1px',height:'1px',overflow:'hidden',clipPath:'inset(50%)'}}>ارسال</button></IrancellForm></IrancellModal>
+ </>);
 
  if(route==='parent/profile/family-control'){
   const activeChild=children.find(child=>child.id===selectedChildId)||children[0]||null;
-  return <section className="ir-family-settings-page">
-   {familyHeader('کنترل خانواده','مدیریت دسترسی‌ها و محدودیت‌های فرزندان')}
-   <div className="ir-family-control-tabs">{children.map(child=><button type="button" key={child.id} className={selectedChildId===child.id?'is-active':''} onClick={()=>setSelectedChildId(child.id)}>{child.name}</button>)}</div>
-
-   {activeChild&&<section className="ir-family-control-card">
-    <h2>دسترسی‌ها</h2>
-    {[
-     ['onlineClass','دسترسی به کلاس آنلاین'],
-     ['recordedContent','دسترسی به محتوای ضبط‌شده'],
-     ['askTeacher','امکان ارسال سؤال به معلم'],
-     ['directPayment','امکان پرداخت مستقیم'],
-     ['parentApprovalForClass','نیاز به تأیید والد برای رزرو کلاس'],
-     ['parentApprovalForPanelExit','خروج از پنل با تأیید والد']
-    ].map(([key,label])=><article key={key}><span>{label}</span><button type="button" role="switch" aria-checked={Boolean(controlDraft[key])} className={controlDraft[key]?'is-on':''} onClick={()=>toggleControl(key)}><i/></button></article>)}
-   </section>}
-
-   <section className="ir-family-control-time">
-    <h2>محدودیت زمانی</h2>
-    <div><span>ساعت مجاز استفاده روزانه:</span><strong>{IrancellFormatPersianNumber(controlDraft.dailyHours||2)} ساعت</strong></div>
-    <div><span>بازه مجاز:</span><strong>{controlDraft.allowedFrom||'16:00'} تا {controlDraft.allowedTo||'20:00'}</strong></div>
-    <label><span>از</span><input type="time" value={controlDraft.allowedFrom||'16:00'} onChange={event=>setControlDraft(current=>({...current,allowedFrom:event.target.value}))}/></label>
-    <label><span>تا</span><input type="time" value={controlDraft.allowedTo||'20:00'} onChange={event=>setControlDraft(current=>({...current,allowedTo:event.target.value}))}/></label>
-   </section>
-
-   <button type="button" className="ir-family-settings-primary" onClick={saveControls}>ذخیره تنظیمات کنترل خانواده</button>
-  </section>
+  return page('کنترل خانواده','دسترسی‌ها و محدودیت زمانی هر دانش‌آموز',<>
+   {children.length?<IrancellFilterTabs ariaLabel="انتخاب دانش‌آموز" value={activeChild?.id} onChange={setSelectedChildId} items={children.map(child=>({id:child.id,label:child.name}))}/>:null}
+   {!activeChild?<IrancellStatePanel state="empty" title="دانش‌آموزی متصل نیست" description="برای فعال‌کردن کنترل خانواده ابتدا دانش‌آموزی اضافه کنید." action={<IrancellButton onClick={()=>onNavigate?.('parent/children',{add:'1'})}>افزودن دانش‌آموز</IrancellButton>}/>:<>
+    <IrancellCard title={`دسترسی‌های ${activeChild.name}`} style={{marginTop:'15px'}}><div style={{display:'grid'}}>{[
+     ['onlineClass','دسترسی به کلاس آنلاین','اجازه ورود به جلسات زنده'],['recordedContent','دسترسی به محتوای ضبط‌شده','ویدیوها و دوره‌های خریداری‌شده'],['askTeacher','امکان ارسال سؤال به معلم','ارتباط آموزشی در فضای امن'],['directPayment','امکان پرداخت مستقیم','خرید بدون تأیید جداگانه والد'],['parentApprovalForClass','تأیید والد برای رزرو کلاس','رزرو پس از تأیید سرپرست نهایی می‌شود'],['parentApprovalForPanelExit','تأیید والد برای خروج از پنل','بازگشت به حساب خانواده با کنترل امن']
+    ].map(([key,label,description])=>{const checked=Boolean(controlDraft[key]);return <div key={key} style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) 52px',alignItems:'center',gap:'12px',padding:'13px 0',borderBottom:'1px solid #EEE9D4'}}><span><strong style={{display:'block',fontSize:'12px',fontWeight:900}}>{label}</strong><small style={{color:'#777982',fontSize:'10px'}}>{description}</small></span><button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={()=>toggleControl(key)} style={{position:'relative',width:'52px',height:'30px',padding:'3px',cursor:'pointer',background:checked?'#FFD100':'#D8D8DD',border:`1px solid ${checked?'#E7BD00':'#C8C9CE'}`,borderRadius:'999px'}}><span style={{position:'absolute',top:'4px',right:checked?'26px':'4px',width:'20px',height:'20px',background:'#FFFFFF',borderRadius:'50%',boxShadow:'0 2px 6px rgba(0,0,0,.18)',transition:'right .18s ease'}}/></button></div>})}</div></IrancellCard>
+    <IrancellCard title="محدودیت زمانی روزانه" subtitle="بازه مجاز استفاده در حساب دانش‌آموز" style={{marginTop:'15px'}}><div style={grid}><IrancellInput label="ساعت مجاز در روز" type="number" min="1" max="8" value={controlDraft.dailyHours||2} onChange={event=>{setControlSaved(false);setControlDraft(current=>({...current,dailyHours:Math.max(1,Math.min(8,Number(event.target.value)||1))}))}}/><IrancellInput label="شروع بازه مجاز" type="time" dir="ltr" value={controlDraft.allowedFrom||'16:00'} onChange={event=>{setControlSaved(false);setControlDraft(current=>({...current,allowedFrom:event.target.value}))}}/><IrancellInput label="پایان بازه مجاز" type="time" dir="ltr" value={controlDraft.allowedTo||'20:00'} onChange={event=>{setControlSaved(false);setControlDraft(current=>({...current,allowedTo:event.target.value}))}}/></div></IrancellCard>
+    {controlSaved&&<p role="status" style={{margin:'12px 0 0',padding:'11px 13px',color:'#21663D',background:'#E9F7EE',border:'1px solid #BFE5CC',borderRadius:'13px',fontSize:'11px',fontWeight:800}}>تنظیمات {activeChild.name} ذخیره شد.</p>}
+    <IrancellButton style={{marginTop:'14px'}} onClick={saveControls}>ذخیره تنظیمات کنترل خانواده</IrancellButton>
+   </>}
+  </>)
  }
 
- if(route==='parent/profile/security'){
-  return <section className="ir-family-settings-page">
-   {familyHeader('امنیت حساب','رمز عبور، ورود امن و نشست‌های فعال')}
-   <section className="ir-family-security-status">
-    <span>⬡</span><div><h2>وضعیت امنیت حساب: خوب</h2><p>✓ شماره موبایل تأیید شده</p><p>✓ Face ID {security.faceIdActive?'فعال':'غیرفعال'}</p><p>✓ رمز عبور فعال</p></div>
-   </section>
-   <div className="ir-family-security-list">
-    <button type="button" onClick={()=>setSecurityPanel('password')}><span>●</span><strong>تغییر رمز عبور</strong><b>‹</b></button>
-    <button type="button" onClick={()=>updateSecurity({pinActive:!security.pinActive})}><span>▦</span><strong>مدیریت PIN</strong><b>{security.pinActive?'فعال':'غیرفعال'}</b></button>
-    <button type="button" onClick={()=>updateSecurity({faceIdActive:!security.faceIdActive})}><span>◎</span><strong>فعال‌سازی Face ID</strong><b>{security.faceIdActive?'فعال':'غیرفعال'}</b></button>
-    <button type="button" onClick={()=>updateSecurity({fingerprintActive:!security.fingerprintActive})}><span>◉</span><strong>فعال‌سازی اثر انگشت</strong><b>{security.fingerprintActive?'فعال':'غیرفعال'}</b></button>
-    <button type="button" onClick={()=>setSecurityPanel('devices')}><span>▯</span><strong>دستگاه‌های متصل</strong><b>{IrancellFormatPersianNumber(security.connectedDevices||0)}</b></button>
-    <button type="button" onClick={()=>setSecurityPanel('sessions')}><span>□</span><strong>نشست‌های فعال</strong><b>{IrancellFormatPersianNumber(security.activeSessions||0)}</b></button>
-    <button type="button" onClick={()=>setSecurityPanel('history')}><span>◷</span><strong>تاریخچه ورود</strong><b>‹</b></button>
-   </div>
-   <button type="button" className="ir-family-security-logout" onClick={()=>dispatch({type:'IRANCELL_AUTH_LOGOUT'})}>خروج از همه دستگاه‌ها</button>
-   <p className="ir-family-security-note">برای تغییر تنظیمات حساس، تأیید والد یا رمز عبور لازم است.</p>
-
-   {securityPanel==='password'&&<div className="ir-family-form-overlay" onMouseDown={()=>setSecurityPanel('')}>
-    <form className="ir-family-form-sheet" onSubmit={submitPasswordUpdate} onMouseDown={event=>event.stopPropagation()}>
-     <span className="ir-family-form-sheet__handle"/>
-     <header><h2>تغییر رمز عبور</h2><button type="button" onClick={()=>setSecurityPanel('')}>×</button></header>
-     <label><span>رمز عبور جدید</span><input type="password" value={passwordForm.password} onChange={event=>{setPasswordForm(current=>({...current,password:event.target.value}));setPasswordError('')}}/></label>
-     <label><span>تکرار رمز عبور</span><input type="password" value={passwordForm.confirmation} onChange={event=>{setPasswordForm(current=>({...current,confirmation:event.target.value}));setPasswordError('')}}/></label>
-     {passwordError&&<p role="alert">{passwordError}</p>}
-     <button type="submit">ثبت رمز عبور جدید</button>
-    </form>
-   </div>}
-
-   {['devices','sessions','history'].includes(securityPanel)&&<div className="ir-family-form-overlay" onMouseDown={()=>setSecurityPanel('')}>
-    <section className="ir-family-form-sheet" onMouseDown={event=>event.stopPropagation()}>
-     <span className="ir-family-form-sheet__handle"/>
-     <header><h2>{securityPanel==='devices'?'دستگاه‌های متصل':securityPanel==='sessions'?'نشست‌های فعال':'تاریخچه ورود'}</h2><button type="button" onClick={()=>setSecurityPanel('')}>×</button></header>
-     <dl>
-      <div><dt>دستگاه فعلی</dt><dd>مرورگر فعلی · فعال</dd></div>
-      <div><dt>تعداد</dt><dd>{IrancellFormatPersianNumber(securityPanel==='devices'?security.connectedDevices||0:securityPanel==='sessions'?security.activeSessions||0:3)}</dd></div>
-      <div><dt>آخرین ورود</dt><dd>{security.lastLoginAt?new Date(security.lastLoginAt).toLocaleString('fa-IR'):'ثبت نشده'}</dd></div>
-     </dl>
-     <button type="button" onClick={()=>setSecurityPanel('')}>بستن</button>
-    </section>
-   </div>}
-  </section>
- }
+ if(route==='parent/profile/security')return page('امنیت حساب','رمز عبور، ورود زیستی و نشست‌های فعال',<>
+  <IrancellCard style={{marginBottom:'15px',background:'#E9F7EE',borderColor:'#BFE5CC'}}><div style={{display:'flex',alignItems:'flex-start',gap:'13px'}}><span style={{...iconStyle,background:'#CDEDD8',color:'#21663D'}}><ShieldCheck size={24}/></span><div><h2 style={{margin:0,color:'#21663D',fontSize:'16px',fontWeight:900}}>وضعیت امنیت حساب: خوب</h2><p style={{margin:'5px 0 0',color:'#37694A',fontSize:'11px',lineHeight:1.9}}>شماره موبایل تأیید شده و {IrancellFormatPersianNumber(security.activeSessions||0)} نشست فعال دارید.</p></div></div></IrancellCard>
+  <div style={{display:'grid',gap:'9px'}}>{securityButton({label:'تغییر رمز عبور',Icon:LockKeyhole,onClick:()=>setSecurityPanel('password')})}{securityButton({label:'مدیریت PIN',Icon:ShieldCheck,value:security.pinActive?'فعال':'غیرفعال',onClick:()=>updateSecurity({pinActive:!security.pinActive})})}{securityButton({label:'ورود با Face ID',Icon:UserRound,value:security.faceIdActive?'فعال':'غیرفعال',onClick:()=>updateSecurity({faceIdActive:!security.faceIdActive})})}{securityButton({label:'ورود با اثر انگشت',Icon:ShieldCheck,value:security.fingerprintActive?'فعال':'غیرفعال',onClick:()=>updateSecurity({fingerprintActive:!security.fingerprintActive})})}{securityButton({label:'دستگاه‌های متصل',Icon:Activity,value:IrancellFormatPersianNumber(security.connectedDevices||0),onClick:()=>setSecurityPanel('devices')})}{securityButton({label:'نشست‌های فعال',Icon:Users,value:IrancellFormatPersianNumber(security.activeSessions||0),onClick:()=>setSecurityPanel('sessions')})}{securityButton({label:'تاریخچه ورود',Icon:Activity,onClick:()=>setSecurityPanel('history')})}{securityButton({label:'خروج امن از همه دستگاه‌ها',Icon:LockKeyhole,danger:true,onClick:()=>dispatch({type:'IRANCELL_AUTH_LOGOUT'})})}</div>
+  <IrancellModal open={securityPanel==='password'} title="تغییر رمز عبور" variant="sheet" onClose={()=>{setSecurityPanel('');setPasswordError('')}} actions={<IrancellButton onClick={submitPasswordUpdate}>ثبت رمز جدید</IrancellButton>}><IrancellForm onSubmit={submitPasswordUpdate}><IrancellInput label="رمز عبور جدید" type="password" value={passwordForm.password} onChange={event=>{setPasswordForm(current=>({...current,password:event.target.value}));setPasswordError('')}}/><IrancellInput label="تکرار رمز عبور" type="password" value={passwordForm.confirmation} onChange={event=>{setPasswordForm(current=>({...current,confirmation:event.target.value}));setPasswordError('')}} error={passwordError}/><button type="submit" style={{position:'absolute',width:'1px',height:'1px',overflow:'hidden',clipPath:'inset(50%)'}}>ثبت</button></IrancellForm></IrancellModal>
+  <IrancellModal open={['devices','sessions','history'].includes(securityPanel)} title={securityPanel==='devices'?'دستگاه‌های متصل':securityPanel==='sessions'?'نشست‌های فعال':'تاریخچه ورود'} onClose={()=>setSecurityPanel('')}><dl style={{display:'grid',gap:0,margin:0,fontFamily:font}}>{[['دستگاه فعلی','مرورگر فعلی · فعال'],['تعداد',IrancellFormatPersianNumber(securityPanel==='devices'?security.connectedDevices||0:securityPanel==='sessions'?security.activeSessions||0:3)],['آخرین ورود',security.lastLoginAt?new Date(security.lastLoginAt).toLocaleString('fa-IR'):'ثبت نشده']].map(([label,value])=><div key={label} style={{display:'flex',justifyContent:'space-between',gap:'12px',padding:'12px 0',borderBottom:'1px solid #EEE9D4'}}><dt style={{color:'#777982',fontSize:'11px'}}>{label}</dt><dd style={{margin:0,textAlign:'left',fontSize:'11px',fontWeight:900}}>{value}</dd></div>)}</dl></IrancellModal>
+ </>);
 
  if(route==='parent/profile/notifications'){
-  const filters=[{id:'all',label:'همه'},{id:'children',label:'فرزندان'},{id:'payments',label:'پرداخت‌ها'},{id:'class',label:'کلاس‌ها'},{id:'unread',label:'خوانده‌نشده'}];
+  const filters=[{id:'all',label:'همه',count:notifications.length},{id:'unread',label:'خوانده‌نشده',count:unreadCount},{id:'children',label:'فرزندان'},{id:'payments',label:'پرداخت‌ها'},{id:'class',label:'کلاس‌ها'}];
   const visible=notifications.filter(item=>notificationFilter==='all'||(notificationFilter==='unread'&&!item.read)||item.category===notificationFilter);
   const selectedNotification=notifications.find(item=>item.id===selectedNotificationId)||null;
-  return <section className="ir-family-settings-page ir-family-notifications-page">
-   {familyHeader('اعلان‌ها','مشاهده پیام‌ها، یادآوری‌ها و هشدارهای مهم خانواده')}
-   <section className="ir-family-notifications-summary"><article><span>مهم</span><strong>{IrancellFormatPersianNumber(importantCount)}</strong></article><article><span>خوانده نشده</span><strong>{IrancellFormatPersianNumber(unreadCount)}</strong></article><article><span>همه اعلان‌ها</span><strong>{IrancellFormatPersianNumber(notifications.length)}</strong></article></section>
-   <nav className="ir-family-notification-filters">{filters.map(filter=><button type="button" key={filter.id} className={notificationFilter===filter.id?'is-active':''} onClick={()=>setNotificationFilter(filter.id)}>{filter.label}</button>)}</nav>
-   <div className="ir-family-notifications-list">
-    {visible.map(item=><button type="button" key={item.id} className={`${item.read?'':'is-unread'} ${item.importance==='important'?'is-important':''}`} onClick={()=>openNotification(item)}>
-     <span className={`is-${item.category}`}>{item.category==='class'?'□':item.category==='payments'?'▣':item.category==='security'?'⬡':item.category==='children'?'♙':'○'}</span>
-     <div><header><small>{new Date(item.createdAt).toLocaleString('fa-IR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small>{!item.read&&<i/>}</header><strong>{item.title}</strong><p>{item.body}</p>{item.actionLabel&&<b>{item.actionLabel}</b>}</div>
-     <em>‹</em>
-    </button>)}
-   </div>
-   <button type="button" className="ir-family-notifications-read-all" onClick={()=>dispatch({type:'IRANCELL_PARENT_NOTIFICATIONS_READ_ALL'})}>علامت‌گذاری همه به‌عنوان خوانده‌شده</button>
-
-   {selectedNotification&&<div className="ir-family-notification-overlay" onMouseDown={()=>setSelectedNotificationId('')}>
-    <section onMouseDown={event=>event.stopPropagation()}>
-     <button type="button" className="ir-family-notification-overlay__close" onClick={()=>setSelectedNotificationId('')}>×</button>
-     <h2>{selectedNotification.title}</h2>
-     <small>{new Date(selectedNotification.createdAt).toLocaleString('fa-IR')}</small>
-     <span className="ir-family-notification-overlay__icon">{selectedNotification.category==='class'?'□':'!'}</span>
-     <b>{selectedNotification.read?'خوانده‌شده':'جدید'}</b>
-     <p>{selectedNotification.body}</p>
-     <strong>فرزند: {children[0]?.name||'دانش‌آموز خانواده'}</strong>
-     {selectedNotification.actionLabel&&<button type="button" className="ir-family-notification-overlay__action" onClick={()=>{setSelectedNotificationId('');onNavigate?.(selectedNotification.route)}}>{selectedNotification.actionLabel}</button>}
-     <footer>علامت‌گذاری به‌عنوان خوانده‌شده</footer>
-    </section>
-   </div>}
-  </section>
+  return page('اعلان‌های خانواده','پیام‌ها، یادآوری‌ها و هشدارهای مهم حساب',<>
+   <div style={{...grid,marginBottom:'15px'}}><IrancellStatCard icon={Bell} label="خوانده‌نشده" value={IrancellFormatPersianNumber(unreadCount)} tone={unreadCount?'warning':'success'}/><IrancellStatCard icon={ShieldCheck} label="مهم" value={IrancellFormatPersianNumber(importantCount)} tone={importantCount?'danger':'success'}/><IrancellStatCard icon={Activity} label="همه اعلان‌ها" value={IrancellFormatPersianNumber(notifications.length)}/></div>
+   <IrancellFilterTabs value={notificationFilter} onChange={setNotificationFilter} items={filters}/>
+   {visible.length?<div style={{display:'grid',gap:'9px',marginTop:'15px'}}>{visible.map(item=><button type="button" key={item.id} onClick={()=>openNotification(item)} style={{...rowStyle,cursor:'pointer',background:item.read?'#FFFFFF':'#FFF7CE',borderColor:item.importance==='important'?'#E3A6A6':item.read?'#E7E2CC':'#EDD365'}}><span style={{...iconStyle,background:item.importance==='important'?'#FFF0F0':'#FFF3AE'}}>{item.category==='payments'?<WalletCards size={21}/>:item.category==='class'?<CalendarCheck size={21}/>:item.category==='security'?<ShieldCheck size={21}/>:<Bell size={21}/>}</span><span style={{display:'flex',minWidth:0,flexDirection:'column',gap:'3px'}}><strong style={{fontSize:'12px',fontWeight:900}}>{item.title}</strong><small style={{color:'#686970',fontSize:'10px',lineHeight:1.75}}>{item.body}</small><small style={{color:'#8A8B92',fontSize:'9px'}}>{new Date(item.createdAt).toLocaleString('fa-IR')}</small></span>{!item.read?<b style={{width:'9px',height:'9px',background:'#FFD100',borderRadius:'50%'}}/>:<ArrowLeft size={17}/>}</button>)}</div>:<IrancellStatePanel state="empty" title="اعلانی در این فیلتر نیست" description="فیلتر دیگری را انتخاب کنید."/>}
+   <IrancellModal open={Boolean(selectedNotification)} title={selectedNotification?.title||'اعلان'} onClose={()=>setSelectedNotificationId('')} actions={selectedNotification?.actionLabel?<IrancellButton onClick={()=>{setSelectedNotificationId('');onNavigate?.(selectedNotification.route)}}>{selectedNotification.actionLabel}</IrancellButton>:null}>{selectedNotification&&<div style={{display:'grid',gap:'13px',fontFamily:font}}><small style={{color:'#777982',fontSize:'10px'}}>{new Date(selectedNotification.createdAt).toLocaleString('fa-IR')}</small><p style={{margin:0,padding:'14px',color:'#55565D',background:'#F7F7F8',borderRadius:'14px',fontSize:'12px',lineHeight:2}}>{selectedNotification.body}</p><span style={{color:selectedNotification.read?'#21663D':'#765F00',fontSize:'10px',fontWeight:900}}>{selectedNotification.read?'خوانده‌شده':'جدید'}</span></div>}</IrancellModal>
+  </>,<IrancellButton size="sm" variant="secondary" disabled={!unreadCount} onClick={()=>dispatch({type:'IRANCELL_PARENT_NOTIFICATIONS_READ_ALL'})}>خواندن همه</IrancellButton>)
  }
 
- return <section className="ir-family-profile">
-  <header><h1>حساب من</h1><p>مدیریت اطلاعات خانواده و تنظیمات امنیتی</p></header>
-  <article className="ir-family-profile__identity">
-   <div><span>{String(parent.name||'خ').trim().charAt(0)}</span><section><h2>{parent.name}</h2><p>✓ شماره موبایل تأیید شده</p><small>حساب تأیید شده ✓</small></section></div>
-   <button type="button" onClick={()=>onNavigate?.('parent/profile/account')}>ویرایش پروفایل</button>
-  </article>
-  <nav className="ir-family-profile__menu">
-   <button type="button" onClick={()=>onNavigate?.('parent/profile/account')}><span className="is-yellow">⌂</span><div><strong>اطلاعات حساب خانواده</strong><small>ویرایش نام، شماره تماس و اطلاعات پایه</small></div><b>‹</b></button>
-   <button type="button" onClick={()=>onNavigate?.('parent/profile/permissions')}><span className="is-gray">⬡</span><div><strong>مجوزها و امضایی</strong><small>تأیید والدین و رضایت‌نامه‌ها</small></div><b>‹</b></button>
-   <button type="button" onClick={()=>onNavigate?.('parent/profile/family-control')}><span className="is-yellow">▣</span><div><strong>کنترل والدین</strong><small>مدیریت دسترسی‌ها</small></div><b>‹</b></button>
-   <button type="button" onClick={()=>onNavigate?.('parent/profile/security')}><span className="is-green">◉</span><div><strong>امنیت حساب</strong><small>رمز عبور، کد عبور و Face ID</small></div><b>‹</b></button>
-   <button type="button" onClick={()=>onNavigate?.('parent/profile/notifications')}><span className="is-yellow">♢</span><div><strong>اعلان‌ها</strong><small>مدیریت پیامک و یادآوری‌ها</small></div><b>‹</b></button>
-   <button type="button" onClick={()=>onNavigate?.('parent/support')}><span className="is-gray">○</span><div><strong>پشتیبانی</strong><small>پیگیری درخواست‌ها</small></div><b>‹</b></button>
-  </nav>
- </section>
+ return <IrancellPageScaffold>
+  <IrancellPageHeader eyebrow="حساب خانواده" title="پروفایل و تنظیمات" description="اطلاعات حساب، مجوزها، کنترل فرزندان، امنیت و اعلان‌ها را مدیریت کنید."/>
+  <IrancellCard style={{marginBottom:'15px'}}><div style={{display:'flex',minWidth:0,flexWrap:'wrap',alignItems:'center',gap:'15px'}}><span style={{display:'grid',width:'72px',height:'72px',placeItems:'center',flex:'0 0 72px',background:'#FFD100',borderRadius:'23px',fontSize:'27px',fontWeight:900}}>{String(parent.name||'خ').trim().charAt(0)}</span><div style={{minWidth:0,flex:'1 1 220px'}}><h2 style={{margin:0,fontSize:'19px',fontWeight:900}}>{parent.name}</h2><p style={{margin:'4px 0 0',color:'#21663D',fontSize:'11px',fontWeight:800}}>شماره موبایل و حساب خانواده تأیید شده است</p><small dir="ltr" style={{display:'block',marginTop:'3px',color:'#777982',fontSize:'10px'}}>{parent.mobile}</small></div><IrancellButton size="sm" variant="secondary" onClick={()=>onNavigate?.('parent/profile/account')}>ویرایش پروفایل</IrancellButton></div></IrancellCard>
+  <div style={{...grid,marginBottom:'15px'}}><IrancellStatCard icon={UsersRound} label="فرزند متصل" value={IrancellFormatPersianNumber(children.length)}/><IrancellStatCard icon={Bell} label="اعلان خوانده‌نشده" value={IrancellFormatPersianNumber(unreadCount)} tone={unreadCount?'warning':'success'}/><IrancellStatCard icon={ShieldCheck} label="وضعیت امنیت" value="خوب" tone="success"/></div>
+  <IrancellCard title="تنظیمات حساب"><div style={{display:'grid',gap:'9px'}}>{menuButton({label:'اطلاعات حساب خانواده',description:'نام، تماس، ایمیل و نشانی',Icon:UserRound,onClick:()=>onNavigate?.('parent/profile/account')})}{menuButton({label:'مجوزها و رضایت‌نامه‌ها',description:'سرپرستان مجاز و اسناد امضایی',Icon:ShieldCheck,onClick:()=>onNavigate?.('parent/profile/permissions')})}{menuButton({label:'کنترل خانواده',description:'دسترسی و زمان استفاده فرزندان',Icon:UsersRound,onClick:()=>onNavigate?.('parent/profile/family-control')})}{menuButton({label:'امنیت حساب',description:'رمز عبور، PIN و ورود زیستی',Icon:LockKeyhole,onClick:()=>onNavigate?.('parent/profile/security')})}{menuButton({label:'اعلان‌ها',description:'پیام‌ها و یادآوری‌های خانواده',Icon:Bell,badge:unreadCount?IrancellFormatPersianNumber(unreadCount):'',onClick:()=>onNavigate?.('parent/profile/notifications')})}{menuButton({label:'پشتیبانی',description:'ثبت و پیگیری درخواست‌ها',Icon:Activity,onClick:()=>onNavigate?.('parent/support')})}</div></IrancellCard>
+ </IrancellPageScaffold>
 }

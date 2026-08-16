@@ -80,6 +80,7 @@ export {
   IrancellContentProviderUploadPage,
   IRANCELL_PAGE_CONTENT_PROVIDER_UPLOAD_CONFIG,
   IrancellPageContentProviderUploadNormalizeRouteParams,
+  IrancellIdentityLoginPageInline,
   IrancellIdentityLoginPage,
   IRANCELL_PAGE_IDENTITY_LOGIN_CONFIG,
   IrancellPageIdentityLoginNormalizeRouteParams,
