@@ -46,13 +46,14 @@ export function IrancellCoreReducer(state,action){
    const isNewUser=!matched;
    if(isNewUser){
     const userId=`kisti-${normalizedMobile}`;
-    matched={id:userId,username:null,name:'کاربر جدید کیستی',mobile:normalizedMobile,roles:['student','parent','academy','teacher','content-provider'],status:'active',age:null,grade:null,credentialPassword:password,credentialConfigured:true,registrationSource:'kisti-auto'};
+    matched={id:userId,username:null,name:'کاربر جدید کیستی',mobile:normalizedMobile,roles:['student','parent','academy','content-provider'],status:'active',age:null,grade:null,credentialPassword:password,credentialConfigured:true,registrationSource:'kisti-auto'};
     identity={...s.identity,usersById:{...s.identity.usersById,[userId]:matched}};
    }else{
     const expectedPassword=String(matched.credentialPassword||IRANCELL_APP_CONFIG.demoPassword);
     if(password!==expectedPassword)return IrancellReducerAnalytics({...s,session:{...s.session,token:null,currentUserId:null,candidateUserId:null,availableRoles:[],activeRole:null,status:'credential_error'}},'UserAuthenticationFailed',{entityType:'user',entityId:matched.id,sourceModule:'kisti',outcome:'failure',errorCode:'invalid_credentials'});
    }
-   const roles=Array.isArray(matched.roles)&&matched.roles.length?matched.roles:['student'];
+   const roles=(Array.isArray(matched.roles)&&matched.roles.length?matched.roles:['student']).filter(function IrancellReducerFilterSupportedCredentialRole(roleKey){return Boolean(IRANCELL_ROLE_HOME_ROUTES[roleKey]);});
+   if(!roles.length)return IrancellReducerAnalytics({...s,session:{...s.session,token:null,currentUserId:null,candidateUserId:null,availableRoles:[],activeRole:null,status:'credential_error'}},'UserAuthenticationFailed',{entityType:'user',entityId:matched.id,sourceModule:'kisti',outcome:'failure',errorCode:'role_unavailable'});
    const needsRoleSelection=isNewUser||roles.length>1;
    const nextSession=needsRoleSelection?{...s.session,token:null,currentUserId:null,candidateUserId:matched.id,availableRoles:roles,activeRole:null,status:'role_pending',mobile:matched.mobile,pendingMobile:null,otpPurpose:null,requiresOnboarding:isNewUser}:{...s.session,token:IrancellCreateId('session'),currentUserId:matched.id,candidateUserId:null,availableRoles:roles,activeRole:roles[0],status:'authenticated',mobile:matched.mobile,pendingMobile:null,otpPurpose:null,requiresOnboarding:false};
    return IrancellReducerAnalytics({...s,identity,session:nextSession,ui:{...s.ui,fieldErrors:{...s.ui.fieldErrors,auth:null}}},isNewUser?'UserRegistered':'UserAuthenticated',{entityType:'user',entityId:matched.id,sourceModule:'kisti',properties:{method:'username_password',firstUse:isNewUser}});
@@ -66,10 +67,11 @@ export function IrancellCoreReducer(state,action){
    const isNewUser=!matched;
    if(isNewUser){
     const userId=`kisti-${normalizedMobile}`;
-    matched={id:userId,username:null,name:'کاربر جدید کیستی',mobile:normalizedMobile,roles:['student','parent','academy','teacher','content-provider'],status:'active',age:null,grade:null,credentialPassword:IRANCELL_APP_CONFIG.demoPassword,credentialConfigured:false,registrationSource:'kisti'};
+    matched={id:userId,username:null,name:'کاربر جدید کیستی',mobile:normalizedMobile,roles:['student','parent','academy','content-provider'],status:'active',age:null,grade:null,credentialPassword:IRANCELL_APP_CONFIG.demoPassword,credentialConfigured:false,registrationSource:'kisti'};
     identity={...s.identity,usersById:{...s.identity.usersById,[userId]:matched}};
    }
-   const roles=Array.isArray(matched.roles)&&matched.roles.length?matched.roles:['student'];
+   const roles=(Array.isArray(matched.roles)&&matched.roles.length?matched.roles:['student']).filter(function IrancellReducerFilterSupportedKistiRole(roleKey){return Boolean(IRANCELL_ROLE_HOME_ROUTES[roleKey]);});
+   if(!roles.length)return IrancellReducerReject(s,'UserAuthenticationFailed','role_unavailable','این نوع حساب در نسخه فعلی قابل ورود نیست.');
    return IrancellReducerAnalytics({...s,identity,session:{...s.session,token:null,currentUserId:null,candidateUserId:matched.id,availableRoles:roles,activeRole:null,status:'role_pending',mobile:matched.mobile,pendingMobile:null,otpPurpose:null,requiresOnboarding:isNewUser}},isNewUser?'UserRegistered':'UserAuthenticated',{entityType:'user',entityId:matched.id,sourceModule:'kisti',properties:{method:'kisti',firstUse:isNewUser}});
   }
   case'IRANCELL_AUTH_REQUEST_OTP':{
@@ -85,10 +87,11 @@ export function IrancellCoreReducer(state,action){
    const isNewUser=!matched;
    if(isNewUser){
     const userId=`kisti-${String(s.session.pendingMobile)}`;
-    matched={id:userId,username:null,name:'کاربر جدید کیستی',mobile:s.session.pendingMobile,roles:['student','parent','academy','teacher','content-provider'],status:'active',age:null,grade:null,credentialPassword:IRANCELL_APP_CONFIG.demoPassword,credentialConfigured:false,registrationSource:'otp-kisti'};
+    matched={id:userId,username:null,name:'کاربر جدید کیستی',mobile:s.session.pendingMobile,roles:['student','parent','academy','content-provider'],status:'active',age:null,grade:null,credentialPassword:IRANCELL_APP_CONFIG.demoPassword,credentialConfigured:false,registrationSource:'otp-kisti'};
     identity={...s.identity,usersById:{...s.identity.usersById,[userId]:matched}};
    }
-   const roles=Array.isArray(matched.roles)&&matched.roles.length?matched.roles:['student'];
+   const roles=(Array.isArray(matched.roles)&&matched.roles.length?matched.roles:['student']).filter(function IrancellReducerFilterSupportedOtpRole(roleKey){return Boolean(IRANCELL_ROLE_HOME_ROUTES[roleKey]);});
+   if(!roles.length)return IrancellReducerReject(s,'UserAuthenticationFailed','role_unavailable','این نوع حساب در نسخه فعلی قابل ورود نیست.');
    return IrancellReducerAnalytics({...s,identity,session:{...s.session,token:null,currentUserId:null,status:'role_pending',mobile:s.session.pendingMobile,pendingMobile:null,otpPurpose:null,candidateUserId:matched.id,availableRoles:roles,activeRole:null,requiresOnboarding:isNewUser}},isNewUser?'UserRegistered':'UserAuthenticated',{entityType:'user',entityId:matched.id,sourceModule:'kisti',properties:{method:'otp',firstUse:isNewUser}});
   }
   case'IRANCELL_AUTH_COMPLETE_REGISTRATION':{
@@ -116,8 +119,9 @@ export function IrancellCoreReducer(state,action){
    const profile=demoConfig?.profiles?.[action.profileKey]||null;
    if(!demoConfig?.enabled||s.settings?.demo?.enabled===false||!profile)return IrancellReducerReject(s,'DemoProfileActivationFailed','demo_disabled','حالت دمو در این محیط فعال نیست.');
    const user=s.identity.usersById[profile.userId];
-   if(!user||!Array.isArray(user.roles)||!user.roles.includes(profile.role))return IrancellReducerReject(s,'DemoProfileActivationFailed','demo_profile_invalid','پروفایل دمو معتبر نیست.');
-   const nextSession={...s.session,token:IrancellCreateId('demo-session'),currentUserId:user.id,candidateUserId:null,availableRoles:[...user.roles],activeRole:profile.role,status:'authenticated',mobile:user.mobile,pendingMobile:null,otpPurpose:null,requiresOnboarding:false};
+   const supportedRoles=Array.isArray(user?.roles)?user.roles.filter(function IrancellReducerFilterSupportedDemoRole(roleKey){return Boolean(IRANCELL_ROLE_HOME_ROUTES[roleKey]);}):[];
+   if(!user||!supportedRoles.includes(profile.role))return IrancellReducerReject(s,'DemoProfileActivationFailed','demo_profile_invalid','پروفایل دمو معتبر نیست.');
+   const nextSession={...s.session,token:IrancellCreateId('demo-session'),currentUserId:user.id,candidateUserId:null,availableRoles:supportedRoles,activeRole:profile.role,status:'authenticated',mobile:user.mobile,pendingMobile:null,otpPurpose:null,requiresOnboarding:false};
    return IrancellReducerAnalytics({...s,session:nextSession,ui:{...s.ui,fieldErrors:{...s.ui.fieldErrors,auth:null}}},'DemoProfileActivated',{entityType:'user',entityId:user.id,sourceModule:'demo',properties:{profileKey:action.profileKey,role:profile.role}});
   }
   case'IRANCELL_ADMIN_SETTINGS_UPDATE':{
@@ -324,92 +328,111 @@ export function IrancellCoreReducer(state,action){
    if(s.session.activeRole==='parent'&&!IrancellReducerCanParentManageChild(s,s.session.currentUserId,studentId))return IrancellReducerReject(s,'TeacherRequestFailed','relationship_required','رابطه معتبر والد و فرزند برای ثبت درخواست لازم است.');
    const id=action.data?.id||IrancellCreateId('request');
    const createdAt=new Date().toISOString();
-   const requestedBudget=Math.max(500000,Number(action.data?.budget)||2500000);
-   const roundPrice=value=>Math.max(100000,Math.round(value/50000)*50000);
-   const offerOneId=`offer-${id}-1`;
-   const offerTwoId=`offer-${id}-2`;
-   const offerThreeId=`offer-${id}-3`;
-   const item={...action.data,id,ownerId:s.session.currentUserId,studentId,status:'offers_received',createdAt};
-   const generatedOffers={
-    [offerOneId]:{
-     id:offerOneId,
-     requestId:id,
-     providerId:'academy-1',
-     providerRole:'academy',
-     providerDisplayName:'آکادمی ریاضی آرا',
-     assignedTeacherName:'استاد ارشد آکادمی ریاضی آرا',
-     price:roundPrice(requestedBudget*.98),
-     proposedTime:new Date(Date.now()+24*60*60000).toISOString(),
-     rating:4.8,
-     reviewCount:246,
-     featured:true,
-     badges:['برترین مدرس','پاسخ سریع','تأیید شده'],
-     acceptanceLabel:'شانس پذیرش: بالا',
-     acceptanceTone:'high',
-     description:'تدریس خصوصی آنلاین با استاد ارشد + ۳ جلسه پشتیبانی و تمرین رایگان برای تثبیت مطالب.',
-     sessionCount:3,
-     sessionDuration:90,
-     responseLabel:'پاسخ‌دهی ظرف ۲ ساعت',
-     modes:['فوری','آنلاین','خصوصی'],
-     status:'active',
-     createdAt:new Date(Date.now()-2*60000).toISOString()
-    },
-    [offerTwoId]:{
-     id:offerTwoId,
-     requestId:id,
-     providerId:'academy-1',
-     providerRole:'academy',
-     providerDisplayName:'مؤسسه مهرآور',
-     assignedTeacherName:'مدرس تخصصی مؤسسه مهرآور',
-     price:roundPrice(requestedBudget*.72),
-     proposedTime:new Date(Date.now()+30*60*60000).toISOString(),
-     rating:4.2,
-     reviewCount:173,
-     popular:true,
-     badges:['محبوب','تأیید شده'],
-     acceptanceLabel:'شانس پذیرش: متوسط',
-     acceptanceTone:'medium',
-     description:'آموزش گروهی آنلاین همراه با جزوه اختصاصی و آزمون‌های تمرینی دوره‌ای.',
-     sessionCount:8,
-     sessionDuration:60,
-     responseLabel:'پاسخ‌دهی ظرف ۵ ساعت',
-     modes:['آنلاین'],
-     status:'active',
-     createdAt:new Date(Date.now()-4*60000).toISOString()
-    },
-    [offerThreeId]:{
-     id:offerThreeId,
-     requestId:id,
-     providerId:'teacher-1',
-     providerRole:'teacher',
-     providerDisplayName:'استاد ناصری',
-     assignedTeacherName:'استاد علیرضا ناصری',
-     price:roundPrice(requestedBudget*1.28),
-     proposedTime:new Date(Date.now()+20*60*60000).toISOString(),
-     rating:5,
-     reviewCount:318,
-     badges:['امتیاز ۵.۰','پاسخ سریع','تأیید شده'],
-     acceptanceLabel:'شانس پذیرش: محدود',
-     acceptanceTone:'limited',
-     description:'تدریس ویژه کنکور با تضمین بازگشت وجه در صورت عدم رضایت از کیفیت تدریس.',
-     sessionCount:10,
-     sessionDuration:90,
-     responseLabel:'پاسخ‌دهی فوری',
-     modes:['تضمین‌شده','فوری','خصوصی'],
-     status:'active',
-     createdAt:new Date(Date.now()-6*60000).toISOString()
-    }
-   };
-   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,requestsById:{...s.marketplace.requestsById,[id]:item},offersById:{...s.marketplace.offersById,...generatedOffers}}},'TeacherRequestCreated',{entityType:'teacher_request',entityId:id,sourceModule:'marketplace',properties:{generatedOfferCount:3}});
+   const rawBudget=Number(action.data?.budget);
+   const budget=Number.isFinite(rawBudget)&&rawBudget>0?Math.round(rawBudget):null;
+   const item={...action.data,id,ownerId:s.session.currentUserId,studentId,budget,status:'pending',createdAt,publishedAt:createdAt,pendingSince:createdAt,offerCount:0,selectedOfferId:null,orderId:null,sessionId:null};
+   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,requestsById:{...s.marketplace.requestsById,[id]:item}}},'TeacherRequestCreated',{entityType:'teacher_request',entityId:id,sourceModule:'marketplace',properties:{status:'pending',budget,deliveryMode:item.deliveryMode||'online'}});
+  }
+  case'IRANCELL_MARKETPLACE_CANCEL_REQUEST':{
+   if(!['student','parent'].includes(s.session.activeRole))return IrancellReducerReject(s,'TeacherRequestCancelFailed','buyer_role_required','لغو درخواست فقط برای دانش‌آموز یا والد مرتبط مجاز است.');
+   const request=s.marketplace.requestsById[action.requestId];
+   if(!request)return IrancellReducerReject(s,'TeacherRequestCancelFailed','request_missing','درخواست موردنظر پیدا نشد.');
+   if(s.session.activeRole==='student'&&request.studentId!==s.session.currentUserId)return IrancellReducerReject(s,'TeacherRequestCancelFailed','request_owner_required','فقط مالک درخواست می‌تواند آن را لغو کند.');
+   if(s.session.activeRole==='parent'&&!IrancellReducerCanParentManageChild(s,s.session.currentUserId,request.studentId))return IrancellReducerReject(s,'TeacherRequestCancelFailed','relationship_required','رابطه معتبر والد و فرزند برای لغو درخواست لازم است.');
+   if(!['pending','published','offers_received'].includes(request.status))return IrancellReducerReject(s,'TeacherRequestCancelFailed','request_not_cancellable','این درخواست در وضعیت فعلی قابل لغو نیست.');
+   const cancelledAt=new Date().toISOString();
+   const nextOffersById=Object.entries(s.marketplace.offersById||{}).reduce(function IrancellReducerCancelRequestOffers(result,[offerId,offer]){result[offerId]=offer.requestId===request.id&&offer.status==='active'?{...offer,status:'rejected',rejectedReason:'request_cancelled',updatedAt:cancelledAt}:offer;return result;},{});
+   const nextRequest={...request,status:'cancelled',cancelledAt,offerCount:0};
+   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,offersById:nextOffersById,requestsById:{...s.marketplace.requestsById,[request.id]:nextRequest}}},'TeacherRequestCancelled',{entityType:'teacher_request',entityId:request.id,sourceModule:'marketplace'});
   }
   case'IRANCELL_MARKETPLACE_SUBMIT_OFFER':{
-   if(!['teacher','academy'].includes(s.session.activeRole))return IrancellReducerReject(s,'OfferSubmissionFailed','provider_role_required','ثبت پیشنهاد فقط برای مدرس یا آموزشگاه فعال است.');
+   if(s.session.activeRole!=='academy')return IrancellReducerReject(s,'OfferSubmissionFailed','provider_role_required','ثبت پیشنهاد فقط برای آموزشگاه فعال مجاز است.');
    const request=s.marketplace.requestsById[action.requestId];
-   if(!request||!['published','offers_received'].includes(request.status))return IrancellReducerReject(s,'OfferSubmissionFailed','request_unavailable','این درخواست برای دریافت پیشنهاد فعال نیست.');
-   if(!IrancellReducerProviderIsActive(s,s.session.currentUserId))return IrancellReducerReject(s,'OfferSubmissionFailed','provider_not_verified','ارائه‌دهنده باید فعال و تأییدشده باشد.');
-   const price=Number(action.price);if(!Number.isFinite(price)||price<=0||!action.proposedTime)return IrancellReducerReject(s,'OfferSubmissionFailed','offer_invalid','قیمت و زمان معتبر برای پیشنهاد لازم است.');
-   const id=IrancellCreateId('offer'),item={id,requestId:action.requestId,providerId:s.session.currentUserId,providerRole:s.session.activeRole,price,proposedTime:action.proposedTime,assignedTeacherName:action.assignedTeacherName||s.identity.usersById[s.session.currentUserId]?.name,status:'active',createdAt:new Date().toISOString()};
-   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,offersById:{...s.marketplace.offersById,[id]:item},requestsById:{...s.marketplace.requestsById,[action.requestId]:{...request,status:'offers_received'}}}},'OfferSubmitted',{entityType:'offer',entityId:id,sourceModule:'marketplace'});
+   if(!request||!['pending','published','offers_received'].includes(request.status))return IrancellReducerReject(s,'OfferSubmissionFailed','request_unavailable','این درخواست برای دریافت پیشنهاد فعال نیست.');
+   if(!IrancellReducerProviderIsActive(s,s.session.currentUserId))return IrancellReducerReject(s,'OfferSubmissionFailed','provider_not_verified','ابتدا پروفایل ارائه‌دهنده را تکمیل و فعال کنید.');
+   const price=Number(action.price);
+   if(!Number.isFinite(price)||price<=0||!action.proposedTime)return IrancellReducerReject(s,'OfferSubmissionFailed','offer_invalid','قیمت و زمان معتبر برای پیشنهاد لازم است.');
+   const provider=s.marketplace.providersById[s.session.currentUserId]||{};
+   let assignedTeacherId=action.assignedTeacherId||null;
+   let assignedTeacherName=String(action.assignedTeacherName||'').trim();
+   if(s.session.activeRole==='academy'){
+    const assignedTeacher=assignedTeacherId?s.marketplace.providersById[assignedTeacherId]:null;
+    if(!assignedTeacher||assignedTeacher.type!=='teacher'||assignedTeacher.academyId!==s.session.currentUserId||assignedTeacher.status==='archived'||assignedTeacher.status==='paused')return IrancellReducerReject(s,'OfferSubmissionFailed','academy_teacher_required','برای پیشنهاد آموزشگاه باید یک مدرس فعال از فهرست مدرس‌های همان آموزشگاه انتخاب شود.');
+    if(request.subject&&Array.isArray(assignedTeacher.subjects)&&assignedTeacher.subjects.length&&!assignedTeacher.subjects.includes(request.subject))return IrancellReducerReject(s,'OfferSubmissionFailed','teacher_subject_mismatch','مدرس انتخاب‌شده برای درس این درخواست در فهرست تخصص‌های خود تأیید نشده است.');
+    assignedTeacherName=assignedTeacher.name;
+   }else{
+    assignedTeacherId=s.session.currentUserId;
+    assignedTeacherName=assignedTeacherName||provider.name||s.identity.usersById[s.session.currentUserId]?.name||'مدرس';
+   }
+   const existingOffer=Object.values(s.marketplace.offersById||{}).find(item=>item.requestId===action.requestId&&item.providerId===s.session.currentUserId&&item.status==='active');
+   const id=existingOffer?.id||IrancellCreateId('offer');
+   const createdAt=existingOffer?.createdAt||new Date().toISOString();
+   const item={...existingOffer,id,requestId:action.requestId,providerId:s.session.currentUserId,providerRole:s.session.activeRole,providerDisplayName:provider.name||s.identity.usersById[s.session.currentUserId]?.name||'ارائه‌دهنده آموزشی',assignedTeacherId,assignedTeacherName,price:Math.round(price),proposedTime:action.proposedTime,description:String(action.description||'').trim()||`پیشنهاد ${provider.name||'ارائه‌دهنده'} برای ${request.subject} — ${request.topic}`,sessionCount:Math.max(1,Number(action.sessionCount)||1),sessionDuration:Math.max(30,Number(action.sessionDuration)||60),responseLabel:String(action.responseLabel||'پاسخ‌گویی در همان روز'),modes:Array.isArray(action.modes)&&action.modes.length?action.modes:[request.deliveryMode==='inperson'?'حضوری':'آنلاین'],terms:String(action.terms||'').trim(),rating:Number(provider.rating)||0,reviewCount:Number(provider.completedClasses)||0,badges:['تأیید شده',s.session.activeRole==='academy'?'آموزشگاه':'مدرس'].filter(Boolean),acceptanceLabel:'پیشنهاد مستقیم ارائه‌دهنده',acceptanceTone:'high',status:'active',createdAt,updatedAt:new Date().toISOString()};
+   const activeOfferCount=Object.values({...s.marketplace.offersById,[id]:item}).filter(offer=>offer.requestId===action.requestId&&offer.status==='active').length;
+   const nextRequest={...request,status:'offers_received',offerCount:activeOfferCount,lastOfferAt:item.updatedAt};
+   const notificationId=`notification-offer-${id}`;
+   const notification={id:notificationId,ownerId:request.studentId,title:existingOffer?'یک پیشنهاد برای درخواست شما به‌روزرسانی شد':'پیشنهاد جدید برای درخواست شما',body:`${item.providerDisplayName} برای ${request.subject||'درخواست آموزشی'} قیمت و زمان پیشنهادی ارسال کرده است.`,route:`student/offers?request=${request.id}`,read:false,createdAt:item.updatedAt};
+   const nextNotifications={...s.notifications,itemsById:{...s.notifications.itemsById,[notificationId]:notification}};
+   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,offersById:{...s.marketplace.offersById,[id]:item},requestsById:{...s.marketplace.requestsById,[action.requestId]:nextRequest}},notifications:nextNotifications},existingOffer?'OfferUpdated':'OfferSubmitted',{entityType:'offer',entityId:id,sourceModule:'marketplace',properties:{requestId:action.requestId,assignedTeacherId,providerRole:s.session.activeRole}});
+  }
+  case'IRANCELL_MARKETPLACE_WITHDRAW_OFFER':{
+   if(!['teacher','academy'].includes(s.session.activeRole))return IrancellReducerReject(s,'OfferWithdrawalFailed','provider_role_required','لغو پیشنهاد فقط توسط ارائه‌دهنده ثبت‌کننده مجاز است.');
+   const offer=s.marketplace.offersById[action.offerId];
+   if(!offer||offer.providerId!==s.session.currentUserId)return IrancellReducerReject(s,'OfferWithdrawalFailed','offer_owner_required','این پیشنهاد متعلق به حساب فعال نیست.');
+   if(offer.status!=='active')return s;
+   const nextOffer={...offer,status:'withdrawn',withdrawnAt:new Date().toISOString()};
+   const activeOfferCount=Object.values({...s.marketplace.offersById,[action.offerId]:nextOffer}).filter(item=>item.requestId===offer.requestId&&item.status==='active').length;
+   const request=s.marketplace.requestsById[offer.requestId];
+   const nextRequest=request?{...request,status:activeOfferCount?'offers_received':'pending',offerCount:activeOfferCount}:request;
+   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,offersById:{...s.marketplace.offersById,[action.offerId]:nextOffer},requestsById:request?{...s.marketplace.requestsById,[offer.requestId]:nextRequest}:s.marketplace.requestsById}},'OfferWithdrawn',{entityType:'offer',entityId:action.offerId,sourceModule:'marketplace'});
+  }
+  case'IRANCELL_ACADEMY_PROFILE_UPDATE':{
+   if(s.session.activeRole!=='academy')return IrancellReducerReject(s,'AcademyProfileUpdateFailed','academy_role_required','ثبت اطلاعات آموزشگاه فقط در نقش آموزشگاه مجاز است.');
+   const academyId=s.session.currentUserId;
+   const data=action.data&&typeof action.data==='object'?action.data:{};
+   const organizationName=String(data.organizationName||data.name||'').trim();
+   const licenseNumber=String(data.licenseNumber||'').trim();
+   const city=String(data.city||'').trim();
+   const subjects=Array.isArray(data.subjects)?data.subjects.map(item=>String(item||'').trim()).filter(Boolean):[];
+   if(!organizationName||!licenseNumber||!city||!subjects.length)return IrancellReducerReject(s,'AcademyProfileUpdateFailed','academy_profile_incomplete','نام آموزشگاه، شماره مجوز، شهر و حداقل یک حوزه تدریس الزامی است.');
+   const existing=s.marketplace.providersById[academyId]||{};
+   const updatedAt=new Date().toISOString();
+   const provider={...existing,id:academyId,type:'academy',name:organizationName,organizationName,legalName:String(data.legalName||organizationName).trim(),licenseNumber,nationalId:String(data.nationalId||'').trim(),managerName:String(data.managerName||'').trim(),mobile:String(data.mobile||s.identity.usersById[academyId]?.mobile||'').trim(),city,address:String(data.address||'').trim(),website:String(data.website||'').trim(),subjects,bio:String(data.bio||'').trim(),priceFrom:Math.max(0,Number(data.priceFrom)||Number(existing.priceFrom)||0),verificationStatus:'verified',registrationStatus:'complete',status:'active',profileCompletion:100,updatedAt,registeredAt:existing.registeredAt||updatedAt};
+   const currentUser=s.identity.usersById[academyId]||{id:academyId,roles:['academy'],status:'active'};
+   const nextUser={...currentUser,name:organizationName,organizationName,mobile:provider.mobile||currentUser.mobile,academyProfileComplete:true,updatedAt};
+   const next={...s,identity:{...s.identity,usersById:{...s.identity.usersById,[academyId]:nextUser},providerVerification:{...(s.identity.providerVerification||{}),[academyId]:{status:'verified',verifiedAt:updatedAt,source:'local-profile'}}},marketplace:{...s.marketplace,providersById:{...s.marketplace.providersById,[academyId]:provider}}};
+   return IrancellReducerAudit(IrancellReducerAnalytics(next,'AcademyProfileUpdated',{entityType:'provider',entityId:academyId,sourceModule:'academy',privacyClass:'restricted'}),'AcademyProfileUpdated',{academyId});
+  }
+  case'IRANCELL_ACADEMY_TEACHER_ADD':{
+   if(s.session.activeRole!=='academy')return IrancellReducerReject(s,'AcademyTeacherAddFailed','academy_role_required','افزودن مدرس فقط در نقش آموزشگاه مجاز است.');
+   const academyId=s.session.currentUserId;
+   if(!IrancellReducerProviderIsActive(s,academyId))return IrancellReducerReject(s,'AcademyTeacherAddFailed','academy_profile_required','ابتدا پروفایل آموزشگاه را تکمیل کنید.');
+   const data=action.data&&typeof action.data==='object'?action.data:{};
+   const name=String(data.name||'').trim();
+   const subjects=Array.isArray(data.subjects)?data.subjects.map(item=>String(item||'').trim()).filter(Boolean):[];
+   if(!name||!subjects.length)return IrancellReducerReject(s,'AcademyTeacherAddFailed','teacher_profile_incomplete','نام مدرس و حداقل یک درس الزامی است.');
+   const academy=s.marketplace.providersById[academyId]||{};
+   const academySubjects=Array.isArray(academy.subjects)?academy.subjects:[];
+   if(academySubjects.length&&subjects.some(subject=>!academySubjects.includes(subject)))return IrancellReducerReject(s,'AcademyTeacherAddFailed','teacher_subject_outside_academy','تخصص‌های مدرس باید از حوزه‌های آموزشی ثبت‌شده برای آموزشگاه انتخاب شوند.');
+   const id=data.id||IrancellCreateId('academy-teacher');
+   const createdAt=new Date().toISOString();
+   const teacher={id,type:'teacher',academyId,employmentType:'academy',name,mobile:String(data.mobile||'').trim(),subjects,bio:String(data.bio||'').trim(),experienceYears:Math.max(0,Number(data.experienceYears)||0),priceFrom:Math.max(0,Number(data.priceFrom)||0),rating:Number(data.rating)||5,completedClasses:Number(data.completedClasses)||0,verificationStatus:'verified',status:'active',createdAt,updatedAt:createdAt};
+   const next={...s,marketplace:{...s.marketplace,providersById:{...s.marketplace.providersById,[id]:teacher}}};
+   return IrancellReducerAudit(IrancellReducerAnalytics(next,'AcademyTeacherAdded',{entityType:'provider',entityId:id,sourceModule:'academy',properties:{academyId}}),'AcademyTeacherAdded',{academyId,teacherId:id});
+  }
+  case'IRANCELL_ACADEMY_TEACHER_UPDATE':{
+   if(s.session.activeRole!=='academy')return IrancellReducerReject(s,'AcademyTeacherUpdateFailed','academy_role_required','ویرایش مدرس فقط در نقش آموزشگاه مجاز است.');
+   const teacher=s.marketplace.providersById[action.teacherId];
+   if(!teacher||teacher.type!=='teacher'||teacher.academyId!==s.session.currentUserId)return IrancellReducerReject(s,'AcademyTeacherUpdateFailed','academy_teacher_missing','مدرس موردنظر در فهرست این آموزشگاه نیست.');
+   const data=action.data&&typeof action.data==='object'?action.data:{};
+   const nextStatus=['active','paused','archived'].includes(data.status)?data.status:teacher.status||'active';
+   const subjects=Array.isArray(data.subjects)?data.subjects.map(item=>String(item||'').trim()).filter(Boolean):teacher.subjects;
+   const academy=s.marketplace.providersById[teacher.academyId]||{};
+   const academySubjects=Array.isArray(academy.subjects)?academy.subjects:[];
+   if(academySubjects.length&&subjects.some(subject=>!academySubjects.includes(subject)))return IrancellReducerReject(s,'AcademyTeacherUpdateFailed','teacher_subject_outside_academy','تخصص‌های مدرس باید از حوزه‌های آموزشی ثبت‌شده برای آموزشگاه انتخاب شوند.');
+   const nextTeacher={...teacher,...data,name:String(data.name||teacher.name||'').trim()||teacher.name,mobile:String(data.mobile??teacher.mobile??'').trim(),subjects,bio:String(data.bio??teacher.bio??'').trim(),experienceYears:Math.max(0,Number(data.experienceYears??teacher.experienceYears)||0),priceFrom:Math.max(0,Number(data.priceFrom??teacher.priceFrom)||0),status:nextStatus,academyId:teacher.academyId,type:'teacher',employmentType:'academy',verificationStatus:teacher.verificationStatus||'verified',updatedAt:new Date().toISOString()};
+   const next={...s,marketplace:{...s.marketplace,providersById:{...s.marketplace.providersById,[action.teacherId]:nextTeacher}}};
+   return IrancellReducerAudit(IrancellReducerAnalytics(next,'AcademyTeacherUpdated',{entityType:'provider',entityId:action.teacherId,sourceModule:'academy',properties:{academyId:teacher.academyId,status:nextStatus}}),'AcademyTeacherUpdated',{academyId:teacher.academyId,teacherId:action.teacherId,status:nextStatus});
   }
   case'IRANCELL_MARKETPLACE_SELECT_OFFER':{
    if(!['student','parent'].includes(s.session.activeRole))return IrancellReducerReject(s,'OfferSelectionFailed','buyer_role_required','انتخاب پیشنهاد فقط برای دانش‌آموز یا والد مجاز است.');
@@ -418,18 +441,33 @@ export function IrancellCoreReducer(state,action){
    if(!IrancellReducerProviderIsActive(s,offer.providerId))return IrancellReducerReject(s,'OfferSelectionFailed','provider_not_verified','ارائه‌دهنده این پیشنهاد دیگر مجاز به ارائه خدمت نیست.');
    if(s.session.activeRole==='student'&&request.studentId!==s.session.currentUserId)return IrancellReducerReject(s,'OfferSelectionFailed','request_owner_required','فقط مالک درخواست می‌تواند پیشنهاد را انتخاب کند.');
    if(s.session.activeRole==='parent'&&!IrancellReducerCanParentManageChild(s,s.session.currentUserId,request.studentId))return IrancellReducerReject(s,'OfferSelectionFailed','relationship_required','رابطه معتبر والد و فرزند برای انتخاب پیشنهاد لازم است.');
-   const orderId=IrancellCreateId('order'),consentId=IrancellCreateId('consent'),sessionId=IrancellCreateId('class');
+   const assignedTeacher=offer.providerRole==='academy'?(offer.assignedTeacherId?s.marketplace.providersById[offer.assignedTeacherId]:Object.values(s.marketplace.providersById||{}).find(item=>item.type==='teacher'&&item.academyId===offer.providerId&&item.status==='active'&&(!offer.assignedTeacherName||item.name===offer.assignedTeacherName))):s.marketplace.providersById[offer.providerId];
+   const resolvedAssignedTeacherId=offer.providerRole==='academy'?assignedTeacher?.id||null:offer.providerId;
+   if(offer.providerRole==='academy'&&(!assignedTeacher||assignedTeacher.academyId!==offer.providerId||assignedTeacher.status!=='active'))return IrancellReducerReject(s,'OfferSelectionFailed','assigned_teacher_unavailable','مدرس معرفی‌شده توسط آموزشگاه در حال حاضر فعال نیست. پیشنهاد دیگری انتخاب کنید.');
    const relationship=Object.values(s.identity.relationshipsById).find(function IrancellReducerRequestRelationship(item){return item.childId===request.studentId&&item.status==='active';});
-   const parentId=relationship?.parentId||'parent-1';
-   const consent={id:consentId,sessionId,childId:request.studentId,parentId,status:'pending',createdAt:new Date().toISOString(),expiresAt:new Date(Date.now()+7*86400000).toISOString(),documentText:'رضایت‌نامه حضور فرزند در کلاس زنده با مدرس تأییدشده و ثبت سوابق امنیتی.'};
+   const student=s.identity.usersById[request.studentId]||{};
+   const requiresParent=Boolean(relationship)||Number(student.age||18)<18;
+   if(requiresParent&&!relationship)return IrancellReducerReject(s,'OfferSelectionFailed','parent_relationship_required','برای نهایی‌کردن کلاس دانش‌آموز زیر ۱۸ سال باید حساب خانواده متصل باشد.');
+   const parentId=relationship?.parentId||null;
+   const orderId=IrancellCreateId('order'),sessionId=IrancellCreateId('class'),consentId=requiresParent?IrancellCreateId('consent'):null;
    const createdAt=new Date().toISOString();
+   const consent=requiresParent?{id:consentId,sessionId,childId:request.studentId,parentId,status:'pending',createdAt,expiresAt:new Date(Date.now()+7*86400000).toISOString(),documentText:`رضایت‌نامه حضور ${student.name||'دانش‌آموز'} در کلاس ${request.subject} با ${offer.assignedTeacherName||offer.providerDisplayName||'ارائه‌دهنده تأییدشده'}.`}:null;
    const payment={id:orderId,orderId,sessionId,amount:offer.price,status:'pending',createdAt,providerId:offer.providerId};
-   const session={id:sessionId,title:`کلاس ${request.subject} — ${request.topic}`,studentId:request.studentId,providerId:offer.providerId,participantIds:[request.studentId,offer.providerId],startAt:new Date(Date.now()+10*60000).toISOString(),status:'scheduled',requiresConsent:true,isPaid:true,orderId,consentDocumentId:consentId,roomId:null};
-   const familyPaymentId=`family-payment-${orderId}`;
-   const familyNotificationId=`family-notification-${orderId}`;
-   const familyPayment={id:familyPaymentId,parentId,childId:request.studentId,title:`پرداخت ${session.title}`,amount:offer.price,status:'pending',orderId,consentId,sessionId,createdAt};
-   const familyNotification={id:familyNotificationId,parentId,category:'consent',importance:'action',title:'درخواست تأیید رزرو کلاس',body:`برای ${session.title} رضایت‌نامه و پرداخت در انتظار تأیید شماست.`,actionLabel:'بررسی و تأیید',route:`consent/${consentId}`,read:false,createdAt};
-   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,selectedOfferId:action.offerId,offersById:{...s.marketplace.offersById,[action.offerId]:{...offer,status:'selected'}},requestsById:{...s.marketplace.requestsById,[offer.requestId]:{...request,status:'selected',selectedOfferId:action.offerId,orderId,sessionId}}},consent:{...s.consent,documentsById:{...s.consent.documentsById,[consentId]:consent}},payment:{...s.payment,paymentsById:{...s.payment.paymentsById,[orderId]:payment}},classroom:{...s.classroom,sessionsById:{...s.classroom.sessionsById,[sessionId]:session}},family:{...s.family,pendingPaymentsById:{...s.family.pendingPaymentsById,[familyPaymentId]:familyPayment},notificationItemsById:{...s.family.notificationItemsById,[familyNotificationId]:familyNotification}}},'OfferSelected',{entityType:'offer',entityId:action.offerId,sourceModule:'marketplace',properties:{orderId,consentId,sessionId,parentId}});
+   const participantIds=[request.studentId,offer.providerId,resolvedAssignedTeacherId].filter((value,index,array)=>value&&array.indexOf(value)===index);
+   const proposedDate=new Date(offer.proposedTime);
+   const startAt=Number.isNaN(proposedDate.getTime())?new Date(Date.now()+60*60000).toISOString():proposedDate.toISOString();
+   const session={id:sessionId,title:`کلاس ${request.subject} — ${request.topic}`,subjectLabel:`${request.subject} ${request.grade||''}`.trim(),studentId:request.studentId,providerId:offer.providerId,providerRole:offer.providerRole,providerDisplayName:offer.providerDisplayName||s.marketplace.providersById[offer.providerId]?.name||'',assignedTeacherId:resolvedAssignedTeacherId,assignedTeacherName:assignedTeacher?.name||offer.assignedTeacherName||'',participantIds,startAt,status:'scheduled',requiresConsent:requiresParent,isPaid:true,orderId,consentDocumentId:consentId,roomId:null,createdAt};
+   const nextOffersById=Object.entries(s.marketplace.offersById).reduce((result,[offerId,item])=>{result[offerId]=item.requestId===offer.requestId?{...item,status:offerId===action.offerId?'selected':item.status==='active'?'rejected':item.status,...(offerId===action.offerId?{selectedAt:createdAt}:{})}:item;return result;},{});
+   let nextFamily=s.family;
+   if(parentId){
+    const familyPaymentId=`family-payment-${orderId}`;
+    const familyNotificationId=`family-notification-${orderId}`;
+    const familyPayment={id:familyPaymentId,parentId,childId:request.studentId,title:`پرداخت ${session.title}`,amount:offer.price,status:'pending',orderId,consentId,sessionId,createdAt};
+    const familyNotification={id:familyNotificationId,parentId,childId:request.studentId,category:'consent',importance:'action',title:'درخواست تأیید رزرو کلاس',body:`برای ${session.title} ${requiresParent?'رضایت‌نامه و ':''}پرداخت در انتظار تأیید شماست.`,actionLabel:'بررسی و تأیید',route:requiresParent?`consent/${consentId}`:`payment/${orderId}`,read:false,createdAt};
+    nextFamily={...s.family,pendingPaymentsById:{...s.family.pendingPaymentsById,[familyPaymentId]:familyPayment},notificationItemsById:{...s.family.notificationItemsById,[familyNotificationId]:familyNotification}};
+   }
+   const nextConsent=consent?{...s.consent,documentsById:{...s.consent.documentsById,[consentId]:consent}}:s.consent;
+   return IrancellReducerAnalytics({...s,marketplace:{...s.marketplace,selectedOfferId:action.offerId,offersById:nextOffersById,requestsById:{...s.marketplace.requestsById,[offer.requestId]:{...request,status:'selected',selectedOfferId:action.offerId,orderId,sessionId,selectedAt:createdAt}}},consent:nextConsent,payment:{...s.payment,paymentsById:{...s.payment.paymentsById,[orderId]:payment}},classroom:{...s.classroom,sessionsById:{...s.classroom.sessionsById,[sessionId]:session}},family:nextFamily},'OfferSelected',{entityType:'offer',entityId:action.offerId,sourceModule:'marketplace',properties:{orderId,consentId,sessionId,parentId,assignedTeacherId:resolvedAssignedTeacherId}});
   }
   case'IRANCELL_CONSENT_SIGN':{
    const document=s.consent.documentsById[action.consentId];if(!document)return IrancellReducerReject(s,'ConsentSigningFailed','consent_missing','سند رضایت پیدا نشد.');
@@ -443,9 +481,11 @@ export function IrancellCoreReducer(state,action){
   }
   case'IRANCELL_PAYMENT_HOLD':{
    const payment=s.payment.paymentsById[action.orderId];if(!payment)return IrancellReducerReject(s,'PaymentHoldFailed','payment_missing','تراکنش موردنظر پیدا نشد.');
-   if(!['parent','admin'].includes(s.session.activeRole))return IrancellReducerReject(s,'PaymentHoldFailed','payer_role_required','پرداخت کلاس کودک فقط توسط والد مرتبط مجاز است.');
+   if(!['student','parent','admin'].includes(s.session.activeRole))return IrancellReducerReject(s,'PaymentHoldFailed','payer_role_required','پرداخت این کلاس برای نقش فعال مجاز نیست.');
    const session=s.classroom.sessionsById[payment.sessionId];if(!session)return IrancellReducerReject(s,'PaymentHoldFailed','session_missing','کلاس مرتبط با پرداخت پیدا نشد.');
-   if(s.session.activeRole!=='admin'&&!IrancellReducerCanParentManageChild(s,s.session.currentUserId,session.studentId))return IrancellReducerReject(s,'PaymentHoldFailed','relationship_required','رابطه معتبر والد و فرزند برای پرداخت لازم است.');
+   const studentCanPay=s.session.activeRole==='student'&&session.studentId===s.session.currentUserId&&!session.requiresConsent;
+   const parentCanPay=s.session.activeRole==='parent'&&IrancellReducerCanParentManageChild(s,s.session.currentUserId,session.studentId);
+   if(s.session.activeRole!=='admin'&&!studentCanPay&&!parentCanPay)return IrancellReducerReject(s,'PaymentHoldFailed','relationship_required','پرداخت باید توسط دانش‌آموز مجاز یا والد مرتبط انجام شود.');
    if(session.requiresConsent&&s.consent.gatesBySessionId[session.id]?.status!=='signed')return IrancellReducerReject(s,'PaymentHoldFailed','consent_required','ابتدا رضایت‌نامه والد را امضا کنید.');
    if(!['pending','failed'].includes(payment.status))return s;
    const heldAt=new Date().toISOString();

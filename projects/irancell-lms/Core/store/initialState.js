@@ -89,8 +89,8 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
   const updatedAt=new Date(IRANCELL_SEED_NOW.getTime()-index*2*3600000).toISOString();
   const startAt=new Date(IRANCELL_SEED_NOW.getTime()+(index-5)*6*3600000).toISOString();
   const preferredTime=new Date(IRANCELL_SEED_NOW.getTime()+(index+1)*8*3600000).toISOString();
-  const providerId=index%2===0?academyId:teacherId;
-  const providerRole=index%2===0?'academy':'teacher';
+  const providerId=academyId;
+  const providerRole='academy';
   const coursePrice=index%5===0?0:450000+index*55000;
   const progress=(index*17)%101;
   const paymentStatus=paymentStatuses[(index-1)%paymentStatuses.length];
@@ -126,22 +126,6 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
    credentialPassword:'123456',
    credentialConfigured:true,
    registrationSource:'fixture'
-  };
-  result.usersById[teacherId]={
-   id:teacherId,
-   username:`teacher${suffix}`,
-   name:`استاد ${firstName} ${lastName}`,
-   firstName,
-   lastName,
-   mobile:`09133${mobileSuffix}`,
-   email:`teacher${suffix}@fixture.ir`,
-   roles:['teacher'],
-   status:'active',
-   credentialPassword:'123456',
-   credentialConfigured:true,
-   registrationSource:'fixture',
-   profileCompletion:70+(index%30),
-   verificationStatus:index%7===0?'pending':'verified'
   };
   result.usersById[academyId]={
    id:academyId,
@@ -197,19 +181,22 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
   result.providersById[teacherId]={
    id:teacherId,
    type:'teacher',
+   academyId,
+   employmentType:'academy',
+   status:'active',
    name:`استاد ${firstName} ${lastName}`,
    subjects:[subject,subjects[index%subjects.length]],
    rating:Number((4.1+(index%9)/10).toFixed(1)),
    completedClasses:25+index*14,
    priceFrom:220000+index*12000,
-   verificationStatus:index%7===0?'pending':'verified',
-   profileCompletion:70+(index%30),
+   verificationStatus:'verified',
+   profileCompletion:100,
    settlementAmount:600000+index*175000,
    monthlyIncome:2500000+index*490000,
    experienceYears:2+(index%13),
    onTimeRate:85+(index%15),
    validComplaintRate:index%4,
-   bio:`مدرس ${subject} با تمرکز بر ${topic} و حل مسئله.`,
+   bio:`مدرس ${subject} معرفی‌شده توسط آکادمی ${subject} ${lastName}.`,
    payoutRequests:[]
   };
   result.providersById[academyId]={
@@ -327,6 +314,7 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
    requestId,
    providerId,
    providerRole,
+   assignedTeacherId:teacherId,
    price:240000+index*18000,
    proposedTime:preferredTime,
    assignedTeacherName:`استاد ${firstName} ${lastName}`,
@@ -395,10 +383,13 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
    id:classId,
    title:`کلاس ${subject}: ${topic}`,
    subjectLabel:`${subject} ${grade}`,
-   providerDisplayName:providerRole==='academy'?`آکادمی ${subject} ${lastName}`:`استاد ${firstName} ${lastName}`,
+   providerDisplayName:`آکادمی ${subject} ${lastName}`,
    scheduleLabel:`${index%2?'فردا':'امروز'}، ساعت ${15+(index%6)}:${index%2?'۳۰':'۰۰'}`,
    studentId:'student-1',
    providerId,
+   providerRole:'academy',
+   assignedTeacherId:teacherId,
+   assignedTeacherName:`استاد ${firstName} ${lastName}`,
    participantIds:['student-1',providerId],
    startAt,
    status:classStatus,
@@ -462,7 +453,7 @@ const IRANCELL_SEED_BULK_DATA=(()=>{
   result.notificationsById[notificationId]={
    id:notificationId,
    ownerId:'student-1',
-   title:index%4===0?'پاسخ جدید چیستی':index%4===1?'پیشنهاد جدید مدرس':index%4===2?'یادآوری کلاس':'ادامه دوره',
+   title:index%4===0?'پاسخ جدید چیستی':index%4===1?'پیشنهاد جدید آموزشگاه':index%4===2?'یادآوری کلاس':'ادامه دوره',
    body:`اعلان آزمایشی ${suffix} برای بررسی عملکرد فهرست، جزئیات و وضعیت خوانده‌شده.`,
    route:index%4===0?`student/chats?problem=${problemId}`:index%4===1?`student/offers?request=${requestId}`:index%4===2?`class/${classId}`:`student/binayi/course/${contentId}`,
    read:notificationRead,
@@ -610,17 +601,14 @@ export const IRANCELL_INITIAL_STATE=Object.freeze({
  identity:{usersById:{
   'student-1':{id:'student-1',name:'آراد احمدی',mobile:'09120000001',roles:['student'],status:'active',age:13,grade:'پایه هفتم'},
   'parent-1':{id:'parent-1',name:'امیر احمدی',mobile:'09120000002',roles:['parent'],status:'active'},
-  'teacher-1':{id:'teacher-1',name:'محمد رضایی',mobile:'09120000003',roles:['teacher'],status:'active'},
   'academy-1':{id:'academy-1',name:'آکادمی آینده روشن',mobile:'09120000004',roles:['academy'],status:'active'},
   'content-1':{id:'content-1',name:'استودیو آموزش نو',mobile:'09120000005',roles:['content-provider'],status:'active'},
   'admin-1':{id:'admin-1',name:'مدیر عملیات',mobile:'09120000006',roles:['admin'],status:'active'},
   'student-2':{id:'student-2',name:'رها محمدی',mobile:'09120000007',roles:['student'],status:'active',age:15,grade:'پایه نهم'},
   'parent-2':{id:'parent-2',name:'مریم محمدی',mobile:'09120000008',roles:['parent'],status:'active'},
-  'teacher-2':{id:'teacher-2',name:'استاد علیرضا ناصری',mobile:'09120000009',roles:['teacher'],status:'active'},
   'academy-2':{id:'academy-2',name:'آکادمی ریاضی آرا',mobile:'09120000010',roles:['academy'],status:'active'},
   'student-3':{id:'student-3',name:'سارا احمدی',mobile:'09120000011',roles:['student'],status:'active',age:11,grade:'پایه پنجم'},
   'student-4':{id:'student-4',name:'نیما احمدی',mobile:'09120000012',roles:['student'],status:'active',age:16,grade:'پایه دهم'},
-  'teacher-3':{id:'teacher-3',name:'مدرس جدید',mobile:'09120000013',roles:['teacher'],status:'active'},
   ...IRANCELL_SEED_BULK_DATA.usersById
  },relationshipsById:{
   'relationship-1':{id:'relationship-1',parentId:'parent-1',childId:'student-1',status:'active',verifiedAt:IRANCELL_SEED_NOW.toISOString()},
@@ -628,7 +616,7 @@ export const IRANCELL_INITIAL_STATE=Object.freeze({
   'relationship-3':{id:'relationship-3',parentId:'parent-1',childId:'student-3',status:'active',verifiedAt:IRANCELL_SEED_NOW.toISOString()},
   'relationship-4':{id:'relationship-4',parentId:'parent-1',childId:'student-4',status:'active',verifiedAt:IRANCELL_SEED_NOW.toISOString()},
   ...IRANCELL_SEED_BULK_DATA.relationshipsById
- },permissions:{},providerVerification:{'teacher-1':{status:'verified'},'teacher-2':{status:'verified'},'teacher-3':{status:'pending'},'academy-1':{status:'verified'},'academy-2':{status:'verified'},...IRANCELL_SEED_BULK_DATA.providerVerification}},
+ },permissions:{},providerVerification:{'academy-1':{status:'verified'},'academy-2':{status:'verified'},...IRANCELL_SEED_BULK_DATA.providerVerification}},
  chisti:{conversationsById:{
   'conversation-demo-1':{id:'conversation-demo-1',ownerId:'student-1',problemIds:['problem-demo-1'],createdAt:new Date(IRANCELL_SEED_NOW.getTime()-2*86400000).toISOString(),updatedAt:new Date(IRANCELL_SEED_NOW.getTime()-2*86400000).toISOString()},
   ...IRANCELL_SEED_BULK_DATA.conversationsById
@@ -659,19 +647,18 @@ export const IRANCELL_INITIAL_STATE=Object.freeze({
   'request-demo-3':{id:'request-demo-3',ownerId:'student-2',studentId:'student-2',subject:'فیزیک',grade:'نهم',topic:'نیرو و قوانین نیوتن',preferredTime:new Date(IRANCELL_SEED_NOW.getTime()+3*86400000).toISOString(),urgency:'فوری',description:'برای امتحان هفته آینده به مرور قوانین نیوتن و حل مسئله نیاز دارم.',status:'offers_received',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-70*60000).toISOString()},
   ...IRANCELL_SEED_BULK_DATA.requestsById
  },offersById:{
-  'offer-demo-1':{id:'offer-demo-1',requestId:'request-demo-1',providerId:'teacher-1',providerRole:'teacher',price:310000,proposedTime:new Date(IRANCELL_SEED_NOW.getTime()+86400000).toISOString(),assignedTeacherName:'دکتر نازنین احمدی',status:'active',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-110*60000).toISOString()},
   'offer-demo-2':{id:'offer-demo-2',requestId:'request-demo-1',providerId:'academy-1',providerRole:'academy',price:275000,proposedTime:new Date(IRANCELL_SEED_NOW.getTime()+90000000).toISOString(),assignedTeacherName:'مهندس رضا شریفی',status:'active',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-95*60000).toISOString()},
-  'offer-demo-3':{id:'offer-demo-3',requestId:'request-demo-1',providerId:'teacher-1',providerRole:'teacher',price:290000,proposedTime:new Date(IRANCELL_SEED_NOW.getTime()+93600000).toISOString(),assignedTeacherName:'استاد علیرضا ناصری',status:'active',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-80*60000).toISOString()},
-  'offer-demo-4':{id:'offer-demo-4',requestId:'request-demo-3',providerId:'teacher-2',providerRole:'teacher',price:265000,proposedTime:new Date(IRANCELL_SEED_NOW.getTime()+3*86400000).toISOString(),assignedTeacherName:'استاد علیرضا ناصری',status:'active',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-45*60000).toISOString()},
   'offer-demo-5':{id:'offer-demo-5',requestId:'request-demo-3',providerId:'academy-2',providerRole:'academy',price:235000,proposedTime:new Date(IRANCELL_SEED_NOW.getTime()+3*86400000+3600000).toISOString(),assignedTeacherName:'مهندس پویا زمانی',status:'active',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-35*60000).toISOString()},
   ...IRANCELL_SEED_BULK_DATA.offersById
  },providersById:{
-  'teacher-1':{id:'teacher-1',type:'teacher',name:'محمد رضایی',subjects:['ریاضی','فیزیک'],rating:4.8,completedClasses:47,priceFrom:280000,verificationStatus:'verified',profileCompletion:80,settlementAmount:3450000,monthlyIncome:8200000,experienceYears:9,onTimeRate:96,validComplaintRate:1,bio:'مدرس مستقل ریاضی و فیزیک با تمرکز بر حل مسئله، رفع اشکال و آمادگی آزمون.',payoutRequests:[]},
-  'teacher-2':{id:'teacher-2',type:'teacher',name:'استاد علیرضا ناصری',subjects:['فیزیک','ریاضی','کنکور'],rating:4.8,completedClasses:418,priceFrom:250000,verificationStatus:'verified',profileCompletion:92,settlementAmount:4800000,monthlyIncome:11200000,experienceYears:11,onTimeRate:98,validComplaintRate:1,bio:'مدرس مستقل فیزیک و ریاضی با تمرکز بر حل مسئله و آمادگی آزمون.',payoutRequests:[]},
-  'academy-1':{id:'academy-1',type:'academy',name:'آکادمی آینده روشن',subjects:['ریاضی','فیزیک','شیمی'],rating:4.7,completedClasses:1250,priceFrom:240000,verificationStatus:'verified',assignedTeacherName:'مهندس رضا شریفی',bio:'آموزشگاه دارای مجوز با تضمین جایگزینی مدرس.'},
-  'academy-2':{id:'academy-2',type:'academy',name:'آکادمی ریاضی آرا',subjects:['ریاضی','فیزیک','کنکور'],rating:4.8,completedClasses:930,priceFrom:225000,verificationStatus:'verified',assignedTeacherName:'مهندس پویا زمانی',bio:'آموزشگاه تخصصی ریاضی و فیزیک با پشتیبانی خانواده و برنامه‌ریزی آموزشی.'},
+  'academy-1':{id:'academy-1',type:'academy',name:'آکادمی آینده روشن',organizationName:'آکادمی آینده روشن',legalName:'مؤسسه آموزشی آینده روشن',licenseNumber:'IR-A-1405-1001',nationalId:'14001234567',managerName:'رضا صادقی',mobile:'09120000004',city:'تهران',address:'تهران، میدان ونک',website:'',subjects:['ریاضی','فیزیک','شیمی'],rating:4.7,completedClasses:1250,priceFrom:240000,verificationStatus:'verified',registrationStatus:'complete',status:'active',profileCompletion:100,assignedTeacherName:'مهندس رضا شریفی',bio:'آموزشگاه دارای مجوز با تضمین جایگزینی مدرس.'},
+  'academy-2':{id:'academy-2',type:'academy',name:'آکادمی ریاضی آرا',organizationName:'آکادمی ریاضی آرا',legalName:'مؤسسه آموزشی ریاضی آرا',licenseNumber:'IR-A-1405-1002',nationalId:'14007654321',managerName:'پویا زمانی',mobile:'09120000010',city:'تهران',address:'تهران، سعادت‌آباد',website:'',subjects:['ریاضی','فیزیک','کنکور'],rating:4.8,completedClasses:930,priceFrom:225000,verificationStatus:'verified',registrationStatus:'complete',status:'active',profileCompletion:100,assignedTeacherName:'مهندس پویا زمانی',bio:'آموزشگاه تخصصی ریاضی و فیزیک با پشتیبانی خانواده و برنامه‌ریزی آموزشی.'},
+  'academy-1-teacher-1':{id:'academy-1-teacher-1',type:'teacher',academyId:'academy-1',employmentType:'academy',name:'مهندس رضا شریفی',mobile:'09121110001',subjects:['ریاضی','فیزیک'],rating:4.9,completedClasses:380,priceFrom:280000,experienceYears:10,verificationStatus:'verified',status:'active',bio:'مدرس ارشد ریاضی و فیزیک آموزشگاه آینده روشن.'},
+  'academy-1-teacher-2':{id:'academy-1-teacher-2',type:'teacher',academyId:'academy-1',employmentType:'academy',name:'دکتر سارا محمودی',mobile:'09121110002',subjects:['شیمی','علوم'],rating:4.8,completedClasses:245,priceFrom:260000,experienceYears:8,verificationStatus:'verified',status:'active',bio:'مدرس شیمی و علوم با تمرکز بر رفع اشکال و آمادگی امتحان.'},
+  'academy-2-teacher-1':{id:'academy-2-teacher-1',type:'teacher',academyId:'academy-2',employmentType:'academy',name:'مهندس پویا زمانی',mobile:'09122220001',subjects:['ریاضی','کنکور'],rating:4.9,completedClasses:410,priceFrom:250000,experienceYears:12,verificationStatus:'verified',status:'active',bio:'مدرس ارشد ریاضی و کنکور آکادمی ریاضی آرا.'},
+  'academy-2-teacher-2':{id:'academy-2-teacher-2',type:'teacher',academyId:'academy-2',employmentType:'academy',name:'استاد نرگس امینی',mobile:'09122220002',subjects:['فیزیک'],rating:4.7,completedClasses:190,priceFrom:230000,experienceYears:7,verificationStatus:'verified',status:'active',bio:'مدرس فیزیک پایه و کنکور با برنامه تمرین هفتگی.'},
   ...IRANCELL_SEED_BULK_DATA.providersById
- },availability:{'teacher-1':['امروز ۱۸:۳۰','فردا ۱۷:۰۰'],'teacher-2':['امروز ۱۹:۰۰','فردا ۱۶:۳۰'],'academy-1':['امروز ۲۰:۰۰','فردا ۱۹:۳۰'],'academy-2':['فردا ۱۵:۳۰','پنجشنبه ۱۸:۰۰'],...IRANCELL_SEED_BULK_DATA.availability},selectedOfferId:null},
+ },availability:{'academy-1':['امروز ۲۰:۰۰','فردا ۱۹:۳۰'],'academy-2':['فردا ۱۵:۳۰','پنجشنبه ۱۸:۰۰'],...IRANCELL_SEED_BULK_DATA.availability},selectedOfferId:null},
  consent:{documentsById:{
   'consent-demo-1':{id:'consent-demo-1',sessionId:'class-demo-1',childId:'student-1',parentId:'parent-1',status:'pending',createdAt:new Date(IRANCELL_SEED_NOW.getTime()-25*60000).toISOString(),expiresAt:new Date(IRANCELL_SEED_NOW.getTime()+7*86400000).toISOString(),documentText:'رضایت‌نامه حضور آراد احمدی در کلاس آنلاین ریاضی مهندسی با تأمین‌کننده تأییدشده.'},
   ...IRANCELL_SEED_BULK_DATA.consentDocumentsById
@@ -682,14 +669,14 @@ export const IRANCELL_INITIAL_STATE=Object.freeze({
  },escrowByOrderId:{...IRANCELL_SEED_BULK_DATA.escrowByOrderId},invoicesById:{...IRANCELL_SEED_BULK_DATA.paymentInvoicesById},refundsById:{...IRANCELL_SEED_BULK_DATA.refundsById}},
  classroom:{sessionsById:{
   'class-demo-1':{id:'class-demo-1',title:'ریاضی مهندسی',subjectLabel:'ریاضی مهندسی',providerDisplayName:'آکادمی ریاضی آرا',scheduleLabel:'فردا، ساعت ۱۶:۰۰',studentId:'student-1',providerId:'academy-1',participantIds:['student-1','academy-1'],startAt:new Date(IRANCELL_SEED_NOW.getTime()+24*60*60000).toISOString(),status:'scheduled',requiresConsent:true,isPaid:true,orderId:'order-demo-1',consentDocumentId:'consent-demo-1',roomId:null},
-  'class-demo-2':{id:'class-demo-2',title:'فیزیک کنکور (پیشرفته)',subjectLabel:'فیزیک کنکور (پیشرفته)',providerDisplayName:'استاد علیرضا ناصری',scheduleLabel:'شنبه، ساعت ۱۸:۳۰',studentId:'student-1',providerId:'teacher-1',participantIds:['student-1','teacher-1'],startAt:new Date(IRANCELL_SEED_NOW.getTime()+4*24*60*60000).toISOString(),status:'scheduled',requiresConsent:false,isPaid:false,orderId:null,consentDocumentId:null,roomId:null},
-  'class-demo-3':{id:'class-demo-3',title:'قوانین نیوتن و حل مسئله',subjectLabel:'فیزیک پایه نهم',providerDisplayName:'استاد علیرضا ناصری',scheduleLabel:'فردا، ساعت ۱۷:۳۰',studentId:'student-2',providerId:'teacher-2',participantIds:['student-2','teacher-2'],startAt:new Date(IRANCELL_SEED_NOW.getTime()+28*60*60000).toISOString(),status:'scheduled',requiresConsent:false,isPaid:false,orderId:null,consentDocumentId:null,roomId:null},
+  'class-demo-2':{id:'class-demo-2',title:'فیزیک کنکور (پیشرفته)',subjectLabel:'فیزیک کنکور (پیشرفته)',providerDisplayName:'آکادمی آینده روشن',scheduleLabel:'شنبه، ساعت ۱۸:۳۰',studentId:'student-1',providerId:'academy-1',providerRole:'academy',assignedTeacherId:'academy-1-teacher-1',assignedTeacherName:'مهندس رضا شریفی',participantIds:['student-1','academy-1'],startAt:new Date(IRANCELL_SEED_NOW.getTime()+4*24*60*60000).toISOString(),status:'scheduled',requiresConsent:false,isPaid:false,orderId:null,consentDocumentId:null,roomId:null},
+  'class-demo-3':{id:'class-demo-3',title:'قوانین نیوتن و حل مسئله',subjectLabel:'فیزیک پایه نهم',providerDisplayName:'آکادمی ریاضی آرا',scheduleLabel:'فردا، ساعت ۱۷:۳۰',studentId:'student-2',providerId:'academy-2',providerRole:'academy',assignedTeacherId:'academy-2-teacher-1',assignedTeacherName:'مهندس پویا زمانی',participantIds:['student-2','academy-2'],startAt:new Date(IRANCELL_SEED_NOW.getTime()+28*60*60000).toISOString(),status:'scheduled',requiresConsent:false,isPaid:false,orderId:null,consentDocumentId:null,roomId:null},
   ...IRANCELL_SEED_BULK_DATA.sessionsById
  },roomsById:{...IRANCELL_SEED_BULK_DATA.roomsById},attendanceBySessionId:{...IRANCELL_SEED_BULK_DATA.attendanceBySessionId}},
- quality:{ratingsById:{...IRANCELL_SEED_BULK_DATA.ratingsById},complaintsById:{...IRANCELL_SEED_BULK_DATA.complaintsById},qualityScoresByProviderId:{'teacher-1':94,'teacher-2':92,'academy-1':89,'academy-2':93,...IRANCELL_SEED_BULK_DATA.qualityScoresByProviderId}},
+ quality:{ratingsById:{...IRANCELL_SEED_BULK_DATA.ratingsById},complaintsById:{...IRANCELL_SEED_BULK_DATA.complaintsById},qualityScoresByProviderId:{'academy-1':89,'academy-2':93,...IRANCELL_SEED_BULK_DATA.qualityScoresByProviderId}},
  notifications:{itemsById:{
   'notification-1':{id:'notification-1',ownerId:'student-1',title:'خوش آمدید',body:'مسیر یادگیری خود را با پرسیدن یک سؤال شروع کنید.',route:'student/chisti',read:false,createdAt:IRANCELL_SEED_NOW.toISOString()},
-  'notification-2':{id:'notification-2',ownerId:'student-1',title:'پیشنهادهای جدید برای درخواست ریاضی',body:'چند مدرس و آموزشگاه تأییدشده برای درخواست شما پیشنهاد ارسال کرده‌اند.',route:'student/offers?request=request-demo-1',read:false,createdAt:new Date(IRANCELL_SEED_NOW.getTime()-18*60000).toISOString()},
+  'notification-2':{id:'notification-2',ownerId:'student-1',title:'پیشنهادهای جدید برای درخواست ریاضی',body:'چند آموزشگاه تأییدشده برای درخواست شما پیشنهاد ارسال کرده‌اند.',route:'student/offers?request=request-demo-1',read:false,createdAt:new Date(IRANCELL_SEED_NOW.getTime()-18*60000).toISOString()},
   'notification-3':{id:'notification-3',ownerId:'student-1',title:'ادامه مسیر یادگیری',body:'ویدیوی تابع درجه دوم را از ۶۸٪ ادامه بده.',route:'student/binayi/course/content-math-1',read:true,createdAt:new Date(IRANCELL_SEED_NOW.getTime()-5*3600000).toISOString()},
   ...IRANCELL_SEED_BULK_DATA.notificationsById
  },unreadCount:2+IRANCELL_SEED_BULK_DATA.unreadCount,deliveryState:'ready'},

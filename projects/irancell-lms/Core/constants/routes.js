@@ -13,13 +13,6 @@ export const IRANCELL_ROLE_NAVIGATION=Object.freeze({
   Object.freeze({label:'پرداخت‌ها',route:'parent/payments',icon:'payments',matches:['parent/payments','payment/']}),
   Object.freeze({label:'پروفایل',route:'parent/profile',icon:'user',matches:['parent/profile','parent/support','notifications','help']})
  ]),
- teacher:Object.freeze([
-  Object.freeze({label:'خانه',route:'teacher/home',icon:'home',matches:['teacher/home','teacher/earnings','teacher/quality']}),
-  Object.freeze({label:'درخواست‌ها',route:'teacher/requests',icon:'requests',matches:['teacher/requests','teacher/offers']}),
-  Object.freeze({label:'تقویم',route:'teacher/calendar',icon:'calendar',matches:['teacher/calendar']}),
-  Object.freeze({label:'کلاس‌ها',route:'teacher/classes',icon:'classes',matches:['teacher/classes','class/','rating/']}),
-  Object.freeze({label:'پروفایل',route:'teacher/profile',icon:'user',matches:['teacher/profile','notifications','help']})
- ]),
  academy:Object.freeze([
   Object.freeze({label:'خانه',route:'academy/home',icon:'home',matches:['academy/home','academy/reports']}),
   Object.freeze({label:'درخواست‌ها',route:'academy/requests',icon:'requests',matches:['academy/requests','academy/offers']}),

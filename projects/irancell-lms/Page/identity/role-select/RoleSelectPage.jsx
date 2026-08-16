@@ -1,7 +1,6 @@
 const IRANCELL_PAGE_ROLE_CARDS=Object.freeze([
  {id:'student',role:'student',label:'دانش‌آموز',description:'یادگیری، کلاس‌ها، تمرین‌ها و دستیار هوشمند',Icon:GraduationCap},
  {id:'parent',role:'parent',label:'خانواده',description:'پیگیری فرزندان، رضایت‌نامه‌ها و پرداخت‌ها',Icon:UsersRound},
- {id:'teacher',role:'teacher',label:'مدرس خصوصی',description:'درخواست‌ها، کلاس‌ها، تقویم و درآمد',Icon:UserRound},
  {id:'academy',role:'academy',label:'آموزشگاه',description:'مدیریت مدرس‌ها، کلاس‌ها و امور مالی',Icon:Building2},
  {id:'content-provider',role:'content-provider',label:'تولیدکننده محتوا',description:'کتابخانه، انتشار محتوا، تحلیل و تسویه',Icon:BookOpen},
  {id:'admin',role:'admin',label:'مدیر سامانه',description:'کاربران، گزارش‌ها، شکایت‌ها و تنظیمات',Icon:ShieldCheck}

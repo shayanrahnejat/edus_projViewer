@@ -13,7 +13,8 @@ export function IrancellStudentRequestsPage({onNavigate}){
   description:'',
   budget:'',
   preferredTime:new Date(Date.now()+86400000).toISOString().slice(0,16),
-  urgency:'عادی'
+  urgency:'عادی',
+  deliveryMode:'online'
  });
 
  const subjects=['ریاضی','فیزیک','شیمی','زبان انگلیسی','زیست‌شناسی','آمار','جبر','هندسه'];
@@ -143,10 +144,26 @@ export function IrancellStudentRequestsPage({onNavigate}){
     <label className="ir-new-class-request__field is-full">
      <strong>بودجه پیشنهادی (تومان)</strong>
      <span className={`ir-new-class-request__budget ${budgetError?'has-error':''}`}>
-      <input type="number" inputMode="numeric" min="0" step="10000" value={form.budget} onChange={event=>change('budget',event.target.value)} placeholder="مثلاً: ۵۰۰,۰۰۰"/>
+      <input type="number" inputMode="numeric" min="0" step="10000" value={form.budget} onChange={event=>change('budget',event.target.value)} placeholder="اختیاری؛ آموزشگاه قیمت نهایی را پیشنهاد می‌دهد"/>
       <b>تومان</b>
      </span>
      {budgetError&&<small className="ir-new-class-request__error">{budgetError}</small>}
+     <small className="ir-new-class-request__attachment-help">بودجه فقط برای راهنمایی ارائه‌دهنده است؛ هر آموزشگاه قیمت، مدرس و شرایط خودش را ارسال می‌کند.</small>
+    </label>
+    <div className="ir-new-class-request__two-columns">
+     <label className="ir-new-class-request__field">
+      <strong>زمان ترجیحی</strong>
+      <span className={`ir-new-class-request__input ${validation.preferredTime?'has-error':''}`}><input type="datetime-local" value={form.preferredTime} onChange={event=>change('preferredTime',event.target.value)}/></span>
+      {validation.preferredTime&&<small className="ir-new-class-request__error">{validation.preferredTime}</small>}
+     </label>
+     <label className="ir-new-class-request__field">
+      <strong>فوریت</strong>
+      <span className={`ir-new-class-request__select ${validation.urgency?'has-error':''}`}><select value={form.urgency} onChange={event=>change('urgency',event.target.value)}><option value="عادی">عادی</option><option value="فوری">فوری</option><option value="این هفته">این هفته</option></select><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
+     </label>
+    </div>
+    <label className="ir-new-class-request__field is-full">
+     <strong>شیوه برگزاری</strong>
+     <span className="ir-new-class-request__select"><select value={form.deliveryMode} onChange={event=>change('deliveryMode',event.target.value)}><option value="online">آنلاین</option><option value="inperson">حضوری</option><option value="either">فرقی ندارد</option></select><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
     </label>
    </section>
 

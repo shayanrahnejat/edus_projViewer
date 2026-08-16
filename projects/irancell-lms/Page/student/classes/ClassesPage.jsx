@@ -87,7 +87,7 @@ export function IrancellStudentClassesPage({onNavigate}){
      const offerCount=offerCountForRequest(request.id);
      const hasOffers=offerCount>0||request.status==='offers_received';
      const selected=request.status==='selected';
-     const badgeLabel=selected?'پیشنهاد انتخاب شده':hasOffers?`${IrancellFormatPersianNumber(offerCount||1)} پیشنهاد دریافت شده`:'در انتظار پیشنهاد';
+     const badgeLabel=selected?'پیشنهاد انتخاب شده':hasOffers?`${IrancellFormatPersianNumber(offerCount||1)} پیشنهاد دریافت شده`:'در انتظار بررسی آموزشگاه‌ها';
      return <button type="button" className="ir-classes-main__request-card" key={request.id} onClick={()=>onNavigate?.(`student/offers?request=${request.id}`)}>
       <span className="ir-classes-main__request-arrow" aria-hidden="true">
        <svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg>

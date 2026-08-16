@@ -36,20 +36,6 @@ const IRANCELL_CORE_STORE_V2_SAFE_SEED=Object.freeze({
     credentialConfigured:true,
     registrationSource:'fixture'
    },
-   'teacher-1':{
-    id:'teacher-1',
-    username:'teacher',
-    name:'محمد رضایی',
-    firstName:'محمد',
-    lastName:'رضایی',
-    mobile:'09120000003',
-    email:'teacher@fixture.ir',
-    roles:['teacher'],
-    status:'active',
-    credentialPassword:'123456',
-    credentialConfigured:true,
-    registrationSource:'fixture'
-   },
    'academy-1':{
     id:'academy-1',
     username:'academy',
@@ -120,20 +106,6 @@ const IRANCELL_CORE_STORE_V2_SAFE_SEED=Object.freeze({
     credentialConfigured:true,
     registrationSource:'fixture'
    },
-   'teacher-2':{
-    id:'teacher-2',
-    username:'teacher2',
-    name:'علیرضا ناصری',
-    firstName:'علیرضا',
-    lastName:'ناصری',
-    mobile:'09120000009',
-    email:'teacher2@fixture.ir',
-    roles:['teacher'],
-    status:'active',
-    credentialPassword:'123456',
-    credentialConfigured:true,
-    registrationSource:'fixture'
-   },
    'academy-2':{
     id:'academy-2',
     username:'academy2',
@@ -179,22 +151,6 @@ const IRANCELL_CORE_STORE_V2_SAFE_SEED=Object.freeze({
     credentialConfigured:true,
     registrationSource:'fixture'
    },
-   'teacher-3':{
-    id:'teacher-3',
-    username:'teacher3',
-    name:'مدرس جدید',
-    firstName:'مدرس',
-    lastName:'جدید',
-    mobile:'09120000013',
-    email:'teacher3@fixture.ir',
-    roles:['teacher'],
-    status:'active',
-    profileCompletion:25,
-    verificationStatus:'incomplete',
-    credentialPassword:'123456',
-    credentialConfigured:true,
-    registrationSource:'fixture'
-   },
    'multi-role-1':{
     id:'multi-role-1',
     username:'multi',
@@ -203,7 +159,7 @@ const IRANCELL_CORE_STORE_V2_SAFE_SEED=Object.freeze({
     lastName:'آزمایشی',
     mobile:'09120000014',
     email:'multi@fixture.ir',
-    roles:['student','parent','teacher','academy','content-provider'],
+    roles:['student','parent','academy','content-provider'],
     status:'active',
     age:18,
     grade:'پایه دوازدهم',
@@ -298,6 +254,29 @@ function IrancellCoreStoreV2FilterPatch(value){
  if(!IrancellCoreStoreV2IsPlainObject(value))return{};
  return Object.keys(value).reduce(function IrancellCoreStoreV2FilterPatchKey(result,key){if(IRANCELL_CORE_STORE_V2_MODEL_NAMES.includes(key))result[key]=value[key];return result;},{});
 }
+function IrancellCoreStoreV2SanitizeSupportedRoles(state){
+ if(!IrancellCoreStoreV2IsPlainObject(state))return state;
+ const originalUsers=state.identity?.usersById||{};
+ let usersChanged=false;
+ const usersById=Object.entries(originalUsers).reduce(function IrancellCoreStoreV2SanitizeUserRoles(result,entry){
+  const[userId,user]=entry;
+  if(!IrancellCoreStoreV2IsPlainObject(user)||!Array.isArray(user.roles)){result[userId]=user;return result;}
+  const roles=user.roles.filter(function IrancellCoreStoreV2KeepSupportedUserRole(roleKey){return Boolean(IRANCELL_ROLE_HOME_ROUTES[roleKey]);});
+  if(!roles.length){usersChanged=true;return result;}
+  if(roles.length!==user.roles.length){usersChanged=true;result[userId]={...user,roles};return result;}
+  result[userId]=user;
+  return result;
+ },{});
+ const session=state.session||{};
+ const originalAvailableRoles=Array.isArray(session.availableRoles)?session.availableRoles:[];
+ const availableRoles=originalAvailableRoles.filter(function IrancellCoreStoreV2KeepSupportedSessionRole(roleKey){return Boolean(IRANCELL_ROLE_HOME_ROUTES[roleKey]);});
+ const availableRolesChanged=availableRoles.length!==originalAvailableRoles.length;
+ const activeRoleValid=!session.activeRole||Boolean(IRANCELL_ROLE_HOME_ROUTES[session.activeRole]);
+ const pendingRoleValid=session.status!=='role_pending'||availableRoles.length>0;
+ const invalidSession=!activeRoleValid||!pendingRoleValid;
+ if(!usersChanged&&!availableRolesChanged&&!invalidSession)return state;
+ return{...state,...(usersChanged?{identity:{...state.identity,usersById}}:{}),session:invalidSession?{...(IRANCELL_CORE_STORE_V2_SAFE_SEED.session||{})}:{...session,availableRoles},...(invalidSession?{ui:{...state.ui,routeState:{route:'auth/login',params:{}}}}:{})};
+}
 function IrancellCoreStoreV2ReadPublishedSeed(){
  if(IRANCELL_CORE_STORE_V2_LOCAL_STORE_MODE)return IRANCELL_CORE_STORE_V2_LOCAL_SEED;
  return IRANCELL_CORE_STORE_V2_SAFE_SEED;
@@ -305,6 +284,7 @@ function IrancellCoreStoreV2ReadPublishedSeed(){
 function IrancellCoreStoreV2BuildLocalSnapshot(state){
  if(!IRANCELL_CORE_STORE_V2_LOCAL_STORE_MODE)return null;
  return{
+  session:{...(state.session||{}),token:state.session?.status==='authenticated'?'local-session':null},
   identity:state.identity||{},
   chisti:state.chisti||{},
   content:state.content||{},
@@ -325,15 +305,15 @@ function IrancellCoreStoreV2BuildLocalSnapshot(state){
 }
 function IrancellCoreStoreV2ReadPersistedState(seedSource){
  const seed=IrancellCoreStoreV2Clone(seedSource||IRANCELL_CORE_STORE_V2_SAFE_SEED);
- if(typeof window==='undefined'||!window.localStorage)return seed;
+ if(typeof window==='undefined'||!window.localStorage)return IrancellCoreStoreV2SanitizeSupportedRoles(seed);
  try{
   const raw=window.localStorage.getItem(IRANCELL_CORE_STORE_V2_PERSISTENCE_KEY);
-  if(!raw){window.localStorage.removeItem(IRANCELL_CORE_STORE_V2_LEGACY_KEY);return seed;}
+  if(!raw){window.localStorage.removeItem(IRANCELL_CORE_STORE_V2_LEGACY_KEY);return IrancellCoreStoreV2SanitizeSupportedRoles(seed);}
   const parsed=JSON.parse(raw);
-  if(Number(parsed?.schemaVersion)!==Number(IRANCELL_APP_CONFIG.schemaVersion)){window.localStorage.removeItem(IRANCELL_CORE_STORE_V2_PERSISTENCE_KEY);return seed;}
+  if(Number(parsed?.schemaVersion)!==Number(IRANCELL_APP_CONFIG.schemaVersion)){window.localStorage.removeItem(IRANCELL_CORE_STORE_V2_PERSISTENCE_KEY);return IrancellCoreStoreV2SanitizeSupportedRoles(seed);}
   const localState=IRANCELL_CORE_STORE_V2_LOCAL_STORE_MODE&&IrancellCoreStoreV2IsPlainObject(parsed.localState)?IrancellCoreStoreV2FilterPatch(parsed.localState):{};
-  return IrancellCoreStoreV2Merge(IrancellCoreStoreV2Merge(seed,localState),{settings:{appearance:parsed.preferences?.appearance||seed.settings?.appearance||{}},ui:{routeState:parsed.lastRoute||seed.ui?.routeState||{route:'splash',params:{}}}});
- }catch(error){return seed;}
+  return IrancellCoreStoreV2SanitizeSupportedRoles(IrancellCoreStoreV2Merge(IrancellCoreStoreV2Merge(seed,localState),{settings:{appearance:parsed.preferences?.appearance||seed.settings?.appearance||{}},ui:{routeState:parsed.lastRoute||seed.ui?.routeState||{route:'splash',params:{}}}}));
+ }catch(error){return IrancellCoreStoreV2SanitizeSupportedRoles(seed);}
 }
 function IrancellCoreStoreV2WritePersistedState(){
  if(typeof window==='undefined'||!window.localStorage)return false;
@@ -372,7 +352,7 @@ function IrancellCoreStoreV2SyncBase(patch){
 }
 function IrancellCoreStoreV2Commit(nextState,patchForBase,options){
  if(!IrancellCoreStoreV2IsPlainObject(nextState)||nextState===IrancellCoreStoreV2State)return IrancellCoreStoreV2State;
- IrancellCoreStoreV2State=nextState;
+ IrancellCoreStoreV2State=IrancellCoreStoreV2SanitizeSupportedRoles(nextState);
  if(!options||options.persist!==false)IrancellCoreStoreV2WritePersistedState();
  IrancellCoreStoreV2SyncBase(patchForBase||nextState);
  IrancellCoreStoreV2Notify();
@@ -381,7 +361,7 @@ function IrancellCoreStoreV2Commit(nextState,patchForBase,options){
 function IrancellCoreStoreV2ResolveCommand(type){
  if(!String(type||'').startsWith('IRANCELL_')||IRANCELL_CORE_STORE_V2_LOCAL_ACTIONS.has(type))return null;
  const operation=String(type).replace(/^IRANCELL_/,'').toLowerCase().replace(/_/g,'-');
- const domain=type.includes('CHISTI')?'chisti':type.includes('CONTENT')?'binaei':type.includes('MARKETPLACE')||type.includes('TEACHER_OFFER')||type.includes('TEACHER_AVAILABILITY')?'marketplace':type.includes('CONSENT')?'signature':type.includes('PAYMENT')||type.includes('WALLET')||type.includes('PAYOUT')?'payment':type.includes('CLASS')||type.includes('QUALITY')?'dialogi':'identity';
+ const domain=type.includes('CHISTI')?'chisti':type.includes('CONTENT')?'binaei':type.includes('MARKETPLACE')||type.includes('TEACHER_OFFER')||type.includes('TEACHER_AVAILABILITY')||type.includes('ACADEMY_')?'marketplace':type.includes('CONSENT')?'signature':type.includes('PAYMENT')||type.includes('WALLET')||type.includes('PAYOUT')?'payment':type.includes('CLASS')||type.includes('QUALITY')?'dialogi':'identity';
  return[domain,operation]
 }
 function IrancellCoreStoreV2Gateway(name){
@@ -552,5 +532,12 @@ if(typeof setTimeout==='function')setTimeout(function IrancellCoreStoreV2AutoBoo
 if(typeof window!=='undefined'){
  window.addEventListener('online',()=>IrancellCoreStoreV2Patch({meta:{...(IrancellCoreStoreV2State.meta||{}),online:true},ui:{...(IrancellCoreStoreV2State.ui||{}),offline:false}},{persist:false}));
  window.addEventListener('offline',()=>IrancellCoreStoreV2Patch({meta:{...(IrancellCoreStoreV2State.meta||{}),online:false},ui:{...(IrancellCoreStoreV2State.ui||{}),offline:true}},{persist:false}));
+ window.addEventListener('storage',function IrancellCoreStoreV2SyncLocalStorage(event){
+  if(!IRANCELL_CORE_STORE_V2_LOCAL_STORE_MODE||event.key!==IRANCELL_CORE_STORE_V2_PERSISTENCE_KEY||!event.newValue)return;
+  try{
+   const next=IrancellCoreStoreV2ReadPersistedState(IRANCELL_CORE_STORE_V2_BOOT_SEED);
+   IrancellCoreStoreV2Commit(next,next,{persist:false});
+  }catch(error){if(window.console)window.console.warn('IranCell LMS localStorage synchronization failed.',error);}
+ });
  window.Store=IrancellCoreStoreV2;window.IrancellStore=IrancellCoreStoreV2;window.initStore=function IrancellInitStore(){return window.Store;};window.StoreApi=Object.assign({},window.StoreApi,{getState:IrancellCoreStoreV2GetState,patch:IrancellCoreStoreV2Patch,dispatch:IrancellCoreStoreV2Dispatch,resetAll:IrancellCoreStoreV2ResetAll,boot:IrancellCoreStoreV2Boot});
 }

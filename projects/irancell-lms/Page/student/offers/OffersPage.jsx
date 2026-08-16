@@ -1,200 +1,43 @@
 export function IrancellStudentOffersPage({params,onNavigate}){
  const{state,dispatch}=useIrancellStore();
- const requestId=params.request||Object.keys(state.marketplace.requestsById).at(-1);
- const request=state.marketplace.requestsById[requestId];
+ const requestId=params.request||Object.keys(state.marketplace.requestsById||{}).at(-1);
+ const request=state.marketplace.requestsById?.[requestId];
  const[activeFilter,setActiveFilter]=useState('all');
- const[showFullQuestion,setShowFullQuestion]=useState(false);
  const[expandedOfferId,setExpandedOfferId]=useState('');
-
- const offers=Object.values(state.marketplace.offersById||{})
-  .filter(item=>item.requestId===requestId&&item.status!=='withdrawn')
-  .sort((first,second)=>{
-   if(Boolean(first.featured)!==Boolean(second.featured))return first.featured?-1:1;
-   return Number(second.rating||0)-Number(first.rating||0)
-  });
-
- const filters=[
-  {id:'teacher',label:'مدرس خصوصی'},
-  {id:'academy',label:'مؤسسه معتبر'},
-  {id:'online',label:'آنلاین'},
-  {id:'inperson',label:'حضوری'}
- ];
-
- const filteredOffers=offers.filter(offer=>{
-  if(activeFilter==='all')return true;
-  if(activeFilter==='teacher')return offer.providerRole==='teacher';
-  if(activeFilter==='academy')return offer.providerRole==='academy';
-  if(activeFilter==='online')return Array.isArray(offer.modes)&&offer.modes.includes('آنلاین');
-  if(activeFilter==='inperson')return Array.isArray(offer.modes)&&offer.modes.includes('حضوری');
-  return true
+ const[showCancel,setShowCancel]=useState(false);
+ const font='"Vazirmatn", Tahoma, Arial, sans-serif';
+ const selectedOfferId=request?.selectedOfferId||state.marketplace.selectedOfferId||'';
+ const offers=Object.values(state.marketplace.offersById||{}).filter(item=>item.requestId===requestId&&item.providerRole==='academy'&&!['withdrawn','rejected'].includes(item.status)).sort((first,second)=>{
+  if(first.id===selectedOfferId)return-1;
+  if(second.id===selectedOfferId)return 1;
+  if(Boolean(first.featured)!==Boolean(second.featured))return first.featured?-1:1;
+  const ratingDelta=Number(second.rating||0)-Number(first.rating||0);
+  return ratingDelta||Number(first.price||0)-Number(second.price||0)
  });
-
- if(!request)return <section className="ir-offers-marketplace">
-  <header className="ir-offers-marketplace__topbar">
-   <button type="button" aria-label="بازگشت" onClick={()=>onNavigate?.('student/classes')}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
-   </button>
-   <div><h1>پیشنهادها</h1><p>مؤسسات پیشنهادی برای سؤال شما</p></div>
-  </header>
-  <article className="ir-offers-marketplace__empty">
-   <strong>درخواستی برای نمایش پیدا نشد</strong>
-   <p>یک درخواست جدید ثبت کنید تا پیشنهادهای مناسب برای شما نمایش داده شوند.</p>
-   <button type="button" onClick={()=>onNavigate?.('student/requests')}>ثبت درخواست جدید</button>
-  </article>
- </section>;
-
- function providerName(offer){
-  return offer.providerDisplayName||state.marketplace.providersById?.[offer.providerId]?.name||offer.assignedTeacherName||'تأمین‌کننده آموزشی'
- }
-
- function providerInitials(name){
-  return String(name||'').split(/\s+/).filter(Boolean).slice(-2).map(part=>part[0]).join('')
- }
-
- function selectOffer(offer){
-  if(state.marketplace.selectedOfferId!==offer.id)dispatch(IrancellMarketplaceSelectOffer(offer.id));
-  onNavigate?.(`student/classes/checkout/${offer.id}`)
- }
-
- function toggleDetails(offerId){
-  setExpandedOfferId(current=>current===offerId?'':offerId)
- }
-
- function filterOffer(filterId){
-  setActiveFilter(current=>current===filterId?'all':filterId)
- }
-
- return <section className="ir-offers-marketplace" aria-label="پیشنهادهای مدرس و مؤسسه">
-  <header className="ir-offers-marketplace__topbar">
-   <button type="button" className="ir-offers-marketplace__back" aria-label="بازگشت به کلاس‌ها" onClick={()=>onNavigate?.('student/classes')}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5"/><path d="m10 7-5 5 5 5"/></svg>
-   </button>
-   <div>
-    <h1>پیشنهادها</h1>
-    <p>مؤسسات پیشنهادی برای سؤال شما</p>
-   </div>
-  </header>
-
-  <article className="ir-offers-marketplace__question">
-   <header>
-    <span>سؤال شما</span>
-    <b>پاسخ‌های دریافت شده {IrancellFormatPersianNumber(offers.length)}</b>
-   </header>
-   <h2>{request.topic}</h2>
-   {showFullQuestion&&request.description&&<p>{request.description}</p>}
-   <button type="button" onClick={()=>setShowFullQuestion(value=>!value)}>
-    {showFullQuestion?'بستن متن کامل':'مشاهده کامل سؤال'}
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg>
-   </button>
-  </article>
-
-  <nav className="ir-offers-marketplace__filters" aria-label="فیلتر پیشنهادها">
-   <button type="button" className="ir-offers-marketplace__filter-reset" aria-label="حذف فیلترها" onClick={()=>setActiveFilter('all')}>
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M10 14v6"/></svg>
-   </button>
-   {filters.map(filter=><button type="button" key={filter.id} className={activeFilter===filter.id?'is-active':''} aria-pressed={activeFilter===filter.id} onClick={()=>filterOffer(filter.id)}>{filter.label}</button>)}
-  </nav>
-
-  <section className="ir-offers-marketplace__received" aria-labelledby="irancell-offers-received-title">
-   <h2 id="irancell-offers-received-title">پیشنهادهای دریافتی</h2>
-
-   {filteredOffers.length?<div className="ir-offers-marketplace__list">
-    {filteredOffers.map(offer=>{
-     const name=providerName(offer);
-     const selected=state.marketplace.selectedOfferId===offer.id;
-     const expanded=expandedOfferId===offer.id;
-     const rating=Math.max(0,Math.min(5,Number(offer.rating)||0));
-     const filledStars=Math.round(rating);
-     const modes=Array.isArray(offer.modes)?offer.modes:[];
-     const badges=Array.isArray(offer.badges)?offer.badges:[];
-
-     return <article key={offer.id} className={`ir-market-offer-card ${offer.featured?'is-featured':''} ${selected?'is-selected':''}`}>
-      {offer.featured&&<span className="ir-market-offer-card__corner is-featured" aria-label="پیشنهاد برتر">
-       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 4 3 3-6 3 6 4-3-2 9H7Z"/><path d="M7 20h10"/></svg>
-      </span>}
-
-      {offer.popular&&<span className="ir-market-offer-card__corner is-popular" aria-label="پیشنهاد محبوب">
-       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6-5.4-2.8-5.4 2.8 1-6-4.4-4.3 6.1-.9Z"/></svg>
-      </span>}
-
-      <header className="ir-market-offer-card__header">
-       <div className={`ir-market-offer-card__avatar ${offer.providerRole==='teacher'?'is-teacher':'is-academy'}`}>
-        <span>{providerInitials(name)}</span>
-       </div>
-
-       <div className="ir-market-offer-card__identity">
-        <strong>{name}</strong>
-        {offer.assignedTeacherName&&offer.assignedTeacherName!==name&&<small>{offer.assignedTeacherName}</small>}
-       </div>
-
-       <div className="ir-market-offer-card__rating" aria-label={`امتیاز ${rating} از ۵`}>
-        <span>{[0,1,2,3,4].map(index=><i key={index} className={index<filledStars?'is-filled':''}>★</i>)}</span>
-        <b>{rating.toLocaleString('fa-IR',{maximumFractionDigits:1})}</b>
-       </div>
-      </header>
-
-      {badges.length>0&&<div className="ir-market-offer-card__badges">
-       {badges.map((badge,index)=><span key={`${offer.id}-${badge}`} className={index===0&&offer.featured?'is-crown':''}>
-        {index===0&&offer.featured&&<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 4 3 3-6 3 6 4-3-2 9H7Z"/></svg>}
-        {badge.includes('پاسخ سریع')&&<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-8 12h6l-1 8 9-13h-6Z"/></svg>}
-        {badge.includes('تأیید')&&<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 12 4 4 8-9"/></svg>}
-        {badge}
-       </span>)}
-      </div>}
-
-      <div className="ir-market-offer-card__price-row">
-       <div className="ir-market-offer-card__price">
-        <strong>{IrancellFormatCurrency(offer.price)}</strong>
-       </div>
-       <span>قیمت پیشنهادی</span>
-      </div>
-
-      <p className={`ir-market-offer-card__chance is-${offer.acceptanceTone||'medium'}`}>{offer.acceptanceLabel||'شانس پذیرش: متوسط'}</p>
-
-      <p className="ir-market-offer-card__description">{offer.description||'پیشنهاد آموزشی متناسب با نیاز و زمان درخواستی شما.'}</p>
-
-      <div className="ir-market-offer-card__meta">
-       <span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
-        {IrancellFormatPersianNumber(offer.sessionCount||1)} جلسه {IrancellFormatPersianNumber(offer.sessionDuration||60)} دقیقه‌ای
-       </span>
-       <span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>
-        {offer.responseLabel||'پاسخ‌دهی سریع'}
-       </span>
-      </div>
-
-      {modes.length>0&&<div className="ir-market-offer-card__modes">
-       {modes.map(mode=><span key={`${offer.id}-${mode}`} className={mode==='فوری'?'is-urgent':mode==='آنلاین'?'is-online':mode==='تضمین‌شده'?'is-guaranteed':''}>{mode}</span>)}
-      </div>}
-
-      {expanded&&<section className="ir-market-offer-card__details">
-       <div>
-        <span>نوع ارائه‌دهنده</span>
-        <strong>{offer.providerRole==='teacher'?'مدرس خصوصی':'مؤسسه آموزشی'}</strong>
-       </div>
-       <div>
-        <span>زمان پیشنهادی</span>
-        <strong>{new Date(offer.proposedTime).toLocaleString('fa-IR',{weekday:'long',hour:'2-digit',minute:'2-digit'})}</strong>
-       </div>
-       <div>
-        <span>امتیاز کاربران</span>
-        <strong>{rating.toLocaleString('fa-IR')} از ۵</strong>
-       </div>
-       <p>انتخاب این پیشنهاد، کلاس را برای شما رزرو می‌کند و مراحل تأیید والد و پرداخت امن در ادامه جریان انجام می‌شود.</p>
-      </section>}
-
-      <footer className="ir-market-offer-card__actions">
-       <button type="button" className="is-primary" disabled={selected} onClick={()=>selectOffer(offer)}>{selected?'انتخاب شده':'انتخاب و ادامه'}</button>
-       <button type="button" className="is-secondary" onClick={()=>onNavigate?.(`student/teachers?provider=${offer.providerId}&offer=${offer.id}`)}>مشاهده پروفایل</button>
-      </footer>
-     </article>
-    })}
-   </div>:<article className="ir-offers-marketplace__empty">
-    <strong>پیشنهادی با این فیلتر پیدا نشد</strong>
-    <p>فیلترها را تغییر دهید تا سایر مدرس‌ها و مؤسسات نمایش داده شوند.</p>
-    <button type="button" onClick={()=>setActiveFilter('all')}>نمایش همه پیشنهادها</button>
-   </article>}
-  </section>
- </section>
+ const filterItems=[
+  {id:'all',label:'همه آموزشگاه‌ها',count:offers.length},
+  {id:'online',label:'آنلاین',count:offers.filter(item=>(item.modes||[]).includes('آنلاین')).length},
+  {id:'inperson',label:'حضوری',count:offers.filter(item=>(item.modes||[]).includes('حضوری')).length}
+ ];
+ const filteredOffers=offers.filter(offer=>activeFilter==='all'||activeFilter==='online'&&(offer.modes||[]).includes('آنلاین')||activeFilter==='inperson'&&(offer.modes||[]).includes('حضوری'));
+ function providerName(offer){return offer.providerDisplayName||state.marketplace.providersById?.[offer.providerId]?.name||offer.assignedTeacherName||'ارائه‌دهنده آموزشی'}
+ function providerInitials(name){return String(name||'').split(/\s+/).filter(Boolean).slice(0,2).map(part=>part[0]).join('')||'آ'}
+ function requestModeLabel(){if(request?.deliveryMode==='inperson')return'حضوری';if(request?.deliveryMode==='either')return'آنلاین یا حضوری';return'آنلاین'}
+ function formatDate(value){if(!value)return'توافقی';const date=new Date(value);return Number.isNaN(date.getTime())?'توافقی':date.toLocaleString('fa-IR',{dateStyle:'medium',timeStyle:'short'})}
+ function selectOffer(offer){if(offer.status!=='active'&&selectedOfferId!==offer.id)return;if(selectedOfferId!==offer.id)dispatch(IrancellMarketplaceSelectOffer(offer.id));onNavigate?.(`student/classes/checkout/${offer.id}`)}
+ function cancelRequest(){dispatch(IrancellMarketplaceCancelRequest(request.id));setShowCancel(false);onNavigate?.('student/classes')}
+ if(!request)return <IrancellPageScaffold style={{background:'#FFF9DF',fontFamily:font}}><IrancellPageHeader eyebrow="کلاس‌ها" title="پیشنهادها" description="درخواستی برای نمایش پیدا نشد." actions={<IrancellButton variant="secondary" onClick={()=>onNavigate?.('student/classes')}>بازگشت به کلاس‌ها</IrancellButton>}/><IrancellStateView state="empty" title="هنوز درخواست فعالی ندارید" description="یک درخواست آموزشی ثبت کنید تا آموزشگاه‌ها و مدرس‌های مرتبط بتوانند قیمت و زمان پیشنهادی خود را ارسال کنند." action={<IrancellButton onClick={()=>onNavigate?.('student/requests')}>ثبت درخواست جدید</IrancellButton>}/></IrancellPageScaffold>;
+ if(request.status==='cancelled')return <IrancellPageScaffold style={{background:'#FFF9DF',fontFamily:font}}><IrancellPageHeader eyebrow="کلاس‌ها" title="درخواست لغو شده" description="این درخواست دیگر در بازار آموزش فعال نیست." actions={<IrancellButton variant="secondary" onClick={()=>onNavigate?.('student/classes')}>بازگشت</IrancellButton>}/><IrancellStateView state="warning" title={request.topic||request.subject||'درخواست آموزشی'} description="برای ادامه می‌توانید درخواست تازه‌ای با زمان، بودجه یا توضیحات جدید ثبت کنید." action={<IrancellButton onClick={()=>onNavigate?.('student/requests')}>ثبت درخواست جدید</IrancellButton>}/></IrancellPageScaffold>;
+ const requestSummary=<IrancellCard title={request.topic||'درخواست آموزشی'} subtitle={`${request.subject||'درس مشخص نشده'} · ${request.grade||'پایه مشخص نشده'}`} action={<IrancellStatusBadge status={request.status==='selected'?'selected':offers.length?'offers_received':'pending'}/>}><div style={{display:'grid',gap:'12px'}}>{request.description&&<p style={{margin:0,color:'#5F6169',fontFamily:font,fontSize:'11px',lineHeight:2}}>{request.description}</p>}<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(125px,1fr))',gap:'8px'}}>{[{label:'شیوه برگزاری',value:requestModeLabel(),tone:'#FFF7CE'},{label:'بودجه پیشنهادی',value:request.budget?IrancellFormatCurrency(request.budget):'آزاد',tone:'#F5F5F6'},{label:'زمان ترجیحی',value:formatDate(request.preferredTime),tone:'#F5F5F6'},{label:'فوریت',value:request.urgency||'عادی',tone:'#F5F5F6'}].map(item=><div key={item.label} style={{minWidth:0,padding:'10px',background:item.tone,border:'1px solid #EAE4CC',borderRadius:'12px'}}><small style={{display:'block',color:'#777981',fontFamily:font,fontSize:'9px',fontWeight:700}}>{item.label}</small><strong style={{display:'block',marginTop:'4px',overflowWrap:'anywhere',color:'#27282C',fontFamily:font,fontSize:'11px',fontWeight:900,lineHeight:1.7}}>{item.value}</strong></div>)}</div></div></IrancellCard>;
+ if(!offers.length)return <IrancellPageScaffold style={{background:'#FFF9DF',fontFamily:font}}><IrancellPageHeader eyebrow="کلاس‌ها" title="درخواست شما ثبت شد" description="درخواست با موفقیت ثبت شده و اکنون در انتظار بررسی و قیمت‌دهی ارائه‌دهنده‌های مرتبط است." actions={<IrancellButton variant="secondary" onClick={()=>onNavigate?.('student/classes')}>بازگشت به کلاس‌ها</IrancellButton>}/><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,310px),1fr))',gap:'14px',alignItems:'start'}}>{requestSummary}<IrancellCard title="مراحل بعدی" subtitle="پیشنهاد ساختگی نمایش داده نمی‌شود؛ فقط پاسخ واقعی آموزشگاه یا مدرس را می‌بینید."><div style={{display:'grid',gap:'9px'}}>{[{done:true,title:'درخواست ثبت شد',text:'اطلاعات درخواست در حساب شما ذخیره شده است.'},{done:true,title:'در انتظار بررسی ارائه‌دهنده‌ها',text:`ارائه‌دهنده‌های مرتبط با ${request.subject||'درس شما'} می‌توانند درخواست را ببینند.`},{done:false,title:'دریافت پیشنهاد',text:'هر پیشنهاد شامل ارائه‌دهنده، مدرس قطعی، قیمت، زمان و شرایط خواهد بود.'},{done:false,title:'مقایسه و انتخاب',text:'بعد از انتخاب، رزرو و در صورت نیاز تأیید خانواده و پرداخت انجام می‌شود.'}].map((step,index)=><div key={step.title} style={{display:'grid',gridTemplateColumns:'36px minmax(0,1fr)',gap:'10px',alignItems:'start',padding:'10px',background:step.done?'#F1FAF4':'#FFFFFF',border:'1px solid #E9E2C8',borderRadius:'13px'}}><span aria-hidden="true" style={{display:'grid',width:'36px',height:'36px',placeItems:'center',color:step.done?'#17663A':'#685D2B',background:step.done?'#DDF2E4':'#FFF3AE',borderRadius:'11px',fontFamily:font,fontSize:'11px',fontWeight:900}}>{step.done?'✓':IrancellFormatPersianNumber(index+1)}</span><span style={{display:'grid',minWidth:0,gap:'2px'}}><strong style={{fontFamily:font,fontSize:'11px',fontWeight:900}}>{step.title}</strong><small style={{color:'#70727A',fontFamily:font,fontSize:'9px',lineHeight:1.9}}>{step.text}</small></span></div>)}</div></IrancellCard></div><div style={{marginTop:'14px'}}><IrancellStatusBanner tone="warning" title="وضعیت: در انتظار پیشنهاد">برای همین موضوع لازم نیست درخواست دیگری ثبت کنید. به‌محض ثبت اولین پیشنهاد، همین صفحه به صفحه مقایسه پیشنهادها تبدیل می‌شود.</IrancellStatusBanner></div><div style={{display:'flex',flexWrap:'wrap',gap:'9px',marginTop:'14px'}}><IrancellButton onClick={()=>onNavigate?.('student/requests')}>ثبت درخواست دیگری</IrancellButton><IrancellButton variant="secondary" onClick={()=>setShowCancel(true)}>لغو این درخواست</IrancellButton></div><IrancellModal open={showCancel} title="لغو درخواست آموزشی" onClose={()=>setShowCancel(false)} actions={<div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}><IrancellButton variant="secondary" onClick={()=>setShowCancel(false)}>انصراف</IrancellButton><IrancellButton variant="danger" onClick={cancelRequest}>بله، لغو شود</IrancellButton></div>}><p style={{margin:0,color:'#62636B',fontFamily:font,fontSize:'11px',lineHeight:2}}>پس از لغو، این درخواست از بازار خارج می‌شود و آموزشگاه‌ها نمی‌توانند برای آن پیشنهاد جدید ارسال کنند.</p></IrancellModal></IrancellPageScaffold>;
+ return <IrancellPageScaffold style={{background:'#FFF9DF',fontFamily:font}}><IrancellPageHeader eyebrow="مقایسه پیشنهادها" title={`${IrancellFormatPersianNumber(offers.length)} پیشنهاد برای درخواست شما`} description="ارائه‌دهنده، مدرس قطعی، قیمت، زمان و شرایط را مقایسه کنید و سپس وارد مرحله رزرو شوید." actions={<><IrancellButton variant="secondary" onClick={()=>onNavigate?.('student/classes')}>کلاس‌های من</IrancellButton>{['pending','published','offers_received'].includes(request.status)&&<IrancellButton variant="ghost" onClick={()=>setShowCancel(true)}>لغو درخواست</IrancellButton>}</>}/><div style={{display:'grid',gridTemplateColumns:'minmax(0,1fr)',gap:'14px'}}>{requestSummary}<IrancellFilterTabs items={filterItems} value={activeFilter} onChange={setActiveFilter} ariaLabel="فیلتر پیشنهادها"/></div><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,300px),1fr))',gap:'12px',alignItems:'start',marginTop:'14px'}}>{filteredOffers.length?filteredOffers.map(offer=>{
+  const provider=state.marketplace.providersById?.[offer.providerId]||{};
+  const name=providerName(offer);
+  const selected=selectedOfferId===offer.id;
+  const expanded=expandedOfferId===offer.id;
+  const rating=Math.max(0,Math.min(5,Number(offer.rating||provider.rating)||0));
+  const modes=Array.isArray(offer.modes)?offer.modes:[];
+  const badges=Array.isArray(offer.badges)?offer.badges:[];
+  return <article key={offer.id} style={{boxSizing:'border-box',display:'grid',minWidth:0,gap:'13px',padding:'16px',background:'#FFFFFF',border:`${selected?'2px':'1px'} solid ${selected?'#E2B900':'#E5DFC8'}`,borderRadius:'20px',boxShadow:selected?'0 12px 30px rgba(120,96,0,.13)':'0 8px 24px rgba(60,50,10,.06)',fontFamily:font}}><header style={{display:'grid',gridTemplateColumns:'48px minmax(0,1fr) auto',gap:'10px',alignItems:'center'}}><span aria-hidden="true" style={{display:'grid',width:'48px',height:'48px',placeItems:'center',color:'#3B350E',background:offer.providerRole==='academy'?'#FFF1A3':'#E9F4FF',border:'1px solid #E5DFC8',borderRadius:'15px',fontFamily:font,fontSize:'13px',fontWeight:900}}>{providerInitials(name)}</span><span style={{display:'grid',minWidth:0,gap:'2px'}}><strong style={{overflowWrap:'anywhere',fontFamily:font,fontSize:'13px',fontWeight:900}}>{name}</strong><small style={{color:'#777982',fontFamily:font,fontSize:'9px',lineHeight:1.7}}>{offer.providerRole==='academy'?'آموزشگاه تأییدشده':'مدرس مستقل'}{offer.assignedTeacherName?` · مدرس جلسه: ${offer.assignedTeacherName}`:''}</small></span><span style={{display:'grid',justifyItems:'end',gap:'2px'}}><strong style={{color:'#6B5700',fontFamily:font,fontSize:'11px'}}>★ {rating.toLocaleString('fa-IR',{maximumFractionDigits:1})}</strong><small style={{color:'#8A8B91',fontFamily:font,fontSize:'8px'}}>{IrancellFormatPersianNumber(offer.reviewCount||provider.reviewCount||0)} نظر</small></span></header>{badges.length>0&&<div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{badges.slice(0,4).map(badge=><span key={badge} style={{padding:'5px 8px',color:'#665500',background:'#FFF7CE',border:'1px solid #F0D763',borderRadius:'999px',fontFamily:font,fontSize:'8px',fontWeight:800}}>{badge}</span>)}</div>}<div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(115px,1fr))',gap:'8px'}}><div style={{padding:'10px',background:'#FFF7CE',borderRadius:'12px'}}><small style={{display:'block',color:'#796B31',fontFamily:font,fontSize:'8px'}}>قیمت پیشنهادی</small><strong style={{display:'block',marginTop:'3px',fontFamily:font,fontSize:'13px',fontWeight:900}}>{IrancellFormatCurrency(offer.price)}</strong></div><div style={{padding:'10px',background:'#F5F5F6',borderRadius:'12px'}}><small style={{display:'block',color:'#777982',fontFamily:font,fontSize:'8px'}}>زمان پیشنهادی</small><strong style={{display:'block',marginTop:'3px',fontFamily:font,fontSize:'10px',fontWeight:900,lineHeight:1.8}}>{formatDate(offer.proposedTime)}</strong></div><div style={{padding:'10px',background:'#F5F5F6',borderRadius:'12px'}}><small style={{display:'block',color:'#777982',fontFamily:font,fontSize:'8px'}}>جلسات</small><strong style={{display:'block',marginTop:'3px',fontFamily:font,fontSize:'10px',fontWeight:900}}>{IrancellFormatPersianNumber(offer.sessionCount||1)} × {IrancellFormatPersianNumber(offer.sessionDuration||60)} دقیقه</strong></div></div><p style={{margin:0,color:'#5F6169',fontFamily:font,fontSize:'10px',lineHeight:2}}>{offer.description||'پیشنهاد آموزشی متناسب با درخواست شما.'}</p>{modes.length>0&&<div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{modes.map(mode=><span key={mode} style={{padding:'5px 8px',color:'#4F5057',background:'#F2F2F4',borderRadius:'999px',fontFamily:font,fontSize:'8px',fontWeight:800}}>{mode}</span>)}{offer.responseLabel&&<span style={{padding:'5px 8px',color:'#315E86',background:'#EDF6FF',borderRadius:'999px',fontFamily:font,fontSize:'8px',fontWeight:800}}>{offer.responseLabel}</span>}</div>}{expanded&&<div style={{display:'grid',gap:'8px',padding:'11px',background:'#FAF9F4',border:'1px solid #E8E2CC',borderRadius:'13px'}}><div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between',gap:'6px'}}><span style={{color:'#777982',fontFamily:font,fontSize:'9px'}}>نوع ارائه‌دهنده</span><strong style={{fontFamily:font,fontSize:'9px'}}>{offer.providerRole==='academy'?'آموزشگاه':'مدرس خصوصی'}</strong></div><div style={{display:'flex',flexWrap:'wrap',justifyContent:'space-between',gap:'6px'}}><span style={{color:'#777982',fontFamily:font,fontSize:'9px'}}>مدرس قطعی</span><strong style={{fontFamily:font,fontSize:'9px'}}>{offer.assignedTeacherName||name}</strong></div>{offer.terms&&<p style={{margin:0,color:'#686970',fontFamily:font,fontSize:'9px',lineHeight:1.9}}>شرایط: {offer.terms}</p>}<small style={{color:'#777982',fontFamily:font,fontSize:'8px',lineHeight:1.8}}>انتخاب پیشنهاد وارد مرحله رزرو می‌شود؛ در صورت نیاز، رضایت خانواده و پرداخت امن قبل از قطعی‌شدن کلاس انجام خواهد شد.</small></div>}<footer style={{display:'flex',flexWrap:'wrap',gap:'7px'}}><IrancellButton size="sm" disabled={selected||offer.status!=='active'} onClick={()=>selectOffer(offer)}>{selected?'انتخاب شده':'انتخاب و ادامه'}</IrancellButton><IrancellButton size="sm" variant="secondary" onClick={()=>setExpandedOfferId(current=>current===offer.id?'':offer.id)}>{expanded?'بستن جزئیات':'جزئیات پیشنهاد'}</IrancellButton><IrancellButton size="sm" variant="ghost" onClick={()=>onNavigate?.(`student/teachers?provider=${offer.providerId}&offer=${offer.id}`)}>پروفایل ارائه‌دهنده</IrancellButton></footer></article>
+ }):<div style={{gridColumn:'1 / -1'}}><IrancellStatePanel state="empty" title="پیشنهادی با این فیلتر پیدا نشد" description="فیلتر دیگری را انتخاب کنید تا سایر پیشنهادهای دریافت‌شده را ببینید." action={<IrancellButton variant="secondary" onClick={()=>setActiveFilter('all')}>نمایش همه</IrancellButton>}/></div>}</div><IrancellModal open={showCancel} title="لغو درخواست آموزشی" onClose={()=>setShowCancel(false)} actions={<div style={{display:'flex',flexWrap:'wrap',gap:'8px'}}><IrancellButton variant="secondary" onClick={()=>setShowCancel(false)}>انصراف</IrancellButton><IrancellButton variant="danger" onClick={cancelRequest}>لغو درخواست</IrancellButton></div>}><p style={{margin:0,color:'#62636B',fontFamily:font,fontSize:'11px',lineHeight:2}}>لغو درخواست، همه پیشنهادهای فعال این درخواست را می‌بندد. اگر فقط می‌خواهید پیشنهادها را مقایسه کنید، نیازی به لغو نیست.</p></IrancellModal></IrancellPageScaffold>
 }

@@ -8,6 +8,7 @@ export function IrancellParentHomePage({onNavigate}){
  const progressByChild=family.childProgressById||{};
  const classCountByChild=family.activeClassCountByChildId||{};
  const pendingPayments=Object.values(family.pendingPaymentsById||{}).filter(item=>item.parentId===parentId&&item.status==='pending');
+ const pendingConsents=Object.values(state.consent.documentsById||{}).filter(item=>item.parentId===parentId&&item.status==='pending');
  const notifications=Object.values(family.notificationItemsById||{}).filter(item=>item.parentId===parentId&&!item.read);
  const activeClassCount=children.reduce((sum,child)=>sum+(Number(classCountByChild[child.id])||0),0);
  const averageProgress=children.length?Math.round(children.reduce((sum,child)=>sum+(Number(progressByChild[child.id])||0),0)/children.length):0;
@@ -23,7 +24,7 @@ export function IrancellParentHomePage({onNavigate}){
    <IrancellStatCard icon={UsersRound} label="دانش‌آموز متصل" value={IrancellFormatPersianNumber(children.length)}/>
    <IrancellStatCard icon={CalendarCheck} label="کلاس فعال" value={IrancellFormatPersianNumber(activeClassCount)} tone="info"/>
    <IrancellStatCard icon={TrendingUp} label="میانگین پیشرفت" value={`${IrancellFormatPersianNumber(averageProgress)}٪`} tone="success"/>
-   <IrancellStatCard icon={WalletCards} label="پرداخت در انتظار" value={IrancellFormatPersianNumber(pendingPayments.length)} tone={pendingPayments.length?'warning':'success'}/>
+   <IrancellStatCard icon={WalletCards} label="نیازمند تأیید شما" value={IrancellFormatPersianNumber(pendingPayments.length+pendingConsents.length)} tone={pendingPayments.length+pendingConsents.length?'warning':'success'}/>
   </div>
 
   <IrancellCard title="فرزندان شما" subtitle="خلاصه زنده مسیر یادگیری هر دانش‌آموز" action={<IrancellButton size="sm" onClick={()=>onNavigate?.('parent/children',{add:'1'})}>افزودن دانش‌آموز</IrancellButton>}>
@@ -39,8 +40,11 @@ export function IrancellParentHomePage({onNavigate}){
    })}</div>:<IrancellStatePanel state="empty" title="هنوز دانش‌آموزی متصل نشده است" description="برای شروع مدیریت آموزشی، پروفایل دانش‌آموز را به حساب خانواده اضافه کنید." action={<IrancellButton onClick={()=>onNavigate?.('parent/children',{add:'1'})}>افزودن دانش‌آموز</IrancellButton>}/>}
   </IrancellCard>
 
-  {pendingPayments.length>0&&<IrancellCard title="نیازمند اقدام" subtitle="مواردی که برای نهایی‌شدن کلاس به تأیید شما نیاز دارند" style={{marginTop:'16px'}}>
-   <div style={{display:'grid',gap:'10px'}}>{pendingPayments.slice(0,3).map(item=><article key={item.id} style={{display:'flex',minWidth:0,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',gap:'12px',padding:'14px',background:'#FFF7CE',border:'1px solid #EDD365',borderRadius:'15px'}}><div style={{minWidth:0,flex:'1 1 240px'}}><strong style={{display:'block',fontSize:'13px',fontWeight:900}}>{item.title}</strong><small style={{color:'#765F00',fontSize:'10px'}}>{IrancellFormatPersianNumber(item.amount)} تومان</small></div><IrancellButton size="sm" onClick={()=>onNavigate?.(`payment/${item.orderId}`)}>بررسی و پرداخت</IrancellButton></article>)}</div>
+  {(pendingPayments.length>0||pendingConsents.length>0)&&<IrancellCard title="نیازمند اقدام" subtitle="رضایت‌نامه و پرداخت کلاس‌هایی که دانش‌آموز از بازار انتخاب کرده است" style={{marginTop:'16px'}}>
+   <div style={{display:'grid',gap:'10px'}}>
+    {pendingConsents.slice(0,3).map(item=>{const child=state.identity.usersById?.[item.childId];const session=state.classroom.sessionsById?.[item.sessionId];return <article key={item.id} style={{display:'flex',minWidth:0,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',gap:'12px',padding:'14px',background:'#FFF1E8',border:'1px solid #F0C6A8',borderRadius:'15px'}}><div style={{minWidth:0,flex:'1 1 240px'}}><strong style={{display:'block',fontSize:'13px',fontWeight:900}}>رضایت‌نامه {child?.name||'دانش‌آموز'}</strong><small style={{color:'#81512F',fontSize:'10px'}}>{session?.title||'کلاس انتخاب‌شده'}</small></div><IrancellButton size="sm" onClick={()=>onNavigate?.(`consent/${item.id}`)}>بررسی و امضا</IrancellButton></article>})}
+    {pendingPayments.slice(0,3).map(item=><article key={item.id} style={{display:'flex',minWidth:0,flexWrap:'wrap',alignItems:'center',justifyContent:'space-between',gap:'12px',padding:'14px',background:'#FFF7CE',border:'1px solid #EDD365',borderRadius:'15px'}}><div style={{minWidth:0,flex:'1 1 240px'}}><strong style={{display:'block',fontSize:'13px',fontWeight:900}}>{item.title}</strong><small style={{color:'#765F00',fontSize:'10px'}}>{IrancellFormatPersianNumber(item.amount)} تومان</small></div><IrancellButton size="sm" onClick={()=>onNavigate?.(`payment/${item.orderId}`)}>بررسی و پرداخت</IrancellButton></article>)}
+   </div>
   </IrancellCard>}
 
   <IrancellCard title="دسترسی سریع" style={{marginTop:'16px'}}>
